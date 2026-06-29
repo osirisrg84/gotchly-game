@@ -73,6 +73,9 @@ body{background:var(--body-bg);min-height:100vh;display:flex;align-items:center;
 .light .badge-t{color:#5B21B6}
 .light #lobby-join-url{color:rgba(109,40,217,.55)}
 .light .card{background:rgba(109,40,217,.05);border-color:rgba(109,40,217,.13)}
+.light #splash .tag{color:rgba(70,20,150,.5)}
+.light #splash h1{color:var(--text)}
+.light #splash .name-wrap label{color:var(--dim)}
 
 /* Smooth theme transition on key containers */
 .phone,.phone .sc,.phone .bnav,.phone .sheet,.phone .inp,.phone .bs,.phone .back,
@@ -852,7 +855,7 @@ function initSocket() {
   socket.on('connect', () => {
     console.log('Socket conectado:', socket.id);
 
-    // Leer código de sala desde URL (?join=XXXX)
+    // Leer código de sala desde URL (?join=XXXX) — solo en carga inicial
     const params = new URLSearchParams(window.location.search);
     const joinCode = params.get('join');
     if (joinCode) {
@@ -860,15 +863,19 @@ function initSocket() {
       history.replaceState({}, '', window.location.pathname);
     }
 
-    showScreen('splash');
-    if (G.playerName) {
-      document.getElementById('splash-name').value = G.playerName;
-      // Si hay código pendiente y ya tiene nombre guardado → auto-abrir join overlay
-      if (G.pendingJoinCode) {
-        document.getElementById('join-code').value = G.pendingJoinCode;
-        document.getElementById('join-overlay').classList.add('on');
-        document.getElementById('join-code').focus();
-        G.pendingJoinCode = null;
+    // Solo ir a splash en la conexión inicial (pantalla = "connecting")
+    // En reconexiones, el usuario se queda donde estaba
+    const currentScreen = document.querySelector('.sc.on')?.id;
+    if (!currentScreen || currentScreen === 'connecting') {
+      showScreen('splash');
+      if (G.playerName) {
+        document.getElementById('splash-name').value = G.playerName;
+        if (G.pendingJoinCode) {
+          document.getElementById('join-code').value = G.pendingJoinCode;
+          document.getElementById('join-overlay').classList.add('on');
+          document.getElementById('join-code').focus();
+          G.pendingJoinCode = null;
+        }
       }
     }
   });
