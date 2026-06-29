@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Gotchly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+
+:root{
+  --bg:#060614;
+  --purple:#8B5CF6;
+  --pink:#EC4899;
+  --text:#EEE8FF;
+  --text-dim:rgba(185,165,250,.45);
+  --text-faint:rgba(185,165,250,.25);
+  --card:rgba(255,255,255,.04);
+  --card-border:rgba(255,255,255,.07);
+  --grad:linear-gradient(135deg,#8B5CF6,#EC4899);
+  --font:'Space Grotesk',sans-serif;
+}
+
+body{
+  background:#0D0B1A;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:var(--font);
+  overflow:hidden;
+}
+
+/* ── Phone shell ── */
+.phone{
+  position:relative;
+  width:375px;
+  height:812px;
+  border-radius:44px;
+  background:var(--bg);
+  overflow:hidden;
+  box-shadow:0 40px 100px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.06);
+  flex-shrink:0;
+}
+
+/* ── Notch ── */
+.notch{
+  position:absolute;
+  top:12px;
+  left:50%;
+  transform:translateX(-50%);
+  width:120px;height:34px;
+  background:#000;
+  border-radius:20px;
+  z-index:50;
+}
+
+/* ── Status bar ── */
+.status{
+  height:52px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  padding:0 28px 8px;
+  position:relative;
+  z-index:10;
+  flex-shrink:0;
+}
+.status-time{font:600 15px var(--font);color:var(--text)}
+.status-icons{display:flex;gap:6px;align-items:center}
+
+/* ── Bottom nav ── */
+.nav{
+  position:absolute;
+  bottom:0;left:0;right:0;
+  height:84px;
+  background:rgba(6,6,20,.94);
+  border-top:1px solid rgba(139,92,246,.12);
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-around;
+  padding-top:12px;
+  z-index:30;
+}
+.nav-btn{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  background:none;border:none;cursor:pointer;
+  color:rgba(200,180,255,.25);padding:0;
+  font-family:var(--font);
+  transition:color .2s;
+}
+.nav-btn.active{color:var(--purple)}
+.nav-btn span{font:700 9px var(--font);letter-spacing:.08em;text-transform:uppercase}
+
+/* ── Screen base ── */
+.screen{
+  position:absolute;
+  inset:0;
+  display:none;
+  flex-direction:column;
+  overflow:hidden;
+  transition:opacity .25s;
+}
+.screen.active{display:flex}
+.scroll-content{
+  flex:1;
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.scroll-content::-webkit-scrollbar{display:none}
+
+/* ── Ambient orbs ── */
+.orb{
+  position:absolute;border-radius:50%;pointer-events:none;
+}
+@keyframes orb-float{
+  0%,100%{transform:translateY(0);opacity:.5}
+  50%{transform:translateY(-16px);opacity:.3}
+}
+
+/* ── Buttons ── */
+.btn-primary{
+  width:100%;padding:18px;border-radius:18px;
+  background:var(--grad);border:none;
+  color:white;font:700 17px var(--font);
+  box-shadow:0 16px 48px rgba(139,92,246,.4);
+  cursor:pointer;
+  transition:opacity .15s,transform .1s;
+}
+.btn-primary:active{opacity:.85;transform:scale(.98)}
+.btn-secondary{
+  width:100%;padding:18px;border-radius:18px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);
+  color:rgba(200,185,255,.65);
+  font:600 17px var(--font);
+  cursor:pointer;
+  transition:opacity .15s;
+}
+.btn-secondary:active{opacity:.7}
+
+/* ── Cards ── */
+.card{
+  background:var(--card);
+  border:1px solid var(--card-border);
+  border-radius:14px;
+}
+
+/* ── Label chips ── */
+.label{
+  font:600 11px var(--font);
+  color:var(--text-dim);
+  letter-spacing:.1em;
+  text-transform:uppercase;
+}
+
+/* ── Orb animations ── */
+.orb-a{animation:orb-float 7s ease-in-out infinite}
+.orb-b{animation:orb-float 9s ease-in-out infinite reverse}
+
+/* ─────────────── SPLASH ─────────────── */
+#splash .orb:nth-child(1){
+  width:380px;height:380px;
+  background:radial-gradient(circle,rgba(139,92,246,.38) 0%,transparent 70%);
+  top:-100px;right:-80px;
+}
+#splash .orb:nth-child(2){
+  width:280px;height:280px;
+  background:radial-gradient(circle,rgba(236,72,153,.28) 0%,transparent 70%);
+  bottom:80px;left:-50px;
+}
+#splash .splash-content{
+  flex:1;
+  display:flex;flex-direction:column;align-items:center;
+  padding:50px 32px 44px;
+  text-align:center;
+  position:relative;z-index:5;
+}
+#splash .logo-icon{
+  width:84px;height:84px;border-radius:26px;
+  background:var(--grad);
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:28px;
+  box-shadow:0 20px 60px rgba(139,92,246,.55),0 0 0 1px rgba(255,255,255,.1);
+}
+#splash h1{
+  font:800 48px/1 var(--font);
+  color:var(--text);
+  letter-spacing:-.04em;
+  margin-bottom:10px;
+}
+#splash .tagline{
+  font:400 15px var(--font);
+  color:rgba(185,165,250,.5);
+  margin-bottom:60px;
+  letter-spacing:.04em;
+}
+#splash .splash-actions{width:100%}
+#splash .btn-primary{margin-bottom:14px;border-radius:18px}
+#splash .btn-secondary{margin-bottom:14px;border-radius:18px}
+#splash .version{
+  margin-top:auto;
+  font:400 12px var(--font);
+  color:rgba(150,130,200,.3);
+}
+
+/* ─────────────── JOIN MODAL ─────────────── */
+#join-overlay{
+  position:absolute;inset:0;
+  background:rgba(0,0,0,.7);
+  z-index:100;
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+}
+#join-overlay.active{display:flex}
+.join-sheet{
+  background:#12112A;
+  border:1px solid rgba(139,92,246,.2);
+  border-radius:28px 28px 0 0;
+  padding:28px 24px 40px;
+  width:100%;
+}
+.join-sheet h3{
+  font:700 22px var(--font);color:var(--text);margin-bottom:6px;
+}
+.join-sheet p{
+  font:400 14px var(--font);color:var(--text-dim);margin-bottom:24px;
+}
+.code-input{
+  width:100%;padding:18px;
+  border-radius:14px;
+  background:rgba(255,255,255,.06);
+  border:1.5px solid rgba(139,92,246,.3);
+  color:var(--text);
+  font:700 22px var(--font);
+  letter-spacing:.15em;
+  text-align:center;
+  text-transform:uppercase;
+  outline:none;
+  margin-bottom:16px;
+}
+.code-input::placeholder{
+  font:500 15px var(--font);
+  letter-spacing:.05em;
+  color:rgba(185,165,250,.25);
+  text-transform:none;
+}
+
+/* ─────────────── HOME ─────────────── */
+#home .orb:nth-child(1){
+  width:260px;height:260px;
+  background:radial-gradient(circle,rgba(139,92,246,.22) 0%,transparent 70%);
+  top:-60px;left:-40px;
+}
+#home .home-content{padding:20px 24px;position:relative;z-index:5}
+#home .greeting{font:400 13px var(--font);color:var(--text-dim);margin-bottom:4px}
+#home .username{font:700 24px/1 var(--font);color:var(--text)}
+.avatar{
+  width:46px;height:46px;border-radius:50%;
+  background:var(--grad);
+  display:flex;align-items:center;justify-content:center;
+  font:700 17px var(--font);color:white;
+  box-shadow:0 8px 24px rgba(139,92,246,.4);
+  flex-shrink:0;
+}
+.stats-row{display:flex;gap:10px;margin-bottom:22px}
+.stat-card{
+  flex:1;
+  background:rgba(139,92,246,.1);
+  border:1px solid rgba(139,92,246,.16);
+  border-radius:14px;
+  padding:13px;
+  text-align:center;
+}
+.stat-card.pink{background:rgba(236,72,153,.08);border-color:rgba(236,72,153,.12)}
+.stat-card.cyan{background:rgba(6,182,212,.08);border-color:rgba(6,182,212,.12)}
+.stat-val{font:700 22px var(--font);margin-bottom:2px}
+.stat-val.purple{color:var(--purple)}
+.stat-val.pink{color:#EC4899}
+.stat-val.cyan{color:#06B6D4}
+.stat-lbl{font:500 9px var(--font);color:var(--text-dim);letter-spacing:.06em;text-transform:uppercase}
+.recent-item{
+  padding:13px 16px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.recent-item + .recent-item{border-top:1px solid var(--card-border)}
+.recent-title{font:600 14px var(--font);color:var(--text);margin-bottom:2px}
+.recent-meta{font:400 11px var(--font);color:var(--text-dim)}
+.recent-pts{font:700 13px var(--font);color:var(--purple)}
+.recent-pts.pink{color:#EC4899}
+
+/* ─────────────── LOBBY ─────────────── */
+#lobby .orb:nth-child(1){
+  width:260px;height:260px;
+  background:radial-gradient(circle,rgba(139,92,246,.2) 0%,transparent 70%);
+  top:-40px;right:-40px;
+}
+#lobby .lobby-content{padding:20px 24px;position:relative;z-index:5}
+.room-code{
+  font:800 42px/1 var(--font);
+  color:var(--purple);
+  letter-spacing:-.02em;
+  margin-bottom:6px;
+  text-shadow:0 0 40px rgba(139,92,246,.4);
+}
+.btn-share{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 18px;border-radius:10px;
+  background:rgba(139,92,246,.15);
+  border:1px solid rgba(139,92,246,.25);
+  color:#A78BFA;
+  font:600 13px var(--font);
+  cursor:pointer;
+  margin-bottom:28px;
+  transition:opacity .15s;
+}
+.btn-share:active{opacity:.7}
+.players-grid{
+  display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;
+}
+.player-slot{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.player-avatar{
+  width:52px;height:52px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font:700 16px var(--font);
+}
+.player-avatar.host{
+  background:var(--grad);
+  font-size:18px;
+  box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--purple);
+  color:white;
+}
+.player-avatar.empty{
+  border:1.5px dashed rgba(255,255,255,.12);
+  color:rgba(255,255,255,.15);
+  font-size:18px;
+  background:transparent;
+}
+.player-name{font:500 10px var(--font);color:var(--text-dim)}
+.waiting-banner{
+  background:rgba(139,92,246,.08);
+  border:1px solid rgba(139,92,246,.14);
+  border-radius:12px;
+  padding:12px 16px;
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:24px;
+}
+.waiting-dot{
+  width:8px;height:8px;border-radius:50%;background:var(--purple);
+  animation:orb-float 1.5s ease-in-out infinite;
+}
+.waiting-text{font:500 13px var(--font);color:rgba(185,165,250,.55)}
+#lobby .btn-primary{border-radius:16px}
+
+/* ─────────────── GAME ─────────────── */
+#game .game-content{padding:16px 24px;position:relative;z-index:5;flex:1;display:flex;flex-direction:column}
+.game-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.game-phase{font:700 14px var(--font);color:var(--text-dim);letter-spacing:.06em;text-transform:uppercase}
+.timer-wrap{position:relative;width:60px;height:60px;flex-shrink:0}
+.timer-num{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  font:700 16px var(--font);color:var(--purple);
+}
+.prompt-card{
+  background:rgba(139,92,246,.1);
+  border:1px solid rgba(139,92,246,.22);
+  border-radius:14px;
+  padding:14px 16px;
+  margin-bottom:16px;
+  box-shadow:0 0 30px rgba(139,92,246,.1);
+}
+.prompt-label{
+  font:500 11px var(--font);
+  color:var(--text-dim);
+  letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;
+}
+.prompt-text{font:700 18px var(--font);color:var(--text)}
+#draw-canvas{
+  border-radius:16px;
+  background:#F8F7F2;
+  display:block;
+  touch-action:none;
+  cursor:crosshair;
+  margin-bottom:14px;
+  flex-shrink:0;
+}
+.color-row{
+  display:flex;align-items:center;gap:8px;margin-bottom:16px;
+}
+.color-dot{
+  width:28px;height:28px;border-radius:50%;cursor:pointer;
+  transition:transform .15s;
+  flex-shrink:0;
+}
+.color-dot:active{transform:scale(.85)}
+.color-dot.selected{
+  box-shadow:0 0 0 2.5px var(--bg),0 0 0 4.5px currentColor;
+}
+.tool-btn{
+  width:36px;height:36px;border-radius:10px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.08);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  flex-shrink:0;
+  transition:background .15s;
+}
+.tool-btn:active{background:rgba(255,255,255,.12)}
+#game .btn-primary{border-radius:16px;margin-top:auto;flex-shrink:0}
+
+/* ─────────────── VOTE ─────────────── */
+#vote .vote-content{padding:16px 24px;position:relative;z-index:5}
+.vote-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.vote-title{font:700 20px var(--font);color:var(--text)}
+.vote-timer{font:700 20px var(--font);color:#EC4899}
+.vote-sub{font:400 13px var(--font);color:var(--text-dim);margin-bottom:20px}
+.vote-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.vote-card{
+  background:var(--card);
+  border:1px solid var(--card-border);
+  border-radius:14px;
+  padding:12px;
+  cursor:pointer;
+  transition:border-color .2s,box-shadow .2s;
+}
+.vote-card.selected{
+  background:rgba(236,72,153,.12);
+  border:2px solid rgba(236,72,153,.4);
+  box-shadow:0 0 20px rgba(236,72,153,.12);
+}
+.vote-card-label{
+  font:500 10px var(--font);
+  color:var(--text-dim);
+  letter-spacing:.08em;margin-bottom:8px;
+}
+.vote-card.selected .vote-card-label{color:rgba(250,165,205,.6)}
+.vote-thumb{
+  background:rgba(255,255,255,.06);
+  border-radius:8px;height:70px;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:10px;
+  overflow:hidden;
+}
+.vote-card.selected .vote-thumb{background:rgba(236,72,153,.1)}
+.vote-btn{
+  width:100%;padding:8px;border-radius:8px;
+  background:rgba(139,92,246,.12);
+  border:1px solid rgba(139,92,246,.2);
+  color:#A78BFA;
+  font:600 12px var(--font);
+  cursor:pointer;
+}
+.vote-card.selected .vote-btn{
+  background:var(--grad);
+  border:none;
+  color:white;
+  font:700 12px var(--font);
+}
+.vote-confirm{
+  width:100%;padding:16px;border-radius:16px;
+  background:var(--grad);
+  border:none;color:white;
+  font:700 17px var(--font);
+  cursor:pointer;
+  box-shadow:0 12px 40px rgba(139,92,246,.4);
+  display:none;
+}
+.vote-confirm.show{display:block}
+
+/* ─────────────── REVEAL ─────────────── */
+#reveal .orb:nth-child(1){
+  width:400px;height:400px;
+  background:radial-gradient(circle,rgba(139,92,246,.3) 0%,transparent 70%);
+  top:-100px;left:-100px;
+}
+#reveal .orb:nth-child(2){
+  width:300px;height:300px;
+  background:radial-gradient(circle,rgba(236,72,153,.25) 0%,transparent 70%);
+  bottom:-60px;right:-60px;
+}
+#reveal .reveal-content{
+  flex:1;padding:20px 24px;text-align:center;
+  position:relative;z-index:5;
+  display:flex;flex-direction:column;
+}
+.reveal-label{
+  font:500 13px var(--font);
+  color:var(--text-dim);
+  letter-spacing:.1em;text-transform:uppercase;
+  margin-bottom:8px;
+}
+.reveal-name{
+  font:800 52px/1 var(--font);
+  background:var(--grad);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  letter-spacing:-.03em;
+  margin-bottom:20px;
+}
+.reveal-avatar{
+  width:88px;height:88px;border-radius:50%;
+  background:linear-gradient(135deg,rgba(139,92,246,.3),rgba(236,72,153,.3));
+  border:2px solid rgba(236,72,153,.5);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 8px;
+  font:700 32px var(--font);color:white;
+  box-shadow:0 0 60px rgba(139,92,246,.3);
+}
+.reveal-sub{
+  font:400 14px var(--font);
+  color:var(--text-dim);
+  margin-bottom:24px;
+}
+.reveal-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+  margin-bottom:20px;text-align:left;
+}
+.reveal-cell{border-radius:14px;padding:12px}
+.reveal-cell.real{
+  background:var(--card);border:1px solid var(--card-border);
+}
+.reveal-cell.impostor{
+  background:rgba(236,72,153,.08);
+  border:1px solid rgba(236,72,153,.2);
+}
+.reveal-cell-lbl{
+  font:500 10px var(--font);
+  color:var(--text-dim);
+  letter-spacing:.08em;margin-bottom:6px;
+}
+.reveal-cell.impostor .reveal-cell-lbl{color:rgba(250,165,205,.5)}
+.reveal-cell-title{font:600 14px var(--font);color:var(--text);margin-bottom:8px}
+.reveal-cell.impostor .reveal-cell-title{color:#F472B6}
+.reveal-thumb{
+  background:rgba(255,255,255,.05);
+  border-radius:8px;height:60px;
+  display:flex;align-items:center;justify-content:center;
+}
+.reveal-cell.impostor .reveal-thumb{background:rgba(236,72,153,.06)}
+.score-card{
+  background:rgba(139,92,246,.1);
+  border:1px solid rgba(139,92,246,.2);
+  border-radius:12px;
+  padding:14px;margin-bottom:16px;
+  text-align:left;
+}
+.score-pts{font:700 24px var(--font);color:var(--purple);margin-bottom:2px}
+.score-desc{font:400 13px var(--font);color:var(--text-dim)}
+.reveal-actions{display:flex;gap:10px}
+.reveal-actions .btn-primary{border-radius:14px;padding:15px;font-size:14px}
+.reveal-actions .btn-secondary{border-radius:14px;padding:15px;font-size:14px}
+
+/* ─────────────── PROFILE ─────────────── */
+#profile .orb:nth-child(1){
+  width:240px;height:240px;
+  background:radial-gradient(circle,rgba(139,92,246,.18) 0%,transparent 70%);
+  top:-40px;right:-40px;
+}
+#profile .profile-content{
+  padding:20px 24px;height:calc(812px - 52px - 84px);
+  overflow-y:auto;overflow-x:hidden;
+  scrollbar-width:none;
+  position:relative;z-index:5;
+}
+#profile .profile-content::-webkit-scrollbar{display:none}
+.profile-header{text-align:center;margin-bottom:20px}
+.profile-avatar{
+  width:90px;height:90px;border-radius:50%;
+  background:var(--grad);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 12px;
+  font:700 32px var(--font);color:white;
+  box-shadow:0 0 0 3px var(--bg),0 0 0 5px rgba(139,92,246,.5),0 16px 40px rgba(139,92,246,.3);
+}
+.profile-name{font:700 22px var(--font);color:var(--text);margin-bottom:4px}
+.level-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:4px 12px;border-radius:100px;
+  background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.2);
+}
+.level-dot{width:6px;height:6px;border-radius:50%;background:var(--purple)}
+.level-text{font:600 11px var(--font);color:#A78BFA;letter-spacing:.06em}
+.profile-stats{display:flex;gap:8px;margin-bottom:22px}
+.profile-stat{
+  flex:1;
+  background:var(--card);border:1px solid var(--card-border);
+  border-radius:12px;padding:12px;text-align:center;
+}
+.profile-stat-val{font:700 20px var(--font);margin-bottom:2px}
+.profile-stat-lbl{font:500 9px var(--font);color:var(--text-dim);letter-spacing:.06em;text-transform:uppercase}
+.cosmetics-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px;
+}
+.cosmetic-slot{
+  aspect-ratio:1;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+}
+.cosmetic-slot.equipped{
+  background:var(--grad);
+  box-shadow:0 0 0 2.5px var(--bg),0 0 0 4px var(--purple);
+}
+.cosmetic-slot.unlocked{
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08);
+}
+.cosmetic-slot.locked{
+  background:rgba(255,255,255,.04);
+  border:1.5px dashed rgba(255,255,255,.1);
+  font-size:18px;
+}
+.achievement-row{display:flex;gap:8px;flex-wrap:wrap}
+.achievement{
+  padding:8px 14px;border-radius:100px;
+  font:500 12px var(--font);
+}
+.achievement.purple{
+  background:rgba(139,92,246,.1);
+  border:1px solid rgba(139,92,246,.18);
+  color:#A78BFA;
+}
+.achievement.cyan{
+  background:rgba(6,182,212,.08);
+  border:1px solid rgba(6,182,212,.14);
+  color:#22D3EE;
+}
+
+/* ─────────────── PAYWALL ─────────────── */
+#paywall .orb:nth-child(1){
+  width:300px;height:300px;
+  background:radial-gradient(circle,rgba(139,92,246,.2) 0%,transparent 70%);
+  top:-60px;right:-40px;
+}
+#paywall .paywall-content{
+  flex:1;padding:16px 24px;
+  position:relative;z-index:5;
+  display:flex;flex-direction:column;
+}
+.paywall-header{text-align:center;margin-bottom:16px}
+.premium-badge{
+  font:700 11px var(--font);
+  color:var(--purple);
+  letter-spacing:.12em;text-transform:uppercase;
+  margin-bottom:4px;
+}
+.paywall-title{font:700 26px/1 var(--font);color:var(--text);margin-bottom:6px}
+.paywall-sub{font:400 13px var(--font);color:var(--text-dim)}
+.pricing-card{
+  background:linear-gradient(135deg,rgba(139,92,246,.18),rgba(236,72,153,.1));
+  border:1px solid rgba(139,92,246,.28);
+  border-radius:20px;
+  padding:20px;
+  margin-bottom:16px;
+}
+.pricing-top{
+  display:flex;justify-content:space-between;
+  align-items:flex-start;margin-bottom:16px;
+}
+.price-big{font:800 36px/1 var(--font);color:var(--text);margin-bottom:4px}
+.price-per{font:500 13px var(--font);color:var(--text-dim)}
+.popular-badge{
+  background:rgba(139,92,246,.2);
+  border:1px solid rgba(139,92,246,.3);
+  border-radius:8px;padding:4px 10px;
+  font:700 11px var(--font);color:#A78BFA;letter-spacing:.06em;
+}
+.divider{height:1px;background:rgba(255,255,255,.08);margin-bottom:14px}
+.feature-list{display:flex;flex-direction:column;gap:10px}
+.feature-item{display:flex;align-items:center;gap:10px}
+.feature-check{
+  width:18px;height:18px;border-radius:50%;
+  background:var(--grad);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.feature-text{font:500 13px var(--font);color:rgba(200,185,255,.8)}
+.or-divider{
+  display:flex;align-items:center;gap:12px;margin-bottom:14px;
+}
+.or-line{flex:1;height:1px;background:rgba(255,255,255,.07)}
+.or-text{font:400 11px var(--font);color:rgba(185,165,250,.3)}
+.packs-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pack-card{
+  background:var(--card);border:1px solid var(--card-border);
+  border-radius:12px;padding:12px;text-align:center;cursor:pointer;
+}
+.pack-price{font:700 18px var(--font);color:var(--text);margin-bottom:2px}
+.pack-name{font:500 10px var(--font);color:var(--text-dim);letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
+.pack-count{font:600 11px var(--font);color:rgba(139,92,246,.7)}
+
+/* ─────────────── Shared SVGs ─────────────── */
+.svg-signal{display:block}
+.back-btn{
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.08);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  transition:background .15s;
+}
+.back-btn:active{background:rgba(255,255,255,.12)}
+
+/* ─────────────── Toast ─────────────── */
+.toast{
+  position:absolute;
+  bottom:100px;left:50%;transform:translateX(-50%);
+  background:rgba(139,92,246,.9);
+  color:white;
+  font:600 13px var(--font);
+  padding:10px 20px;
+  border-radius:100px;
+  white-space:nowrap;
+  opacity:0;
+  transition:opacity .3s;
+  z-index:200;
+  pointer-events:none;
+}
+.toast.show{opacity:1}
+
+@media(max-height:820px){
+  body{align-items:flex-start}
+  .phone{border-radius:0}
+}
+</style>
+</head>
+<body>
+
+<div class="phone" id="phone">
+  <div class="notch"></div>
+
+  <!-- ─── SPLASH ─── -->
+  <div class="screen active" id="splash">
+    <div class="orb orb-a"></div>
+    <div class="orb orb-b"></div>
+    <div class="status">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg class="svg-signal" width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx=".5" fill="#EEE8FF"/><rect x="4.5" y="4.5" width="3" height="6.5" rx=".5" fill="#EEE8FF"/><rect x="9" y="2" width="3" height="9" rx=".5" fill="#EEE8FF"/><rect x="13.5" y="0" width="3" height="11" rx=".5" fill="#EEE8FF"/></svg>
+        <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x=".6" y=".6" width="20.8" height="10.8" rx="2.4" stroke="#EEE8FF" stroke-opacity=".4" stroke-width="1.2"/><rect x="2" y="2" width="15" height="8" rx="1" fill="#EEE8FF"/></svg>
+      </div>
+    </div>
+    <div class="splash-content">
+      <div class="logo-icon">
+        <svg viewBox="0 0 40 40" fill="none" width="40" height="40">
+          <path d="M4 20C8 12 14 8 20 8 26 8 32 12 36 20 32 28 26 32 20 32 14 32 8 28 4 20Z" stroke="white" stroke-width="2.5" fill="rgba(255,255,255,.1)"/>
+          <circle cx="20" cy="20" r="7" stroke="white" stroke-width="2.5"/>
+          <circle cx="20" cy="20" r="3" fill="white"/>
+        </svg>
+      </div>
+      <h1>GOTCHLY</h1>
+      <p class="tagline">Nadie sabe quién miente</p>
+      <div class="splash-actions">
+        <button class="btn-primary" onclick="goTo('home')">Crear sala</button>
+        <button class="btn-secondary" onclick="openJoin()">Unirme con código</button>
+      </div>
+      <span class="version">Gotchly v1.0 · Para 4–8 amigos</span>
+    </div>
+  </div>
+
+  <!-- ─── JOIN OVERLAY ─── -->
+  <div id="join-overlay" onclick="closeJoinOutside(event)">
+    <div class="join-sheet">
+      <h3>Unirse a sala</h3>
+      <p>Ingresa el código que te compartió el host</p>
+      <input class="code-input" id="join-input" type="text" maxlength="9" placeholder="GOTCH·XXXX" oninput="formatCode(this)">
+      <button class="btn-primary" onclick="joinRoom()">Entrar →</button>
+    </div>
+  </div>
+
+  <!-- ─── HOME ─── -->
+  <div class="screen" id="home">
+    <div class="orb orb-a"></div>
+    <div class="status">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg class="svg-signal" width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx=".5" fill="#EEE8FF"/><rect x="4.5" y="4.5" width="3" height="6.5" rx=".5" fill="#EEE8FF"/><rect x="9" y="2" width="3" height="9" rx=".5" fill="#EEE8FF"/><rect x="13.5" y="0" width="3" height="11" rx=".5" fill="#EEE8FF"/></svg>
+        <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x=".6" y=".6" width="20.8" height="10.8" rx="2.4" stroke="#EEE8FF" stroke-opacity=".4" stroke-width="1.2"/><rect x="2" y="2" width="15" height="8" rx="1" fill="#EEE8FF"/></svg>
+      </div>
+    </div>
+    <div class="scroll-content" style="padding-bottom:84px">
+      <div class="home-content">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px">
+          <div>
+            <div class="greeting">Buenas noches</div>
+            <div class="username">Alex Torres</div>
+          </div>
+          <div class="avatar">AT</div>
+        </div>
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-val purple">47</div>
+            <div class="stat-lbl">Partidas</div>
+          </div>
+          <div class="stat-card pink">
+            <div class="stat-val pink">12</div>
+            <div class="stat-lbl">Impostor</div>
+          </div>
+          <div class="stat-card cyan">
+            <div class="stat-val cyan">73%</div>
+            <div class="stat-lbl">Victorias</div>
+          </div>
+        </div>
+        <button class="btn-primary" style="margin-bottom:12px" onclick="goTo('lobby')">Crear sala</button>
+        <button class="btn-secondary" style="margin-bottom:22px" onclick="openJoin()">Unirme con código</button>
+        <div class="label" style="margin-bottom:12px">Recientes</div>
+        <div class="card">
+          <div class="recent-item">
+            <div>
+              <div class="recent-title">Con el squad</div>
+              <div class="recent-meta">Ayer · 6 jugadores · Ganaste</div>
+            </div>
+            <div class="recent-pts">+120 pts</div>
+          </div>
+          <div class="recent-item">
+            <div>
+              <div class="recent-title">Noche de juegos</div>
+              <div class="recent-meta">Hace 3 días · 5 jugadores</div>
+            </div>
+            <div class="recent-pts pink">+80 pts</div>
+          </div>
+          <div class="recent-item">
+            <div>
+              <div class="recent-title">Familia Torres</div>
+              <div class="recent-meta">Hace 5 días · 4 jugadores</div>
+            </div>
+            <div class="recent-pts">+60 pts</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <nav class="nav">
+      <button class="nav-btn active" id="nav-home" onclick="navTo('home')">
+        <svg width="22" height="22" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="currentColor"/></svg>
+        <span>Inicio</span>
+      </button>
+      <button class="nav-btn" id="nav-games" onclick="navTo('home')">
+        <svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm.5 15H11v-6l5.2 3.2.8-1.2L12.5 9V7H11v6z" fill="currentColor"/></svg>
+        <span>Partidas</span>
+      </button>
+      <button class="nav-btn" id="nav-profile" onclick="navTo('profile')">
+        <svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 12c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zm0 2c-2.7 0-8 1.3-8 4v2h16v-2c0-2.7-5.3-4-8-4z" fill="currentColor"/></svg>
+        <span>Perfil</span>
+      </button>
+      <button class="nav-btn" id="nav-store" onclick="navTo('paywall')">
+        <svg width="22" height="22" viewBox="0 0 24 24"><path d="M19 6h-2c0-2.8-2.2-5-5-5S7 3.2 7 6H5C3.9 6 3 6.9 3 8v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-7-3c1.7 0 3 1.3 3 3H9c0-1.7 1.3-3 3-3z" fill="currentColor"/></svg>
+        <span>Tienda</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- ─── LOBBY ─── -->
+  <div class="screen" id="lobby">
+    <div class="orb orb-a"></div>
+    <div class="status">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg class="svg-signal" width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx=".5" fill="#EEE8FF"/><rect x="4.5" y="4.5" width="3" height="6.5" rx=".5" fill="#EEE8FF"/><rect x="9" y="2" width="3" height="9" rx=".5" fill="#EEE8FF"/><rect x="13.5" y="0" width="3" height="11" rx=".5" fill="#EEE8FF"/></svg>
+        <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x=".6" y=".6" width="20.8" height="10.8" rx="2.4" stroke="#EEE8FF" stroke-opacity=".4" stroke-width="1.2"/><rect x="2" y="2" width="15" height="8" rx="1" fill="#EEE8FF"/></svg>
+      </div>
+    </div>
+    <div class="scroll-content">
+      <div class="lobby-content">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+          <button class="back-btn" onclick="goTo('home')">
+            <svg width="16" height="16" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="rgba(200,185,255,.7)"/></svg>
+          </button>
+          <div style="font:400 13px var(--font);color:var(--text-dim)">Sala creada</div>
+        </div>
+        <div class="room-code">GOTCH·4829</div>
+        <div style="font:400 13px var(--font);color:var(--text-dim);margin-bottom:20px">Comparte este código con tus amigos</div>
+        <button class="btn-share" onclick="shareCode()">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M18 16c-.8 0-1.5.3-2 .8l-7.1-4.1c.1-.2.1-.5.1-.7s0-.5-.1-.7L16 7.2c.5.5 1.2.8 2 .8 1.7 0 3-1.3 3-3s-1.3-3-3-3-3 1.3-3 3c0 .2 0 .5.1.7L8 9.8C7.5 9.3 6.8 9 6 9c-1.7 0-3 1.3-3 3s1.3 3 3 3c.8 0 1.5-.3 2-.8l7.1 4.1c-.1.2-.1.4-.1.7 0 1.6 1.3 3 3 3s3-1.4 3-3-1.3-3-3-3z" fill="currentColor"/></svg>
+          Compartir código
+        </button>
+        <div class="label" style="margin-bottom:14px">Jugadores (5/8)</div>
+        <div class="players-grid">
+          <div class="player-slot">
+            <div class="player-avatar host">TÚ</div>
+            <span class="player-name" style="color:var(--purple)">Host</span>
+          </div>
+          <div class="player-slot">
+            <div class="player-avatar" style="background:rgba(139,92,246,.2);border:1px solid rgba(139,92,246,.3);color:#A78BFA">SS</div>
+            <span class="player-name">Sofía</span>
+          </div>
+          <div class="player-slot">
+            <div class="player-avatar" style="background:rgba(236,72,153,.15);border:1px solid rgba(236,72,153,.25);color:#F472B6">CM</div>
+            <span class="player-name">Carlos</span>
+          </div>
+          <div class="player-slot">
+            <div class="player-avatar" style="background:rgba(6,182,212,.12);border:1px solid rgba(6,182,212,.22);color:#22D3EE">MR</div>
+            <span class="player-name">Mia</span>
+          </div>
+          <div class="player-slot">
+            <div class="player-avatar" style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);color:#FCD34D">JL</div>
+            <span class="player-name">Jordan</span>
+          </div>
+          <div class="player-slot">
+            <div class="player-avatar empty">+</div>
+            <span class="player-name" style="color:var(--text-faint)">Libre</span>
+          </div>
+          <div class="player-slot">
+            <div class="player-avatar empty">+</div>
+            <span class="player-name" style="color:var(--text-faint)">Libre</span>
+          </div>
+          <div class="player-slot">
+            <div class="player-avatar empty">+</div>
+            <span class="player-name" style="color:var(--text-faint)">Libre</span>
+          </div>
+        </div>
+        <div class="waiting-banner">
+          <div class="waiting-dot"></div>
+          <span class="waiting-text">Esperando jugadores · mín. 4 para iniciar</span>
+        </div>
+        <button class="btn-primary" onclick="goTo('game');startTimer()">Iniciar partida</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── GAME (Drawing) ─── -->
+  <div class="screen" id="game">
+    <div class="status">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg class="svg-signal" width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx=".5" fill="#EEE8FF"/><rect x="4.5" y="4.5" width="3" height="6.5" rx=".5" fill="#EEE8FF"/><rect x="9" y="2" width="3" height="9" rx=".5" fill="#EEE8FF"/><rect x="13.5" y="0" width="3" height="11" rx=".5" fill="#EEE8FF"/></svg>
+        <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x=".6" y=".6" width="20.8" height="10.8" rx="2.4" stroke="#EEE8FF" stroke-opacity=".4" stroke-width="1.2"/><rect x="2" y="2" width="15" height="8" rx="1" fill="#EEE8FF"/></svg>
+      </div>
+    </div>
+    <div class="game-content">
+      <div class="game-header">
+        <div class="game-phase">Dibujando</div>
+        <div class="timer-wrap">
+          <svg width="60" height="60" viewBox="0 0 60 60" style="transform:rotate(-90deg)">
+            <circle cx="30" cy="30" r="26" stroke="rgba(139,92,246,.15)" stroke-width="5" fill="none"/>
+            <circle id="timer-ring" cx="30" cy="30" r="26" stroke="#8B5CF6" stroke-width="5" fill="none"
+              stroke-linecap="round" stroke-dasharray="163" stroke-dashoffset="0"/>
+          </svg>
+          <div class="timer-num" id="timer-num">60</div>
+        </div>
+      </div>
+      <div class="prompt-card">
+        <div class="prompt-label">Tu prompt</div>
+        <div class="prompt-text" id="prompt-text">Dibuja: Tu desayuno ideal 🍳</div>
+      </div>
+      <canvas id="draw-canvas" width="327" height="210"></canvas>
+      <div class="color-row">
+        <div class="color-dot selected" data-color="#EC4899" style="background:#EC4899;color:#EC4899" onclick="selectColor(this)"></div>
+        <div class="color-dot" data-color="#8B5CF6" style="background:#8B5CF6;color:#8B5CF6" onclick="selectColor(this)"></div>
+        <div class="color-dot" data-color="#06B6D4" style="background:#06B6D4;color:#06B6D4" onclick="selectColor(this)"></div>
+        <div class="color-dot" data-color="#F59E0B" style="background:#F59E0B;color:#F59E0B" onclick="selectColor(this)"></div>
+        <div class="color-dot" data-color="#10B981" style="background:#10B981;color:#10B981" onclick="selectColor(this)"></div>
+        <div class="color-dot" data-color="#1F2937" style="background:#1F2937;color:#1F2937" onclick="selectColor(this)"></div>
+        <div style="margin-left:auto;display:flex;gap:8px">
+          <button class="tool-btn" onclick="undoDraw()" title="Deshacer">
+            <svg width="18" height="18" viewBox="0 0 24 24"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z" fill="rgba(255,255,255,.3)"/></svg>
+          </button>
+          <button class="tool-btn" onclick="clearCanvas()" title="Borrar todo">
+            <svg width="18" height="18" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="rgba(255,255,255,.3)"/></svg>
+          </button>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="goTo('vote')">Listo →</button>
+    </div>
+  </div>
+
+  <!-- ─── VOTE ─── -->
+  <div class="screen" id="vote">
+    <div class="orb" style="width:300px;height:300px;background:radial-gradient(circle,rgba(236,72,153,.15) 0%,transparent 70%);bottom:-60px;right:-60px;pointer-events:none"></div>
+    <div class="status">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg class="svg-signal" width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx=".5" fill="#EEE8FF"/><rect x="4.5" y="4.5" width="3" height="6.5" rx=".5" fill="#EEE8FF"/><rect x="9" y="2" width="3" height="9" rx=".5" fill="#EEE8FF"/><rect x="13.5" y="0" width="3" height="11" rx=".5" fill="#EEE8FF"/></svg>
+        <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x=".6" y=".6" width="20.8" height="10.8" rx="2.4" stroke="#EEE8FF" stroke-opacity=".4" stroke-width="1.2"/><rect x="2" y="2" width="15" height="8" rx="1" fill="#EEE8FF"/></svg>
+      </div>
+    </div>
+    <div class="scroll-content" style="padding-bottom:20px">
+      <div class="vote-content">
+        <div class="vote-header">
+          <div class="vote-title">¿Quién es el impostor?</div>
+          <div class="vote-timer" id="vote-timer">28s</div>
+        </div>
+        <div class="vote-sub">Todas las respuestas están aquí. Elige con cuidado.</div>
+        <div class="vote-grid" id="vote-grid">
+          <!-- cards injected by JS -->
+        </div>
+        <button class="vote-confirm" id="vote-confirm" onclick="goTo('reveal')">Confirmar voto →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── REVEAL ─── -->
+  <div class="screen" id="reveal">
+    <div class="orb orb-a"></div>
+    <div class="orb orb-b"></div>
+    <div class="status">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg class="svg-signal" width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx=".5" fill="#EEE8FF"/><rect x="4.5" y="4.5" width="3" height="6.5" rx=".5" fill="#EEE8FF"/><rect x="9" y="2" width="3" height="9" rx=".5" fill="#EEE8FF"/><rect x="13.5" y="0" width="3" height="11" rx=".5" fill="#EEE8FF"/></svg>
+        <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x=".6" y=".6" width="20.8" height="10.8" rx="2.4" stroke="#EEE8FF" stroke-opacity=".4" stroke-width="1.2"/><rect x="2" y="2" width="15" height="8" rx="1" fill="#EEE8FF"/></svg>
+      </div>
+    </div>
+    <div class="scroll-content">
+      <div class="reveal-content">
+        <div class="reveal-label">El impostor era...</div>
+        <div class="reveal-name">SOFÍA</div>
+        <div class="reveal-avatar">SS</div>
+        <div class="reveal-sub">Sofía Santos · No fue detectada 🎭</div>
+        <div class="reveal-grid">
+          <div class="reveal-cell real">
+            <div class="reveal-cell-lbl">PROMPT REAL</div>
+            <div class="reveal-cell-title">Tu desayuno ideal</div>
+            <div class="reveal-thumb">
+              <svg width="56" height="44" viewBox="0 0 56 44" fill="none">
+                <ellipse cx="28" cy="30" rx="18" ry="10" stroke="#6B6280" stroke-width="1.5"/>
+                <ellipse cx="28" cy="26" rx="8" ry="6" stroke="#6B6280" stroke-width="1.2" fill="rgba(255,200,80,.15)"/>
+                <rect x="14" y="8" width="10" height="14" rx="3" stroke="#6B6280" stroke-width="1.2" fill="rgba(200,175,130,.08)"/>
+                <rect x="26" y="8" width="10" height="14" rx="3" stroke="#6B6280" stroke-width="1.2" fill="rgba(200,175,130,.08)"/>
+              </svg>
+            </div>
+          </div>
+          <div class="reveal-cell impostor">
+            <div class="reveal-cell-lbl">SOFÍA DIBUJÓ</div>
+            <div class="reveal-cell-title">Algo que comí una vez</div>
+            <div class="reveal-thumb">
+              <svg width="56" height="44" viewBox="0 0 56 44" fill="none">
+                <circle cx="28" cy="22" r="14" stroke="#F472B6" stroke-width="1.5" fill="rgba(236,72,153,.06)"/>
+                <path d="M20 18 Q28 12 36 18" stroke="#F472B6" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+                <circle cx="28" cy="26" r="4" fill="rgba(236,72,153,.2)"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="score-card">
+          <div class="score-pts">+0 pts</div>
+          <div class="score-desc">El impostor escapó — la próxima vez</div>
+        </div>
+        <div class="reveal-actions">
+          <button class="btn-primary" onclick="showToast('¡Compartido!')">Compartir</button>
+          <button class="btn-secondary" onclick="goTo('home')">Siguiente</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── PROFILE ─── -->
+  <div class="screen" id="profile">
+    <div class="orb orb-a"></div>
+    <div class="status">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg class="svg-signal" width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx=".5" fill="#EEE8FF"/><rect x="4.5" y="4.5" width="3" height="6.5" rx=".5" fill="#EEE8FF"/><rect x="9" y="2" width="3" height="9" rx=".5" fill="#EEE8FF"/><rect x="13.5" y="0" width="3" height="11" rx=".5" fill="#EEE8FF"/></svg>
+        <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x=".6" y=".6" width="20.8" height="10.8" rx="2.4" stroke="#EEE8FF" stroke-opacity=".4" stroke-width="1.2"/><rect x="2" y="2" width="15" height="8" rx="1" fill="#EEE8FF"/></svg>
+      </div>
+    </div>
+    <div class="profile-content">
+      <div class="profile-header">
+        <div class="profile-avatar">AT</div>
+        <div class="profile-name">Alex Torres</div>
+        <div class="level-badge">
+          <div class="level-dot"></div>
+          <span class="level-text">Nv. 12 · Detector Pro</span>
+        </div>
+      </div>
+      <div class="profile-stats">
+        <div class="profile-stat">
+          <div class="profile-stat-val" style="color:var(--purple)">47</div>
+          <div class="profile-stat-lbl">Partidas</div>
+        </div>
+        <div class="profile-stat">
+          <div class="profile-stat-val" style="color:#EC4899">73%</div>
+          <div class="profile-stat-lbl">Victorias</div>
+        </div>
+        <div class="profile-stat">
+          <div class="profile-stat-val" style="color:#06B6D4">8</div>
+          <div class="profile-stat-lbl">Racha</div>
+        </div>
+      </div>
+      <div class="label" style="margin-bottom:12px">Cosméticos</div>
+      <div class="cosmetics-grid">
+        <div class="cosmetic-slot equipped">
+          <svg viewBox="0 0 40 40" fill="none" width="24" height="24">
+            <path d="M4 20C8 12 14 8 20 8 26 8 32 12 36 20 32 28 26 32 20 32 14 32 8 28 4 20Z" stroke="white" stroke-width="2.5" fill="rgba(255,255,255,.1)"/>
+            <circle cx="20" cy="20" r="7" stroke="white" stroke-width="2.5"/>
+            <circle cx="20" cy="20" r="3" fill="white"/>
+          </svg>
+        </div>
+        <div class="cosmetic-slot unlocked">
+          <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#F59E0B,#EF4444)"></div>
+        </div>
+        <div class="cosmetic-slot unlocked">
+          <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#06B6D4,#3B82F6)"></div>
+        </div>
+        <div class="cosmetic-slot locked" onclick="navTo('paywall')">🔒</div>
+        <div class="cosmetic-slot locked" onclick="navTo('paywall')">🔒</div>
+        <div class="cosmetic-slot locked" onclick="navTo('paywall')">🔒</div>
+        <div class="cosmetic-slot locked" onclick="navTo('paywall')">🔒</div>
+        <div class="cosmetic-slot locked" onclick="navTo('paywall')">🔒</div>
+      </div>
+      <div class="label" style="margin-bottom:10px">Logros</div>
+      <div class="achievement-row">
+        <div class="achievement purple">🎭 Maestro impostor</div>
+        <div class="achievement cyan">🔍 Detective</div>
+        <div class="achievement purple">🏆 Racha x8</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <button class="nav-btn" id="nav-home-p" onclick="navTo('home')">
+        <svg width="22" height="22" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="currentColor"/></svg>
+        <span>Inicio</span>
+      </button>
+      <button class="nav-btn" id="nav-games-p" onclick="navTo('home')">
+        <svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm.5 15H11v-6l5.2 3.2.8-1.2L12.5 9V7H11v6z" fill="currentColor"/></svg>
+        <span>Partidas</span>
+      </button>
+      <button class="nav-btn active" id="nav-profile-p" onclick="navTo('profile')">
+        <svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 12c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zm0 2c-2.7 0-8 1.3-8 4v2h16v-2c0-2.7-5.3-4-8-4z" fill="currentColor"/></svg>
+        <span>Perfil</span>
+      </button>
+      <button class="nav-btn" id="nav-store-p" onclick="navTo('paywall')">
+        <svg width="22" height="22" viewBox="0 0 24 24"><path d="M19 6h-2c0-2.8-2.2-5-5-5S7 3.2 7 6H5C3.9 6 3 6.9 3 8v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-7-3c1.7 0 3 1.3 3 3H9c0-1.7 1.3-3 3-3z" fill="currentColor"/></svg>
+        <span>Tienda</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- ─── PAYWALL ─── -->
+  <div class="screen" id="paywall">
+    <div class="orb orb-a"></div>
+    <div class="status">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg class="svg-signal" width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx=".5" fill="#EEE8FF"/><rect x="4.5" y="4.5" width="3" height="6.5" rx=".5" fill="#EEE8FF"/><rect x="9" y="2" width="3" height="9" rx=".5" fill="#EEE8FF"/><rect x="13.5" y="0" width="3" height="11" rx=".5" fill="#EEE8FF"/></svg>
+        <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x=".6" y=".6" width="20.8" height="10.8" rx="2.4" stroke="#EEE8FF" stroke-opacity=".4" stroke-width="1.2"/><rect x="2" y="2" width="15" height="8" rx="1" fill="#EEE8FF"/></svg>
+      </div>
+    </div>
+    <div class="scroll-content" style="padding-bottom:84px">
+      <div class="paywall-content">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+          <button class="back-btn" onclick="history.back()">
+            <svg width="16" height="16" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="rgba(200,185,255,.7)"/></svg>
+          </button>
+        </div>
+        <div class="paywall-header">
+          <div class="premium-badge">✦ Gotchly Premium</div>
+          <div class="paywall-title">Juega sin límites</div>
+          <div class="paywall-sub">Acceso total para el que crea la sala</div>
+        </div>
+        <div class="pricing-card">
+          <div class="pricing-top">
+            <div>
+              <div class="price-big">$4.99</div>
+              <div class="price-per">por mes</div>
+            </div>
+            <div class="popular-badge">POPULAR</div>
+          </div>
+          <div class="divider"></div>
+          <div class="feature-list">
+            <div class="feature-item">
+              <div class="feature-check">
+                <svg width="10" height="10" viewBox="0 0 12 12"><path d="M10 3L5 9 2 6" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+              </div>
+              <span class="feature-text">Salas hasta 12 jugadores</span>
+            </div>
+            <div class="feature-item">
+              <div class="feature-check">
+                <svg width="10" height="10" viewBox="0 0 12 12"><path d="M10 3L5 9 2 6" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+              </div>
+              <span class="feature-text">Prompts exclusivos ilimitados</span>
+            </div>
+            <div class="feature-item">
+              <div class="feature-check">
+                <svg width="10" height="10" viewBox="0 0 12 12"><path d="M10 3L5 9 2 6" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+              </div>
+              <span class="feature-text">Sin anuncios</span>
+            </div>
+            <div class="feature-item">
+              <div class="feature-check">
+                <svg width="10" height="10" viewBox="0 0 12 12"><path d="M10 3L5 9 2 6" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+              </div>
+              <span class="feature-text">Cosméticos premium desbloqueados</span>
+            </div>
+          </div>
+        </div>
+        <button class="btn-primary" style="margin-bottom:16px;border-radius:16px" onclick="showToast('Iniciando prueba gratis...')">Prueba 7 días gratis →</button>
+        <div class="or-divider">
+          <div class="or-line"></div>
+          <span class="or-text">o elige un pack</span>
+          <div class="or-line"></div>
+        </div>
+        <div class="packs-grid">
+          <div class="pack-card" onclick="showToast('Pack seleccionado')">
+            <div class="pack-price">$1.99</div>
+            <div class="pack-name">Pack Básico</div>
+            <div class="pack-count">10 partidas</div>
+          </div>
+          <div class="pack-card" onclick="showToast('Pack seleccionado')">
+            <div class="pack-price">$3.49</div>
+            <div class="pack-name">Pack Noche</div>
+            <div class="pack-count">25 partidas</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <nav class="nav">
+      <button class="nav-btn" onclick="navTo('home')">
+        <svg width="22" height="22" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="currentColor"/></svg>
+        <span>Inicio</span>
+      </button>
+      <button class="nav-btn" onclick="navTo('home')">
+        <svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm.5 15H11v-6l5.2 3.2.8-1.2L12.5 9V7H11v6z" fill="currentColor"/></svg>
+        <span>Partidas</span>
+      </button>
+      <button class="nav-btn" onclick="navTo('profile')">
+        <svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 12c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zm0 2c-2.7 0-8 1.3-8 4v2h16v-2c0-2.7-5.3-4-8-4z" fill="currentColor"/></svg>
+        <span>Perfil</span>
+      </button>
+      <button class="nav-btn active" onclick="navTo('paywall')">
+        <svg width="22" height="22" viewBox="0 0 24 24"><path d="M19 6h-2c0-2.8-2.2-5-5-5S7 3.2 7 6H5C3.9 6 3 6.9 3 8v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-7-3c1.7 0 3 1.3 3 3H9c0-1.7 1.3-3 3-3z" fill="currentColor"/></svg>
+        <span>Tienda</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- ─── Toast ─── -->
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+// ── Navigation ──
+const screenHistory = [];
+
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  screenHistory.push(id);
+}
+
+function navTo(id) {
+  goTo(id);
+}
+
+// Custom back (only used in paywall's back button via history API alternative)
+window.history.back = function() {
+  if (screenHistory.length > 1) {
+    screenHistory.pop();
+    goTo(screenHistory[screenHistory.length - 1]);
+  }
+};
+
+// ── Join modal ──
+function openJoin() {
+  document.getElementById('join-overlay').classList.add('active');
+  document.getElementById('join-input').focus();
+}
+function closeJoinOutside(e) {
+  if (e.target === document.getElementById('join-overlay')) {
+    document.getElementById('join-overlay').classList.remove('active');
+  }
+}
+function formatCode(input) {
+  let v = input.value.replace(/[^A-Za-z0-9]/g,'').toUpperCase();
+  if (v.length > 5) v = v.slice(0,5) + '·' + v.slice(5,9);
+  input.value = v;
+}
+function joinRoom() {
+  const v = document.getElementById('join-input').value;
+  if (v.length >= 4) {
+    document.getElementById('join-overlay').classList.remove('active');
+    goTo('lobby');
+  } else {
+    showToast('Ingresa un código válido');
+  }
+}
+
+// ── Share ──
+function shareCode() {
+  if (navigator.share) {
+    navigator.share({title:'Gotchly',text:'Únete con el código GOTCH·4829'});
+  } else {
+    navigator.clipboard?.writeText('GOTCH·4829');
+    showToast('¡Código copiado!');
+  }
+}
+
+// ── Timer ──
+let timerInterval = null;
+let timerSeconds = 60;
+const TIMER_CIRCUMFERENCE = 163;
+
+function startTimer() {
+  timerSeconds = 60;
+  updateTimerUI();
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    timerSeconds--;
+    updateTimerUI();
+    if (timerSeconds <= 0) {
+      clearInterval(timerInterval);
+      goTo('vote');
+      buildVoteCards();
+      startVoteTimer();
+    }
+  }, 1000);
+}
+
+function updateTimerUI() {
+  const num = document.getElementById('timer-num');
+  const ring = document.getElementById('timer-ring');
+  if (!num || !ring) return;
+  num.textContent = timerSeconds;
+  const progress = timerSeconds / 60;
+  const offset = TIMER_CIRCUMFERENCE * (1 - progress);
+  ring.style.strokeDashoffset = offset;
+  const hue = progress > .4 ? '#8B5CF6' : '#EC4899';
+  ring.style.stroke = hue;
+  num.style.color = hue;
+}
+
+// ── Drawing canvas ──
+(function initCanvas() {
+  const canvas = document.getElementById('draw-canvas');
+  const ctx = canvas.getContext('2d');
+  let drawing = false;
+  let currentColor = '#EC4899';
+  let lineWidth = 4;
+  const snapshots = [];
+
+  function getPos(e) {
+    const r = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / r.width;
+    const scaleY = canvas.height / r.height;
+    const src = e.touches ? e.touches[0] : e;
+    return {
+      x: (src.clientX - r.left) * scaleX,
+      y: (src.clientY - r.top) * scaleY
+    };
+  }
+
+  function saveSnapshot() {
+    snapshots.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+    if (snapshots.length > 30) snapshots.shift();
+  }
+
+  canvas.addEventListener('mousedown', e => { drawing = true; saveSnapshot(); const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); });
+  canvas.addEventListener('mousemove', e => { if (!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.strokeStyle = currentColor; ctx.lineWidth = lineWidth; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.stroke(); });
+  canvas.addEventListener('mouseup', () => { drawing = false; ctx.beginPath(); });
+  canvas.addEventListener('mouseleave', () => { drawing = false; ctx.beginPath(); });
+
+  canvas.addEventListener('touchstart', e => { e.preventDefault(); drawing = true; saveSnapshot(); const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); }, {passive:false});
+  canvas.addEventListener('touchmove', e => { e.preventDefault(); if (!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.strokeStyle = currentColor; ctx.lineWidth = lineWidth; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.stroke(); }, {passive:false});
+  canvas.addEventListener('touchend', () => { drawing = false; ctx.beginPath(); });
+
+  window.selectColor = function(el) {
+    document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
+    el.classList.add('selected');
+    currentColor = el.dataset.color;
+  };
+  window.undoDraw = function() {
+    if (snapshots.length > 0) ctx.putImageData(snapshots.pop(), 0, 0);
+  };
+  window.clearCanvas = function() {
+    saveSnapshot();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  };
+
+  window.getCanvasDataURL = function() {
+    return canvas.toDataURL();
+  };
+})();
+
+// ── Vote screen ──
+const voteDrawings = [
+  { label:'RESPUESTA 1', author:'Carlos', thumb: drawThumb1 },
+  { label:'RESPUESTA 2', author:'Mia', thumb: drawThumb2 },
+  { label:'RESPUESTA 3', author:'Sofía', thumb: drawThumb3 },
+  { label:'RESPUESTA 4', author:'Jordan', thumb: drawThumb4 },
+  { label:'RESPUESTA 5', author:'Luis', thumb: drawThumb5 },
+  { label:'TU DIBUJO', author:'Tú', thumb: drawThumbYou },
+];
+
+function drawThumb1(canvas) {
+  const ctx = canvas.getContext('2d');
+  ctx.strokeStyle = '#6B6280'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.ellipse(30,32,20,12,0,0,Math.PI*2); ctx.stroke();
+  ctx.beginPath(); ctx.ellipse(30,28,8,6,0,0,Math.PI*2); ctx.fillStyle='rgba(255,200,80,.2)'; ctx.fill(); ctx.stroke();
+  ctx.fillRect(18,12,10,14); ctx.strokeRect(18,12,10,14);
+}
+function drawThumb2(canvas) {
+  const ctx = canvas.getContext('2d');
+  ctx.strokeStyle = '#6B6280'; ctx.lineWidth = 1.5;
+  ctx.strokeRect(14,10,16,20); ctx.strokeRect(32,10,16,20);
+  ctx.beginPath(); ctx.ellipse(30,38,16,8,0,0,Math.PI*2); ctx.stroke();
+}
+function drawThumb3(canvas) {
+  const ctx = canvas.getContext('2d');
+  ctx.strokeStyle = '#F472B6'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.arc(30,25,14,0,Math.PI*2); ctx.fillStyle='rgba(236,72,153,.06)'; ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(22,21); ctx.quadraticCurveTo(30,15,38,21); ctx.stroke();
+  ctx.beginPath(); ctx.arc(30,29,4,0,Math.PI*2); ctx.fillStyle='rgba(236,72,153,.3)'; ctx.fill();
+}
+function drawThumb4(canvas) {
+  const ctx = canvas.getContext('2d');
+  ctx.strokeStyle = '#6B6280'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.ellipse(30,30,18,12,0,0,Math.PI*2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(16,22); ctx.quadraticCurveTo(22,14,30,16); ctx.quadraticCurveTo(38,14,44,22); ctx.stroke();
+}
+function drawThumb5(canvas) {
+  const ctx = canvas.getContext('2d');
+  ctx.strokeStyle = '#6B6280'; ctx.lineWidth = 1.5;
+  ctx.strokeRect(20,15,20,24); ctx.strokeRect(24,10,12,8);
+}
+function drawThumbYou(canvas) {
+  const dataURL = window.getCanvasDataURL ? window.getCanvasDataURL() : null;
+  if (!dataURL) return;
+  const img = new Image();
+  img.onload = () => {
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  };
+  img.src = dataURL;
+}
+
+function buildVoteCards() {
+  const grid = document.getElementById('vote-grid');
+  grid.innerHTML = '';
+  voteDrawings.forEach((d, i) => {
+    const card = document.createElement('div');
+    card.className = 'vote-card';
+    card.innerHTML = `
+      <div class="vote-card-label">${d.label}</div>
+      <div class="vote-thumb"><canvas width="56" height="50" style="display:block"></canvas></div>
+      <button class="vote-btn" onclick="selectVote(${i})">Votar</button>
+    `;
+    grid.appendChild(card);
+    const c = card.querySelector('canvas');
+    try { d.thumb(c); } catch(e) {}
+  });
+}
+
+function selectVote(idx) {
+  document.querySelectorAll('.vote-card').forEach((c,i) => {
+    c.classList.toggle('selected', i === idx);
+    c.querySelector('.vote-btn').textContent = i === idx ? 'Seleccionado ✓' : 'Votar';
+  });
+  const confirm = document.getElementById('vote-confirm');
+  confirm.classList.add('show');
+}
+
+let voteTimerInterval = null;
+function startVoteTimer() {
+  let s = 28;
+  document.getElementById('vote-timer').textContent = s + 's';
+  clearInterval(voteTimerInterval);
+  voteTimerInterval = setInterval(() => {
+    s--;
+    const el = document.getElementById('vote-timer');
+    if (el) el.textContent = s + 's';
+    if (s <= 0) {
+      clearInterval(voteTimerInterval);
+      goTo('reveal');
+    }
+  }, 1000);
+}
+
+// ── Toast ──
+let toastTimeout;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ── Init vote cards on first visit ──
+document.addEventListener('DOMContentLoaded', () => {
+  buildVoteCards();
+});
+
+// ── Current time in status bars ──
+function updateTime() {
+  const now = new Date();
+  const h = now.getHours().toString().padStart(2,'0');
+  const m = now.getMinutes().toString().padStart(2,'0');
+  document.querySelectorAll('.status-time').forEach(el => el.textContent = h + ':' + m);
+}
+updateTime();
+setInterval(updateTime, 30000);
+</script>
+</body>
+</html>

@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Gotchly</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#060614;--purple:#8B5CF6;--pink:#EC4899;
+  --text:#EEE8FF;--dim:rgba(185,165,250,.45);--faint:rgba(185,165,250,.22);
+  --card:rgba(255,255,255,.04);--border:rgba(255,255,255,.07);
+  --grad:linear-gradient(135deg,#8B5CF6,#EC4899);
+  --f:'Space Grotesk',sans-serif;
+}
+body{background:#0A0818;min-height:100vh;display:flex;align-items:center;
+  justify-content:center;font-family:var(--f);overflow:hidden}
+
+/* ── Phone ── */
+.phone{position:relative;width:375px;height:812px;border-radius:44px;
+  background:var(--bg);overflow:hidden;flex-shrink:0;
+  box-shadow:0 40px 100px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.06)}
+.notch{position:absolute;top:12px;left:50%;transform:translateX(-50%);
+  width:120px;height:34px;background:#000;border-radius:20px;z-index:50}
+
+/* ── Status bar ── */
+.sb{height:52px;display:flex;align-items:flex-end;justify-content:space-between;
+  padding:0 28px 8px;position:relative;z-index:10;flex-shrink:0}
+.sb-t{font:600 15px var(--f);color:var(--text)}
+.sb-i{display:flex;gap:6px;align-items:center}
+
+/* ── Bottom nav ── */
+.bnav{position:absolute;bottom:0;left:0;right:0;height:84px;
+  background:rgba(6,6,20,.96);border-top:1px solid rgba(139,92,246,.12);
+  display:flex;align-items:flex-start;justify-content:space-around;
+  padding-top:12px;z-index:30}
+.nb{display:flex;flex-direction:column;align-items:center;gap:3px;
+  background:none;border:none;cursor:pointer;color:rgba(200,180,255,.25);
+  padding:0;font-family:var(--f);transition:color .2s}
+.nb.on{color:var(--purple)}
+.nb span{font:700 9px var(--f);letter-spacing:.08em;text-transform:uppercase}
+
+/* ── Screens ── */
+.sc{position:absolute;inset:0;display:none;flex-direction:column;overflow:hidden}
+.sc.on{display:flex}
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.scroll::-webkit-scrollbar{display:none}
+
+/* ── Orbs ── */
+.orb{position:absolute;border-radius:50%;pointer-events:none}
+@keyframes float{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(-16px);opacity:.3}}
+.fa{animation:float 7s ease-in-out infinite}
+.fb{animation:float 9s ease-in-out infinite reverse}
+@keyframes pulse{0%,100%{opacity:.6}50%{opacity:.2}}
+.fp{animation:pulse 1.6s ease-in-out infinite}
+
+/* ── Buttons ── */
+.bp{width:100%;padding:18px;border-radius:18px;background:var(--grad);border:none;
+  color:white;font:700 17px var(--f);box-shadow:0 16px 48px rgba(139,92,246,.38);
+  cursor:pointer;transition:opacity .15s,transform .1s}
+.bp:active{opacity:.85;transform:scale(.98)}
+.bp:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.bs{width:100%;padding:18px;border-radius:18px;background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);color:rgba(200,185,255,.65);
+  font:600 17px var(--f);cursor:pointer;transition:opacity .15s}
+.bs:active{opacity:.7}
+.back{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;
+  justify-content:center;cursor:pointer;flex-shrink:0}
+
+/* ── Input ── */
+.inp{width:100%;padding:16px 18px;border-radius:14px;
+  background:rgba(255,255,255,.06);border:1.5px solid rgba(139,92,246,.25);
+  color:var(--text);font:600 16px var(--f);outline:none;
+  transition:border-color .2s}
+.inp:focus{border-color:rgba(139,92,246,.6)}
+.inp::placeholder{color:rgba(185,165,250,.3);font-weight:500}
+.inp-code{letter-spacing:.2em;text-align:center;text-transform:uppercase;
+  font-size:22px}
+
+/* ── Overlays ── */
+.overlay{position:absolute;inset:0;background:rgba(0,0,0,.75);z-index:80;
+  display:none;align-items:flex-end}
+.overlay.on{display:flex}
+.sheet{background:#12112A;border:1px solid rgba(139,92,246,.2);
+  border-radius:28px 28px 0 0;padding:28px 24px 44px;width:100%}
+.sheet h3{font:700 22px var(--f);color:var(--text);margin-bottom:6px}
+.sheet p{font:400 14px var(--f);color:var(--dim);margin-bottom:22px}
+
+/* ── Toast ── */
+.toast{position:absolute;bottom:100px;left:50%;transform:translateX(-50%) scale(.9);
+  background:rgba(100,80,200,.95);backdrop-filter:blur(12px);
+  color:white;font:600 13px var(--f);padding:10px 20px;border-radius:100px;
+  white-space:nowrap;opacity:0;transition:opacity .25s,transform .25s;
+  z-index:200;pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%) scale(1)}
+
+/* ── Cards ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px}
+.lbl{font:600 11px var(--f);color:var(--dim);letter-spacing:.1em;text-transform:uppercase}
+
+/* ═══════════════════ SPLASH ═══════════════════ */
+#splash .orb:nth-child(1){width:380px;height:380px;top:-100px;right:-80px;
+  background:radial-gradient(circle,rgba(139,92,246,.38) 0%,transparent 70%)}
+#splash .orb:nth-child(2){width:280px;height:280px;bottom:80px;left:-50px;
+  background:radial-gradient(circle,rgba(236,72,153,.28) 0%,transparent 70%)}
+#splash .body{flex:1;display:flex;flex-direction:column;align-items:center;
+  padding:40px 32px 44px;text-align:center;position:relative;z-index:5}
+.logo-box{width:84px;height:84px;border-radius:26px;background:var(--grad);
+  display:flex;align-items:center;justify-content:center;margin-bottom:24px;
+  box-shadow:0 20px 60px rgba(139,92,246,.55),0 0 0 1px rgba(255,255,255,.1)}
+#splash h1{font:800 48px/1 var(--f);color:var(--text);letter-spacing:-.04em;margin-bottom:8px}
+#splash .tag{font:400 15px var(--f);color:rgba(185,165,250,.5);margin-bottom:28px;letter-spacing:.04em}
+#splash .name-wrap{width:100%;margin-bottom:20px}
+#splash .name-wrap label{display:block;font:600 11px var(--f);color:var(--dim);
+  letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;text-align:left}
+#splash .bp{margin-bottom:12px}
+#splash .ver{margin-top:auto;font:400 12px var(--f);color:rgba(150,130,200,.3)}
+
+/* ═══════════════════ LOBBY ═══════════════════ */
+#lobby .orb:nth-child(1){width:260px;height:260px;top:-40px;right:-40px;
+  background:radial-gradient(circle,rgba(139,92,246,.2) 0%,transparent 70%)}
+#lobby .body{padding:16px 24px;position:relative;z-index:5}
+.room-code{font:800 36px/1 var(--f);color:var(--purple);letter-spacing:-.02em;margin-bottom:6px;
+  text-shadow:0 0 40px rgba(139,92,246,.4)}
+.share-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;
+  border-radius:10px;background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.25);
+  color:#A78BFA;font:600 13px var(--f);cursor:pointer;margin-bottom:24px;transition:opacity .15s}
+.share-btn:active{opacity:.7}
+.pgrid{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.pslot{display:flex;flex-direction:column;align-items:center;gap:5px}
+.pav{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font:700 14px var(--f);position:relative}
+.pav.host{background:var(--grad);color:white;font-size:13px;
+  box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--purple)}
+.pav.member{background:rgba(139,92,246,.2);border:1px solid rgba(139,92,246,.3);color:#A78BFA}
+.pav.offline{opacity:.4}
+.pav.empty{border:1.5px dashed rgba(255,255,255,.12);background:transparent;
+  color:rgba(255,255,255,.15);font-size:20px}
+.pname{font:500 10px var(--f);color:var(--dim)}
+.pname.host{color:var(--purple)}
+.wait-box{background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.14);
+  border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.wait-dot{width:8px;height:8px;border-radius:50%;background:var(--purple)}
+.wait-txt{font:500 13px var(--f);color:rgba(185,165,250,.55)}
+
+/* ═══════════════════ GAME ═══════════════════ */
+#game .body{padding:16px 24px;position:relative;z-index:5;flex:1;display:flex;flex-direction:column}
+.g-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.g-phase{font:700 14px var(--f);color:var(--dim);letter-spacing:.06em;text-transform:uppercase}
+.g-sub{font:500 12px var(--f);color:var(--faint);margin-top:2px}
+.timer-w{position:relative;width:60px;height:60px;flex-shrink:0}
+.timer-n{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font:700 16px var(--f);color:var(--purple)}
+.prompt-card{background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.22);
+  border-radius:14px;padding:14px 16px;margin-bottom:14px;
+  box-shadow:0 0 30px rgba(139,92,246,.1)}
+.prompt-card .lbl{margin-bottom:6px;display:block}
+.prompt-txt{font:700 17px var(--f);color:var(--text)}
+.impostor-hint{display:none;background:rgba(236,72,153,.08);border:1px solid rgba(236,72,153,.2);
+  border-radius:10px;padding:8px 14px;margin-bottom:14px;
+  font:500 12px var(--f);color:#F472B6}
+.impostor-hint.show{display:block}
+#canvas{border-radius:16px;background:#F8F7F2;display:block;touch-action:none;
+  cursor:crosshair;margin-bottom:12px;flex-shrink:0;width:327px;height:200px}
+.color-row{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.cd{width:28px;height:28px;border-radius:50%;cursor:pointer;transition:transform .15s;flex-shrink:0}
+.cd:active{transform:scale(.8)}
+.cd.on{outline:2.5px solid rgba(255,255,255,.8);outline-offset:2px}
+.tool{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;
+  justify-content:center;cursor:pointer;flex-shrink:0}
+.tool:active{background:rgba(255,255,255,.14)}
+.prog-bar{height:3px;border-radius:2px;background:rgba(255,255,255,.08);margin-bottom:14px;overflow:hidden}
+.prog-fill{height:100%;background:var(--grad);border-radius:2px;transition:width .5s ease;width:0%}
+#game .bp{border-radius:16px;flex-shrink:0;margin-top:auto}
+
+/* ═══════════════════ VOTE ═══════════════════ */
+#vote .body{padding:16px 24px;position:relative;z-index:5}
+.v-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.v-title{font:700 20px var(--f);color:var(--text)}
+.v-timer{font:700 20px var(--f);color:#EC4899}
+.v-sub{font:400 13px var(--f);color:var(--dim);margin-bottom:18px}
+.vgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.vc{background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:10px;cursor:pointer;transition:border-color .2s,background .2s}
+.vc.on{background:rgba(236,72,153,.12);border:2px solid rgba(236,72,153,.45);
+  box-shadow:0 0 20px rgba(236,72,153,.12)}
+.vc-lbl{font:500 10px var(--f);color:var(--dim);letter-spacing:.08em;margin-bottom:7px}
+.vc.on .vc-lbl{color:rgba(250,165,205,.6)}
+.vc-thumb{background:rgba(255,255,255,.06);border-radius:8px;height:72px;
+  display:flex;align-items:center;justify-content:center;margin-bottom:8px;overflow:hidden}
+.vc.on .vc-thumb{background:rgba(236,72,153,.08)}
+.vc-thumb img,.vc-thumb canvas{width:100%;height:72px;object-fit:contain;border-radius:6px}
+.vb{width:100%;padding:8px;border-radius:8px;background:rgba(139,92,246,.12);
+  border:1px solid rgba(139,92,246,.2);color:#A78BFA;font:600 12px var(--f);cursor:pointer}
+.vc.on .vb{background:var(--grad);border:none;color:white;font-weight:700}
+.v-confirm{width:100%;padding:16px;border-radius:16px;background:var(--grad);border:none;
+  color:white;font:700 17px var(--f);cursor:pointer;box-shadow:0 12px 40px rgba(139,92,246,.38);
+  display:none;margin-bottom:10px}
+.v-confirm.show{display:block}
+.v-prog{font:500 12px var(--f);color:var(--faint);text-align:center}
+
+/* ═══════════════════ REVEAL ═══════════════════ */
+#reveal .orb:nth-child(1){width:400px;height:400px;top:-100px;left:-100px;
+  background:radial-gradient(circle,rgba(139,92,246,.3) 0%,transparent 70%)}
+#reveal .orb:nth-child(2){width:300px;height:300px;bottom:-60px;right:-60px;
+  background:radial-gradient(circle,rgba(236,72,153,.25) 0%,transparent 70%)}
+#reveal .body{flex:1;padding:18px 24px;text-align:center;position:relative;z-index:5;
+  display:flex;flex-direction:column}
+.rv-lbl{font:500 13px var(--f);color:var(--dim);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.rv-name{font:800 52px/1 var(--f);background:var(--grad);-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-.03em;margin-bottom:16px}
+.rv-av{width:88px;height:88px;border-radius:50%;background:linear-gradient(135deg,rgba(139,92,246,.3),rgba(236,72,153,.3));
+  border:2px solid rgba(236,72,153,.5);display:flex;align-items:center;justify-content:center;
+  margin:0 auto 6px;font:700 32px var(--f);color:white;box-shadow:0 0 60px rgba(139,92,246,.3)}
+.rv-sub{font:400 14px var(--f);color:var(--dim);margin-bottom:18px}
+.rv-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;text-align:left}
+.rv-cell{border-radius:14px;padding:12px}
+.rv-cell.r{background:var(--card);border:1px solid var(--border)}
+.rv-cell.i{background:rgba(236,72,153,.08);border:1px solid rgba(236,72,153,.2)}
+.rv-cl{font:500 10px var(--f);color:var(--dim);letter-spacing:.08em;margin-bottom:5px}
+.rv-cell.i .rv-cl{color:rgba(250,165,205,.5)}
+.rv-ct{font:600 14px var(--f);color:var(--text);margin-bottom:6px}
+.rv-cell.i .rv-ct{color:#F472B6}
+.rv-img{background:rgba(255,255,255,.05);border-radius:8px;height:60px;
+  display:flex;align-items:center;justify-content:center;overflow:hidden}
+.rv-img img{width:100%;height:60px;object-fit:contain}
+.rv-cell.i .rv-img{background:rgba(236,72,153,.06)}
+.score-box{background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);
+  border-radius:12px;padding:14px;margin-bottom:14px;text-align:left}
+.score-pts{font:700 24px var(--f);color:var(--purple);margin-bottom:2px}
+.score-desc{font:400 13px var(--f);color:var(--dim)}
+.votes-box{background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:12px 14px;margin-bottom:16px;text-align:left}
+.votes-box .lbl{margin-bottom:10px;display:block}
+.vote-row{display:flex;justify-content:space-between;align-items:center;
+  padding:5px 0;border-bottom:1px solid var(--border)}
+.vote-row:last-child{border-bottom:none}
+.vote-who{font:500 13px var(--f);color:var(--text)}
+.vote-arrow{font:400 11px var(--f);color:var(--dim)}
+.vote-ok{color:#8B5CF6;font-weight:700}
+.vote-bad{color:#EC4899}
+.rv-acts{display:flex;gap:10px}
+.rv-acts .bp,.rv-acts .bs{border-radius:14px;padding:15px;font-size:15px}
+.rv-scoreboard{background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:12px 14px;margin-bottom:14px;text-align:left}
+.sb-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0}
+.sb-row + .sb-row{border-top:1px solid var(--border)}
+.sb-name{font:600 13px var(--f);color:var(--text)}
+.sb-pts{font:700 13px var(--f);color:var(--purple)}
+.sb-pts.imp{color:#EC4899}
+
+/* ═══════════════════ HOME ═══════════════════ */
+#home .orb:nth-child(1){width:260px;height:260px;top:-60px;left:-40px;
+  background:radial-gradient(circle,rgba(139,92,246,.22) 0%,transparent 70%)}
+#home .body{padding:20px 24px;position:relative;z-index:5}
+.greeting{font:400 13px var(--f);color:var(--dim);margin-bottom:3px}
+.uname{font:700 24px/1 var(--f);color:var(--text)}
+.av{width:46px;height:46px;border-radius:50%;background:var(--grad);
+  display:flex;align-items:center;justify-content:center;
+  font:700 17px var(--f);color:white;box-shadow:0 8px 24px rgba(139,92,246,.38);flex-shrink:0}
+.stats{display:flex;gap:10px;margin-bottom:20px}
+.stat{flex:1;border-radius:14px;padding:13px;text-align:center}
+.stat.pu{background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.16)}
+.stat.pk{background:rgba(236,72,153,.08);border:1px solid rgba(236,72,153,.12)}
+.stat.cy{background:rgba(6,182,212,.08);border:1px solid rgba(6,182,212,.12)}
+.sv{font:700 22px var(--f);margin-bottom:2px}
+.sv.pu{color:var(--purple)}.sv.pk{color:#EC4899}.sv.cy{color:#06B6D4}
+.sl{font:500 9px var(--f);color:var(--dim);letter-spacing:.06em;text-transform:uppercase}
+.rec-item{padding:13px 16px;display:flex;justify-content:space-between;align-items:center}
+.rec-item+.rec-item{border-top:1px solid var(--border)}
+.rec-t{font:600 14px var(--f);color:var(--text);margin-bottom:2px}
+.rec-m{font:400 11px var(--f);color:var(--dim)}
+.rec-p{font:700 13px var(--f);color:var(--purple)}
+.rec-p.pk{color:#EC4899}
+
+/* ═══════════════════ PROFILE ═══════════════════ */
+#profile .orb:nth-child(1){width:240px;height:240px;top:-40px;right:-40px;
+  background:radial-gradient(circle,rgba(139,92,246,.18) 0%,transparent 70%)}
+#profile .body{padding:20px 24px;height:calc(812px - 52px - 84px);
+  overflow-y:auto;overflow-x:hidden;scrollbar-width:none;position:relative;z-index:5}
+#profile .body::-webkit-scrollbar{display:none}
+.ph{text-align:center;margin-bottom:20px}
+.pav-big{width:90px;height:90px;border-radius:50%;background:var(--grad);
+  display:flex;align-items:center;justify-content:center;margin:0 auto 12px;
+  font:700 32px var(--f);color:white;
+  box-shadow:0 0 0 3px var(--bg),0 0 0 5px rgba(139,92,246,.5),0 16px 40px rgba(139,92,246,.3)}
+.pn{font:700 22px var(--f);color:var(--text);margin-bottom:6px}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;
+  border-radius:100px;background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.2)}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--purple)}
+.badge-t{font:600 11px var(--f);color:#A78BFA;letter-spacing:.06em}
+.pstats{display:flex;gap:8px;margin-bottom:20px}
+.ps{flex:1;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center}
+.psv{font:700 20px var(--f);margin-bottom:2px}
+.psl{font:500 9px var(--f);color:var(--dim);letter-spacing:.06em;text-transform:uppercase}
+.cos-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px}
+.cos{aspect-ratio:1;border-radius:14px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.cos.eq{background:var(--grad);box-shadow:0 0 0 2.5px var(--bg),0 0 0 4px var(--purple)}
+.cos.ul{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)}
+.cos.lk{background:rgba(255,255,255,.04);border:1.5px dashed rgba(255,255,255,.1);font-size:18px}
+.ach{display:flex;gap:8px;flex-wrap:wrap}
+.ac{padding:8px 14px;border-radius:100px;font:500 12px var(--f)}
+.ac.pu{background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.18);color:#A78BFA}
+.ac.cy{background:rgba(6,182,212,.08);border:1px solid rgba(6,182,212,.14);color:#22D3EE}
+
+/* ═══════════════════ PAYWALL ═══════════════════ */
+#paywall .orb:nth-child(1){width:300px;height:300px;top:-60px;right:-40px;
+  background:radial-gradient(circle,rgba(139,92,246,.2) 0%,transparent 70%)}
+#paywall .body{flex:1;padding:16px 24px;position:relative;z-index:5;display:flex;flex-direction:column}
+.pay-h{text-align:center;margin-bottom:16px}
+.pm-badge{font:700 11px var(--f);color:var(--purple);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
+.pay-t{font:700 26px/1 var(--f);color:var(--text);margin-bottom:6px}
+.pay-s{font:400 13px var(--f);color:var(--dim)}
+.price-card{background:linear-gradient(135deg,rgba(139,92,246,.18),rgba(236,72,153,.1));
+  border:1px solid rgba(139,92,246,.28);border-radius:20px;padding:20px;margin-bottom:16px}
+.price-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
+.price-big{font:800 36px/1 var(--f);color:var(--text);margin-bottom:4px}
+.price-per{font:500 13px var(--f);color:var(--dim)}
+.pop-tag{background:rgba(139,92,246,.2);border:1px solid rgba(139,92,246,.3);border-radius:8px;
+  padding:4px 10px;font:700 11px var(--f);color:#A78BFA;letter-spacing:.06em;align-self:flex-start}
+.divider{height:1px;background:rgba(255,255,255,.08);margin-bottom:14px}
+.feat-list{display:flex;flex-direction:column;gap:10px}
+.feat{display:flex;align-items:center;gap:10px}
+.feat-chk{width:18px;height:18px;border-radius:50%;background:var(--grad);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.feat-t{font:500 13px var(--f);color:rgba(200,185,255,.8)}
+.or-div{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.or-ln{flex:1;height:1px;background:rgba(255,255,255,.07)}
+.or-t{font:400 11px var(--f);color:rgba(185,165,250,.3)}
+.packs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pack{background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:12px;text-align:center;cursor:pointer}
+.pack-pr{font:700 18px var(--f);color:var(--text);margin-bottom:2px}
+.pack-nm{font:500 10px var(--f);color:var(--dim);letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
+.pack-ct{font:600 11px var(--f);color:rgba(139,92,246,.7)}
+
+/* ═══════════════════ CONNECTING ═══════════════════ */
+#connecting .body{flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:16px;position:relative;z-index:5}
+.spin{width:48px;height:48px;border-radius:50%;border:3px solid rgba(139,92,246,.2);
+  border-top-color:#8B5CF6;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#connecting p{font:500 15px var(--f);color:var(--dim);text-align:center;padding:0 40px}
+
+@media(max-height:820px){body{align-items:flex-start}.phone{border-radius:0}}
+</style>
+</head>
+<body>
+<div class="phone" id="phone">
+  <div class="notch"></div>
+
+  <!-- ═══════════ CONNECTING ═══════════ -->
+  <div class="sc on" id="connecting">
+    <div class="orb fa" style="width:300px;height:300px;top:-80px;left:-60px;background:radial-gradient(circle,rgba(139,92,246,.25) 0%,transparent 70%)"></div>
+    <div class="sb"><span class="sb-t" id="t-connecting">9:41</span></div>
+    <div class="body">
+      <div class="spin"></div>
+      <p>Conectando con el servidor...</p>
+    </div>
+  </div>
+
+  <!-- ═══════════ SPLASH ═══════════ -->
+  <div class="sc" id="splash">
+    <div class="orb fa"></div>
+    <div class="orb fb"></div>
+    <div class="sb"><span class="sb-t" id="t-splash">9:41</span><div class="sb-i"><!-- signals --></div></div>
+    <div class="body">
+      <div class="logo-box">
+        <svg viewBox="0 0 40 40" fill="none" width="40" height="40">
+          <path d="M4 20C8 12 14 8 20 8 26 8 32 12 36 20 32 28 26 32 20 32 14 32 8 28 4 20Z" stroke="white" stroke-width="2.5" fill="rgba(255,255,255,.1)"/>
+          <circle cx="20" cy="20" r="7" stroke="white" stroke-width="2.5"/>
+          <circle cx="20" cy="20" r="3" fill="white"/>
+        </svg>
+      </div>
+      <h1>GOTCHLY</h1>
+      <p class="tag">Nadie sabe quién miente</p>
+      <div class="name-wrap">
+        <label>Tu nombre</label>
+        <input class="inp" id="splash-name" type="text" maxlength="16" placeholder="¿Cómo te llamas?" autocomplete="off">
+      </div>
+      <button class="bp" id="btn-create" style="margin-bottom:12px">Crear sala</button>
+      <button class="bs" id="btn-join">Unirme con código</button>
+      <span class="ver">Gotchly · Para 2–8 amigos</span>
+    </div>
+  </div>
+
+  <!-- ═══════════ JOIN OVERLAY ═══════════ -->
+  <div class="overlay" id="join-overlay">
+    <div class="sheet">
+      <h3>Unirse a sala</h3>
+      <p>Ingresa el código que te compartió el host</p>
+      <input class="inp inp-code" id="join-code" maxlength="10" placeholder="GOTCH·XXXX" autocomplete="off">
+      <div style="height:12px"></div>
+      <button class="bp" id="btn-do-join">Entrar →</button>
+      <div style="height:10px"></div>
+      <button class="bs" id="btn-cancel-join">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ LOBBY ═══════════ -->
+  <div class="sc" id="lobby">
+    <div class="orb fa"></div>
+    <div class="sb"><span class="sb-t" id="t-lobby">9:41</span><div class="sb-i"></div></div>
+    <div class="scroll">
+      <div class="body">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+          <button class="back" id="btn-lobby-back">
+            <svg width="16" height="16" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="rgba(200,185,255,.7)"/></svg>
+          </button>
+          <span style="font:400 13px var(--f);color:var(--dim)">Sala creada</span>
+        </div>
+        <div class="room-code" id="lobby-code">GOTCH·----</div>
+        <div style="font:400 13px var(--f);color:var(--dim);margin-bottom:18px">Comparte este código con tus amigos</div>
+        <button class="share-btn" id="btn-share">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M18 16c-.8 0-1.5.3-2 .8l-7.1-4.1c.1-.2.1-.5.1-.7s0-.5-.1-.7L16 7.2c.5.5 1.2.8 2 .8 1.7 0 3-1.3 3-3s-1.3-3-3-3-3 1.3-3 3c0 .2 0 .5.1.7L8 9.8C7.5 9.3 6.8 9 6 9c-1.7 0-3 1.3-3 3s1.3 3 3 3c.8 0 1.5-.3 2-.8l7.1 4.1c-.1.2-.1.4-.1.7 0 1.6 1.3 3 3 3s3-1.4 3-3-1.3-3-3-3z" fill="currentColor"/></svg>
+          Copiar código
+        </button>
+        <div class="lbl" style="margin-bottom:12px" id="lobby-count">Jugadores (1/8)</div>
+        <div class="pgrid" id="pgrid"></div>
+        <div class="wait-box">
+          <div class="wait-dot fp"></div>
+          <span class="wait-txt" id="wait-txt">Esperando jugadores · mín. 2 para iniciar</span>
+        </div>
+        <button class="bp" id="btn-start" disabled>Iniciar partida</button>
+        <div style="height:20px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ GAME ═══════════ -->
+  <div class="sc" id="game">
+    <div class="sb"><span class="sb-t" id="t-game">9:41</span><div class="sb-i"></div></div>
+    <div class="body">
+      <div class="g-head">
+        <div>
+          <div class="g-phase">Dibujando</div>
+          <div class="g-sub" id="game-sub">Enviado: 0 / 0</div>
+        </div>
+        <div class="timer-w">
+          <svg width="60" height="60" viewBox="0 0 60 60" style="transform:rotate(-90deg)">
+            <circle cx="30" cy="30" r="26" stroke="rgba(139,92,246,.15)" stroke-width="5" fill="none"/>
+            <circle id="ring-game" cx="30" cy="30" r="26" stroke="#8B5CF6" stroke-width="5" fill="none"
+              stroke-linecap="round" stroke-dasharray="163" stroke-dashoffset="0"/>
+          </svg>
+          <div class="timer-n" id="num-game">60</div>
+        </div>
+      </div>
+      <div class="prompt-card">
+        <span class="lbl">Tu prompt</span>
+        <div class="prompt-txt" id="prompt-txt">—</div>
+      </div>
+      <div class="impostor-hint" id="impostor-hint">
+        🎭 Eres el impostor — dibuja con confianza, nadie sabe tu prompt
+      </div>
+      <canvas id="canvas" width="327" height="200"></canvas>
+      <div class="color-row" id="color-row">
+        <div class="cd on" data-c="#EC4899" style="background:#EC4899"></div>
+        <div class="cd" data-c="#8B5CF6" style="background:#8B5CF6"></div>
+        <div class="cd" data-c="#06B6D4" style="background:#06B6D4"></div>
+        <div class="cd" data-c="#F59E0B" style="background:#F59E0B"></div>
+        <div class="cd" data-c="#10B981" style="background:#10B981"></div>
+        <div class="cd" data-c="#000000" style="background:#000;border:1px solid rgba(255,255,255,.15)"></div>
+        <div style="margin-left:auto;display:flex;gap:6px">
+          <button class="tool" id="btn-undo" title="Deshacer"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z" fill="rgba(255,255,255,.4)"/></svg></button>
+          <button class="tool" id="btn-clear" title="Borrar todo"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="rgba(255,255,255,.4)"/></svg></button>
+        </div>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" id="draw-prog"></div></div>
+      <button class="bp" id="btn-done">Listo →</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ VOTE ═══════════ -->
+  <div class="sc" id="vote">
+    <div class="orb" style="width:300px;height:300px;bottom:-60px;right:-60px;pointer-events:none;background:radial-gradient(circle,rgba(236,72,153,.15) 0%,transparent 70%)"></div>
+    <div class="sb"><span class="sb-t" id="t-vote">9:41</span><div class="sb-i"></div></div>
+    <div class="scroll" style="padding-bottom:20px">
+      <div class="body">
+        <div class="v-head">
+          <div class="v-title">¿Quién es el impostor?</div>
+          <div class="v-timer" id="vote-timer">30s</div>
+        </div>
+        <div class="v-sub">Mira los dibujos con cuidado. Uno no encaja.</div>
+        <div class="vgrid" id="vgrid"></div>
+        <button class="v-confirm" id="btn-confirm-vote">Confirmar voto →</button>
+        <div class="v-prog" id="vote-prog">Votando… 0 / 0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ REVEAL ═══════════ -->
+  <div class="sc" id="reveal">
+    <div class="orb fa"></div>
+    <div class="orb fb"></div>
+    <div class="sb"><span class="sb-t" id="t-reveal">9:41</span><div class="sb-i"></div></div>
+    <div class="scroll" style="padding-bottom:20px">
+      <div class="body">
+        <div class="rv-lbl">El impostor era...</div>
+        <div class="rv-name" id="rv-name">?</div>
+        <div class="rv-av" id="rv-av">?</div>
+        <div class="rv-sub" id="rv-sub">—</div>
+        <div class="rv-grid">
+          <div class="rv-cell r">
+            <div class="rv-cl">PROMPT REAL</div>
+            <div class="rv-ct" id="rv-real-p">—</div>
+            <div class="rv-img"><svg width="56" height="44" viewBox="0 0 56 44" fill="none"><ellipse cx="28" cy="30" rx="18" ry="10" stroke="#6B6280" stroke-width="1.5"/><ellipse cx="28" cy="26" rx="8" ry="6" stroke="#6B6280" stroke-width="1.2" fill="rgba(255,200,80,.15)"/><rect x="14" y="8" width="10" height="14" rx="3" stroke="#6B6280" stroke-width="1.2"/></svg></div>
+          </div>
+          <div class="rv-cell i">
+            <div class="rv-cl">IMPOSTOR DIBUJÓ</div>
+            <div class="rv-ct" id="rv-imp-p">—</div>
+            <div class="rv-img" id="rv-imp-img"><svg width="56" height="44" viewBox="0 0 56 44" fill="none"><circle cx="28" cy="22" r="14" stroke="#F472B6" stroke-width="1.5" fill="rgba(236,72,153,.06)"/><path d="M20 18 Q28 12 36 18" stroke="#F472B6" stroke-width="1.5" fill="none"/><circle cx="28" cy="26" r="4" fill="rgba(236,72,153,.2)"/></svg></div>
+          </div>
+        </div>
+        <div class="score-box" id="score-box">
+          <div class="score-pts" id="score-pts">+0 pts</div>
+          <div class="score-desc" id="score-desc">—</div>
+        </div>
+        <div class="rv-scoreboard" id="rv-scoreboard">
+          <div class="lbl" style="margin-bottom:10px;display:block">Puntajes</div>
+        </div>
+        <div class="votes-box" id="votes-box">
+          <span class="lbl">Votos</span>
+        </div>
+        <div class="rv-acts">
+          <button class="bp" id="btn-play-again" style="display:none">Jugar de nuevo</button>
+          <button class="bs" id="btn-go-home">Ir al inicio</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ HOME ═══════════ -->
+  <div class="sc" id="home">
+    <div class="orb fa"></div>
+    <div class="sb"><span class="sb-t" id="t-home">9:41</span><div class="sb-i"></div></div>
+    <div class="scroll" style="padding-bottom:84px">
+      <div class="body">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px">
+          <div>
+            <div class="greeting">Buenas noches,</div>
+            <div class="uname" id="home-name">—</div>
+          </div>
+          <div class="av" id="home-av">?</div>
+        </div>
+        <div class="stats" id="home-stats">
+          <div class="stat pu"><div class="sv pu" id="st-games">0</div><div class="sl">Partidas</div></div>
+          <div class="stat pk"><div class="sv pk" id="st-wins">0</div><div class="sl">Victorias</div></div>
+          <div class="stat cy"><div class="sv cy" id="st-pts">0</div><div class="sl">Puntos</div></div>
+        </div>
+        <button class="bp" id="h-btn-create" style="margin-bottom:12px">Crear sala</button>
+        <button class="bs" id="h-btn-join" style="margin-bottom:22px">Unirme con código</button>
+        <div class="lbl" style="margin-bottom:12px">Historial reciente</div>
+        <div class="card" id="h-history">
+          <div class="rec-item" style="justify-content:center;padding:20px 16px">
+            <span style="font:400 13px var(--f);color:var(--faint)">Aún no has jugado — ¡crea una sala!</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <nav class="bnav">
+      <button class="nb on" onclick="showScreen('home');setNav('home')">
+        <svg width="22" height="22" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="currentColor"/></svg>
+        <span>Inicio</span>
+      </button>
+      <button class="nb" onclick="showScreen('home');setNav('home')">
+        <svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm.5 15H11v-6l5.2 3.2.8-1.2L12.5 9V7H11v6z" fill="currentColor"/></svg>
+        <span>Partidas</span>
+      </button>
+      <button class="nb" onclick="showScreen('profile');loadProfile()">
+        <svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 12c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zm0 2c-2.7 0-8 1.3-8 4v2h16v-2c0-2.7-5.3-4-8-4z" fill="currentColor"/></svg>
+        <span>Perfil</span>
+      </button>
+      <button class="nb" onclick="showScreen('paywall')">
+        <svg width="22" height="22" viewBox="0 0 24 24"><path d="M19 6h-2c0-2.8-2.2-5-5-5S7 3.2 7 6H5C3.9 6 3 6.9 3 8v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-7-3c1.7 0 3 1.3 3 3H9c0-1.7 1.3-3 3-3z" fill="currentColor"/></svg>
+        <span>Premium</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- ═══════════ PROFILE ═══════════ -->
+  <div class="sc" id="profile">
+    <div class="orb fa"></div>
+    <div class="sb"><span class="sb-t" id="t-profile">9:41</span><div class="sb-i"></div></div>
+    <div class="body">
+      <div class="ph">
+        <div class="pav-big" id="prof-av">?</div>
+        <div class="pn" id="prof-name">—</div>
+        <div class="badge"><div class="badge-dot"></div><span class="badge-t" id="prof-level">Nv. 1 · Novato</span></div>
+      </div>
+      <div class="pstats">
+        <div class="ps"><div class="psv" style="color:var(--purple)" id="prof-games">0</div><div class="psl">Partidas</div></div>
+        <div class="ps"><div class="psv" style="color:#EC4899" id="prof-wins">0</div><div class="psl">Victorias</div></div>
+        <div class="ps"><div class="psv" style="color:#06B6D4" id="prof-pts">0</div><div class="psl">Puntos</div></div>
+      </div>
+      <div class="lbl" style="margin-bottom:12px">Cosméticos</div>
+      <div class="cos-grid">
+        <div class="cos eq"><svg viewBox="0 0 40 40" fill="none" width="24" height="24"><path d="M4 20C8 12 14 8 20 8 26 8 32 12 36 20 32 28 26 32 20 32 14 32 8 28 4 20Z" stroke="white" stroke-width="2.5" fill="rgba(255,255,255,.1)"/><circle cx="20" cy="20" r="7" stroke="white" stroke-width="2.5"/><circle cx="20" cy="20" r="3" fill="white"/></svg></div>
+        <div class="cos ul"><div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#F59E0B,#EF4444)"></div></div>
+        <div class="cos ul"><div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#06B6D4,#3B82F6)"></div></div>
+        <div class="cos lk" onclick="showScreen('paywall')">🔒</div>
+        <div class="cos lk" onclick="showScreen('paywall')">🔒</div>
+        <div class="cos lk" onclick="showScreen('paywall')">🔒</div>
+        <div class="cos lk" onclick="showScreen('paywall')">🔒</div>
+        <div class="cos lk" onclick="showScreen('paywall')">🔒</div>
+      </div>
+      <div class="lbl" style="margin-bottom:10px">Logros</div>
+      <div class="ach">
+        <div class="ac pu" id="ach-impostor" style="display:none">🎭 Maestro impostor</div>
+        <div class="ac cy" id="ach-detective" style="display:none">🔍 Detective</div>
+        <div class="ac pu" id="ach-streak" style="display:none">🏆 En racha</div>
+        <div style="font:400 13px var(--f);color:var(--faint)" id="ach-none">Juega para desbloquear logros</div>
+      </div>
+    </div>
+    <nav class="bnav">
+      <button class="nb" onclick="showScreen('home');setNav('home')">
+        <svg width="22" height="22" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="currentColor"/></svg>
+        <span>Inicio</span>
+      </button>
+      <button class="nb" onclick="showScreen('home');setNav('home')">
+        <svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm.5 15H11v-6l5.2 3.2.8-1.2L12.5 9V7H11v6z" fill="currentColor"/></svg>
+        <span>Partidas</span>
+      </button>
+      <button class="nb on" onclick="showScreen('profile');loadProfile()">
+        <svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 12c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zm0 2c-2.7 0-8 1.3-8 4v2h16v-2c0-2.7-5.3-4-8-4z" fill="currentColor"/></svg>
+        <span>Perfil</span>
+      </button>
+      <button class="nb" onclick="showScreen('paywall')">
+        <svg width="22" height="22" viewBox="0 0 24 24"><path d="M19 6h-2c0-2.8-2.2-5-5-5S7 3.2 7 6H5C3.9 6 3 6.9 3 8v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-7-3c1.7 0 3 1.3 3 3H9c0-1.7 1.3-3 3-3z" fill="currentColor"/></svg>
+        <span>Premium</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- ═══════════ PAYWALL ═══════════ -->
+  <div class="sc" id="paywall">
+    <div class="orb fa"></div>
+    <div class="sb"><span class="sb-t" id="t-paywall">9:41</span><div class="sb-i"></div></div>
+    <div class="scroll" style="padding-bottom:84px">
+      <div class="body">
+        <div style="margin-bottom:16px">
+          <button class="back" onclick="goBack()"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="rgba(200,185,255,.7)"/></svg></button>
+        </div>
+        <div class="pay-h">
+          <div class="pm-badge">✦ Gotchly Premium</div>
+          <div class="pay-t">Juega sin límites</div>
+          <div class="pay-s">Acceso total para el que crea la sala</div>
+        </div>
+        <div class="price-card">
+          <div class="price-top">
+            <div><div class="price-big">$4.99</div><div class="price-per">por mes</div></div>
+            <div class="pop-tag">POPULAR</div>
+          </div>
+          <div class="divider"></div>
+          <div class="feat-list">
+            <div class="feat"><div class="feat-chk"><svg width="10" height="10" viewBox="0 0 12 12"><path d="M10 3L5 9 2 6" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/></svg></div><span class="feat-t">Salas hasta 12 jugadores</span></div>
+            <div class="feat"><div class="feat-chk"><svg width="10" height="10" viewBox="0 0 12 12"><path d="M10 3L5 9 2 6" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/></svg></div><span class="feat-t">Prompts exclusivos ilimitados</span></div>
+            <div class="feat"><div class="feat-chk"><svg width="10" height="10" viewBox="0 0 12 12"><path d="M10 3L5 9 2 6" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/></svg></div><span class="feat-t">Sin anuncios</span></div>
+            <div class="feat"><div class="feat-chk"><svg width="10" height="10" viewBox="0 0 12 12"><path d="M10 3L5 9 2 6" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/></svg></div><span class="feat-t">Todos los cosméticos desbloqueados</span></div>
+          </div>
+        </div>
+        <button class="bp" style="margin-bottom:16px;border-radius:16px" onclick="toast('Iniciando prueba gratis...')">Prueba 7 días gratis →</button>
+        <div class="or-div"><div class="or-ln"></div><span class="or-t">o elige un pack</span><div class="or-ln"></div></div>
+        <div class="packs">
+          <div class="pack" onclick="toast('Pack seleccionado')"><div class="pack-pr">$1.99</div><div class="pack-nm">Pack Básico</div><div class="pack-ct">10 partidas</div></div>
+          <div class="pack" onclick="toast('Pack seleccionado')"><div class="pack-pr">$3.49</div><div class="pack-nm">Pack Noche</div><div class="pack-ct">25 partidas</div></div>
+        </div>
+      </div>
+    </div>
+    <nav class="bnav">
+      <button class="nb" onclick="showScreen('home');setNav('home')">
+        <svg width="22" height="22" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="currentColor"/></svg>
+        <span>Inicio</span>
+      </button>
+      <button class="nb" onclick="showScreen('home');setNav('home')">
+        <svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm.5 15H11v-6l5.2 3.2.8-1.2L12.5 9V7H11v6z" fill="currentColor"/></svg>
+        <span>Partidas</span>
+      </button>
+      <button class="nb" onclick="showScreen('profile');loadProfile()">
+        <svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 12c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zm0 2c-2.7 0-8 1.3-8 4v2h16v-2c0-2.7-5.3-4-8-4z" fill="currentColor"/></svg>
+        <span>Perfil</span>
+      </button>
+      <button class="nb on">
+        <svg width="22" height="22" viewBox="0 0 24 24"><path d="M19 6h-2c0-2.8-2.2-5-5-5S7 3.2 7 6H5C3.9 6 3 6.9 3 8v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-7-3c1.7 0 3 1.3 3 3H9c0-1.7 1.3-3 3-3z" fill="currentColor"/></svg>
+        <span>Premium</span>
+      </button>
+    </nav>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div><!-- /phone -->
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+const G = {
+  socket: null,
+  playerId: localStorage.getItem('gotchly_pid') || null,
+  playerName: localStorage.getItem('gotchly_name') || '',
+  roomCode: null,
+  isHost: false,
+  isImpostor: false,
+  myPrompt: null,
+  players: [],
+  drawings: [],
+  selectedVote: null,
+  lastReveal: null,
+  history: [],
+  prevScreen: 'splash',
+};
+
+// ═══════════════════════════════════════════════════════════
+// SCREEN MANAGEMENT
+// ═══════════════════════════════════════════════════════════
+function showScreen(id) {
+  G.prevScreen = document.querySelector('.sc.on')?.id || 'splash';
+  document.querySelectorAll('.sc').forEach(s => s.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+}
+function goBack() {
+  showScreen(G.prevScreen || 'home');
+}
+function setNav(active) {
+  document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
+}
+
+// ═══════════════════════════════════════════════════════════
+// TIME
+// ═══════════════════════════════════════════════════════════
+function updateClock() {
+  const d = new Date();
+  const t = d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
+  document.querySelectorAll('[id^="t-"]').forEach(el => el.textContent = t);
+}
+updateClock();
+setInterval(updateClock, 30000);
+
+// ═══════════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════════
+let toastT;
+function toast(msg, dur=2400) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('on');
+  clearTimeout(toastT);
+  toastT = setTimeout(() => el.classList.remove('on'), dur);
+}
+
+// ═══════════════════════════════════════════════════════════
+// SOCKET
+// ═══════════════════════════════════════════════════════════
+function initSocket() {
+  const socket = io({ transports: ['websocket','polling'], reconnectionAttempts: 5 });
+  G.socket = socket;
+
+  socket.on('connect', () => {
+    console.log('Socket conectado:', socket.id);
+    showScreen('splash');
+    if (G.playerName) document.getElementById('splash-name').value = G.playerName;
+  });
+
+  socket.on('connect_error', () => {
+    toast('Error de conexión. Reintentando...', 3000);
+  });
+
+  socket.on('disconnect', () => {
+    toast('Desconectado. Reconectando...', 3000);
+  });
+
+  socket.on('error', msg => toast('⚠ ' + msg, 3500));
+
+  // ── Room events ──────────────────────────────────────────
+  socket.on('room:created', ({ code, playerId, players }) => {
+    G.playerId = playerId;
+    G.roomCode = code;
+    G.isHost = true;
+    G.players = players;
+    localStorage.setItem('gotchly_pid', playerId);
+    renderLobby(code, players, true);
+    showScreen('lobby');
+  });
+
+  socket.on('room:joined', ({ code, playerId, players }) => {
+    G.playerId = playerId;
+    G.roomCode = code;
+    G.isHost = false;
+    G.players = players;
+    localStorage.setItem('gotchly_pid', playerId);
+    renderLobby(code, players, false);
+    showScreen('lobby');
+  });
+
+  socket.on('room:players-update', ({ players }) => {
+    G.players = players;
+    updatePlayerGrid(players);
+    updateStartBtn(players);
+  });
+
+  // ── Game events ──────────────────────────────────────────
+  socket.on('game:started', ({ prompt, isImpostor, timerSeconds, playerCount }) => {
+    G.isImpostor = isImpostor;
+    G.myPrompt = prompt;
+    clearCanvas();
+    clearDrawing();
+    document.getElementById('prompt-txt').textContent = 'Dibuja: ' + prompt;
+    document.getElementById('impostor-hint').classList.toggle('show', isImpostor);
+    document.getElementById('game-sub').textContent = `Enviado: 0 / ${playerCount}`;
+    document.getElementById('draw-prog').style.width = '0%';
+    document.getElementById('btn-done').disabled = false;
+    document.getElementById('btn-done').textContent = 'Listo →';
+    showScreen('game');
+    setTimerUI(timerSeconds || 70, 'game', timerSeconds || 70);
+  });
+
+  socket.on('game:timer', ({ seconds, phase }) => {
+    if (phase === 'drawing') setTimerUI(seconds, 'game', 70);
+    if (phase === 'voting') {
+      const el = document.getElementById('vote-timer');
+      if (el) el.textContent = seconds + 's';
+    }
+  });
+
+  socket.on('game:drawing-progress', ({ submitted, total }) => {
+    document.getElementById('game-sub').textContent = `Enviado: ${submitted} / ${total}`;
+    document.getElementById('draw-prog').style.width = ((submitted/total)*100) + '%';
+  });
+
+  socket.on('game:voting-start', ({ drawings, timerSeconds }) => {
+    G.drawings = drawings;
+    G.selectedVote = null;
+    buildVoteGrid(drawings);
+    document.getElementById('btn-confirm-vote').classList.remove('show');
+    document.getElementById('vote-prog').textContent = `Votando… 0 / ${G.players.length}`;
+    document.getElementById('vote-timer').textContent = (timerSeconds || 35) + 's';
+    showScreen('vote');
+  });
+
+  socket.on('game:vote-progress', ({ voted, total }) => {
+    document.getElementById('vote-prog').textContent = `Votando… ${voted} / ${total}`;
+  });
+
+  socket.on('game:reveal', data => {
+    G.lastReveal = data;
+    renderReveal(data);
+    showScreen('reveal');
+    addToHistory(data);
+    refreshHomeStats();
+  });
+
+  socket.on('game:reset', ({ players }) => {
+    G.players = players;
+    G.isImpostor = false;
+    G.myPrompt = null;
+    renderLobby(G.roomCode, players, G.isHost);
+    showScreen('lobby');
+    toast('¡Nueva partida! Esperando que el host inicie...');
+  });
+
+  socket.on('player:stats', ({ stats }) => {
+    if (stats) renderProfile(stats);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// LOBBY
+// ═══════════════════════════════════════════════════════════
+function renderLobby(code, players, isHost) {
+  document.getElementById('lobby-code').textContent = code;
+  updatePlayerGrid(players);
+  updateStartBtn(players);
+  const startBtn = document.getElementById('btn-start');
+  startBtn.textContent = isHost ? 'Iniciar partida' : 'Esperando al host...';
+  startBtn.style.display = isHost ? 'block' : 'block';
+  if (!isHost) startBtn.disabled = true;
+}
+
+const AVATAR_COLORS = [
+  'rgba(139,92,246,.25)', 'rgba(236,72,153,.2)', 'rgba(6,182,212,.2)',
+  'rgba(245,158,11,.2)', 'rgba(16,185,129,.2)', 'rgba(239,68,68,.2)',
+  'rgba(99,102,241,.25)', 'rgba(249,115,22,.2)',
+];
+const AVATAR_TEXT_COLORS = [
+  '#A78BFA','#F472B6','#22D3EE','#FCD34D','#34D399','#F87171','#818CF8','#FB923C'
+];
+
+function updatePlayerGrid(players) {
+  const grid = document.getElementById('pgrid');
+  grid.innerHTML = '';
+  const slots = 8;
+  players.forEach((p, i) => {
+    const initials = p.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+    const col = AVATAR_COLORS[i % AVATAR_COLORS.length];
+    const tcol = AVATAR_TEXT_COLORS[i % AVATAR_TEXT_COLORS.length];
+    const isMe = p.id === G.playerId;
+    const div = document.createElement('div');
+    div.className = 'pslot';
+    div.innerHTML = `
+      <div class="pav ${p.isHost ? 'host' : 'member'} ${p.connected ? '' : 'offline'}"
+        style="${!p.isHost ? `background:${col};border:1px solid ${tcol}40;color:${tcol}` : ''}">
+        ${initials}${isMe && !p.isHost ? '<div style="position:absolute;bottom:-2px;right:-2px;width:12px;height:12px;border-radius:50%;background:#10B981;border:2px solid var(--bg)"></div>' : ''}
+      </div>
+      <span class="pname ${p.isHost ? 'host' : ''}">${isMe ? 'Tú' : p.name}${p.isHost ? ' 👑' : ''}</span>
+    `;
+    grid.appendChild(div);
+  });
+  for (let i = players.length; i < slots; i++) {
+    const div = document.createElement('div');
+    div.className = 'pslot';
+    div.innerHTML = `<div class="pav empty">+</div><span class="pname" style="color:var(--faint)">Libre</span>`;
+    grid.appendChild(div);
+  }
+  document.getElementById('lobby-count').textContent = `Jugadores (${players.length}/8)`;
+}
+
+function updateStartBtn(players) {
+  const btn = document.getElementById('btn-start');
+  if (!G.isHost) return;
+  const connected = players.filter(p => p.connected).length;
+  btn.disabled = connected < 2;
+  btn.textContent = connected < 2 ? `Necesitas ${2 - connected} más` : 'Iniciar partida';
+}
+
+// ═══════════════════════════════════════════════════════════
+// GAME / CANVAS
+// ═══════════════════════════════════════════════════════════
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let drawing = false;
+let color = '#EC4899';
+let snaps = [];
+let submitted = false;
+
+function clearCanvas() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  snaps = [];
+}
+function clearDrawing() {
+  submitted = false;
+}
+
+function pos(e) {
+  const r = canvas.getBoundingClientRect();
+  const sx = canvas.width / r.width;
+  const sy = canvas.height / r.height;
+  const src = e.touches ? e.touches[0] : e;
+  return { x: (src.clientX - r.left) * sx, y: (src.clientY - r.top) * sy };
+}
+
+function saveSnap() {
+  snaps.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+  if (snaps.length > 40) snaps.shift();
+}
+
+canvas.addEventListener('mousedown', e => { drawing = true; saveSnap(); const p = pos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); });
+canvas.addEventListener('mousemove', e => {
+  if (!drawing) return;
+  const p = pos(e);
+  ctx.lineTo(p.x, p.y);
+  ctx.strokeStyle = color; ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.stroke();
+});
+canvas.addEventListener('mouseup', () => { drawing = false; ctx.beginPath(); });
+canvas.addEventListener('mouseleave', () => { drawing = false; ctx.beginPath(); });
+canvas.addEventListener('touchstart', e => { e.preventDefault(); drawing = true; saveSnap(); const p = pos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); }, { passive: false });
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault(); if (!drawing) return;
+  const p = pos(e);
+  ctx.lineTo(p.x, p.y);
+  ctx.strokeStyle = color; ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.stroke();
+}, { passive: false });
+canvas.addEventListener('touchend', () => { drawing = false; ctx.beginPath(); });
+
+document.getElementById('color-row').addEventListener('click', e => {
+  const cd = e.target.closest('.cd');
+  if (!cd) return;
+  document.querySelectorAll('.cd').forEach(d => d.classList.remove('on'));
+  cd.classList.add('on');
+  color = cd.dataset.c;
+});
+
+document.getElementById('btn-undo').addEventListener('click', () => {
+  if (snaps.length) ctx.putImageData(snaps.pop(), 0, 0);
+});
+document.getElementById('btn-clear').addEventListener('click', () => {
+  saveSnap(); ctx.clearRect(0, 0, canvas.width, canvas.height);
+});
+
+document.getElementById('btn-done').addEventListener('click', () => {
+  if (submitted) return;
+  submitted = true;
+  const btn = document.getElementById('btn-done');
+  btn.disabled = true;
+  btn.textContent = '✓ Enviado';
+  const dataURL = canvas.toDataURL('image/jpeg', 0.6);
+  G.socket.emit('game:submit-drawing', { dataURL });
+});
+
+// ═══════════════════════════════════════════════════════════
+// TIMER UI
+// ═══════════════════════════════════════════════════════════
+const CIRC = 163;
+function setTimerUI(sec, id, total) {
+  const num = document.getElementById('num-' + id);
+  const ring = document.getElementById('ring-' + id);
+  if (!num || !ring) return;
+  num.textContent = sec;
+  const prog = sec / total;
+  ring.style.strokeDashoffset = CIRC * (1 - prog);
+  const c = prog > .35 ? '#8B5CF6' : '#EC4899';
+  ring.style.stroke = c;
+  num.style.color = c;
+}
+
+// ═══════════════════════════════════════════════════════════
+// VOTE GRID
+// ═══════════════════════════════════════════════════════════
+function buildVoteGrid(drawings) {
+  const grid = document.getElementById('vgrid');
+  grid.innerHTML = '';
+  drawings.forEach(d => {
+    const card = document.createElement('div');
+    card.className = 'vc';
+    card.dataset.pid = d.playerId;
+    const thumbHTML = d.dataURL
+      ? `<img src="${d.dataURL}" alt="dibujo">`
+      : `<svg width="40" height="40" viewBox="0 0 40 40" fill="none"><rect x="8" y="8" width="24" height="24" rx="4" stroke="#6B6280" stroke-width="1.5" stroke-dasharray="4 2"/></svg>`;
+    card.innerHTML = `
+      <div class="vc-lbl">${d.label}</div>
+      <div class="vc-thumb">${thumbHTML}</div>
+      <button class="vb">Votar</button>
+    `;
+    card.addEventListener('click', () => selectVote(d.playerId, card));
+    grid.appendChild(card);
+  });
+}
+
+function selectVote(targetPid, clickedCard) {
+  G.selectedVote = targetPid;
+  document.querySelectorAll('.vc').forEach(c => {
+    c.classList.toggle('on', c === clickedCard);
+    c.querySelector('.vb').textContent = c === clickedCard ? '✓ Seleccionado' : 'Votar';
+  });
+  document.getElementById('btn-confirm-vote').classList.add('show');
+}
+
+document.getElementById('btn-confirm-vote').addEventListener('click', () => {
+  if (!G.selectedVote) return;
+  document.getElementById('btn-confirm-vote').disabled = true;
+  document.getElementById('btn-confirm-vote').textContent = '✓ Voto enviado';
+  G.socket.emit('game:vote', { targetPlayerId: G.selectedVote });
+});
+
+// ═══════════════════════════════════════════════════════════
+// REVEAL
+// ═══════════════════════════════════════════════════════════
+function renderReveal(data) {
+  const { impostorId, impostorName, impostorCaught, realPrompt, impostorPrompt,
+          impostorDrawing, voteSummary, scoreUpdates, players } = data;
+
+  const initials = impostorName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('rv-name').textContent = impostorName.toUpperCase();
+  document.getElementById('rv-av').textContent = initials;
+  document.getElementById('rv-sub').textContent = impostorCaught
+    ? `${impostorName} · ¡Atrapado! 🔍`
+    : `${impostorName} · Escapó de las sospechas 🎭`;
+
+  document.getElementById('rv-real-p').textContent = realPrompt;
+  document.getElementById('rv-imp-p').textContent = impostorPrompt;
+
+  const impImg = document.getElementById('rv-imp-img');
+  if (impostorDrawing) {
+    impImg.innerHTML = `<img src="${impostorDrawing}" alt="dibujo impostor">`;
+  }
+
+  // My score
+  const myPts = scoreUpdates[G.playerId] || 0;
+  document.getElementById('score-pts').textContent = (myPts > 0 ? '+' : '') + myPts + ' pts';
+  if (G.isImpostor) {
+    document.getElementById('score-desc').textContent = impostorCaught
+      ? 'Te descubrieron — ¡mejor suerte la próxima!'
+      : '¡Escapaste! Nadie supo que eras el impostor';
+  } else {
+    document.getElementById('score-desc').textContent = G.selectedVote === impostorId
+      ? '¡Bien! Identificaste al impostor'
+      : 'No lo identificaste esta vez';
+  }
+
+  // Scoreboard
+  const sb = document.getElementById('rv-scoreboard');
+  sb.innerHTML = '<div class="lbl" style="margin-bottom:10px;display:block">Puntajes de la sala</div>';
+  const sorted = [...players].sort((a,b) => b.score - a.score);
+  sorted.forEach(p => {
+    const delta = scoreUpdates[p.id] || 0;
+    const isMe = p.id === G.playerId;
+    const isImp = p.id === impostorId;
+    const row = document.createElement('div');
+    row.className = 'sb-row';
+    row.innerHTML = `
+      <span class="sb-name">${isMe ? '★ ' : ''}${p.name}${isImp ? ' 🎭' : ''}</span>
+      <span class="sb-pts ${isImp ? 'imp' : ''}">${p.score} pts ${delta > 0 ? '(+' + delta + ')' : ''}</span>
+    `;
+    sb.appendChild(row);
+  });
+
+  // Votes summary
+  const vb = document.getElementById('votes-box');
+  vb.innerHTML = '<span class="lbl">Quién votó a quién</span><div style="height:8px"></div>';
+  voteSummary.forEach(v => {
+    const row = document.createElement('div');
+    row.className = 'vote-row';
+    row.innerHTML = `
+      <span class="vote-who">${v.voterName}</span>
+      <span class="vote-arrow ${v.correct ? 'vote-ok' : 'vote-bad'}">→ ${v.targetName} ${v.correct ? '✓' : '✗'}</span>
+    `;
+    vb.appendChild(row);
+  });
+
+  // Play again button (host only)
+  document.getElementById('btn-play-again').style.display = G.isHost ? 'block' : 'none';
+}
+
+// ═══════════════════════════════════════════════════════════
+// HOME / STATS
+// ═══════════════════════════════════════════════════════════
+function refreshHomeStats() {
+  if (!G.playerId) return;
+  fetch('/api/stats/' + G.playerId)
+    .then(r => r.json())
+    .then(({ stats }) => {
+      if (!stats) return;
+      document.getElementById('home-name').textContent = G.playerName;
+      const initials = G.playerName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+      document.getElementById('home-av').textContent = initials;
+      document.getElementById('st-games').textContent = stats.total_games;
+      document.getElementById('st-wins').textContent = stats.wins;
+      document.getElementById('st-pts').textContent = stats.points;
+    }).catch(() => {});
+}
+
+function addToHistory(data) {
+  G.history.unshift(data);
+  if (G.history.length > 5) G.history.pop();
+  const hist = document.getElementById('h-history');
+  hist.innerHTML = '';
+  G.history.forEach(h => {
+    const myPts = h.scoreUpdates?.[G.playerId] || 0;
+    const row = document.createElement('div');
+    row.className = 'rec-item';
+    row.innerHTML = `
+      <div>
+        <div class="rec-t">${h.impostorCaught ? 'Impostor atrapado' : 'Impostor escapó'}</div>
+        <div class="rec-m">${G.players.length} jugadores · ${h.realPrompt}</div>
+      </div>
+      <div class="rec-p ${myPts > 0 ? '' : 'pk'}">${myPts > 0 ? '+' + myPts : myPts} pts</div>
+    `;
+    hist.appendChild(row);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// PROFILE
+// ═══════════════════════════════════════════════════════════
+function loadProfile() {
+  if (!G.playerId) return;
+  G.socket.emit('player:get-stats', { playerId: G.playerId });
+}
+
+G.socket; // dummy ref
+window.addEventListener('player:stats-ready', e => renderProfile(e.detail));
+
+function renderProfile(stats) {
+  const initials = (stats.name || G.playerName).split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('prof-av').textContent = initials;
+  document.getElementById('prof-name').textContent = stats.name || G.playerName;
+  document.getElementById('prof-games').textContent = stats.total_games;
+  document.getElementById('prof-wins').textContent = stats.wins;
+  document.getElementById('prof-pts').textContent = stats.points;
+
+  const lvl = Math.floor(stats.total_games / 5) + 1;
+  const titles = ['Novato','Explorador','Detective','Astuto','Maestro','Leyenda'];
+  document.getElementById('prof-level').textContent = `Nv. ${lvl} · ${titles[Math.min(lvl-1, titles.length-1)]}`;
+
+  const hasImp = stats.impostor_games > 0;
+  const hasDet = stats.wins > 0;
+  const hasStr = stats.wins >= 3;
+  document.getElementById('ach-impostor').style.display = hasImp ? 'inline-flex' : 'none';
+  document.getElementById('ach-detective').style.display = hasDet ? 'inline-flex' : 'none';
+  document.getElementById('ach-streak').style.display = hasStr ? 'inline-flex' : 'none';
+  document.getElementById('ach-none').style.display = (!hasImp && !hasDet) ? 'block' : 'none';
+}
+
+// ═══════════════════════════════════════════════════════════
+// BUTTON WIRING
+// ═══════════════════════════════════════════════════════════
+document.getElementById('btn-create').addEventListener('click', () => {
+  const name = document.getElementById('splash-name').value.trim();
+  if (name.length < 2) { toast('Escribe tu nombre (mín. 2 letras)'); return; }
+  G.playerName = name;
+  localStorage.setItem('gotchly_name', name);
+  G.socket.emit('room:create', { name, playerId: G.playerId });
+});
+
+document.getElementById('btn-join').addEventListener('click', () => {
+  const name = document.getElementById('splash-name').value.trim();
+  if (name.length < 2) { toast('Primero escribe tu nombre'); return; }
+  G.playerName = name;
+  localStorage.setItem('gotchly_name', name);
+  document.getElementById('join-code').value = '';
+  document.getElementById('join-overlay').classList.add('on');
+  document.getElementById('join-code').focus();
+});
+
+document.getElementById('btn-cancel-join').addEventListener('click', () => {
+  document.getElementById('join-overlay').classList.remove('on');
+});
+
+document.getElementById('join-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('join-overlay')) {
+    document.getElementById('join-overlay').classList.remove('on');
+  }
+});
+
+document.getElementById('join-code').addEventListener('input', e => {
+  let v = e.target.value.replace(/[^A-Za-z0-9]/g,'').toUpperCase();
+  if (v.length > 5) v = v.slice(0,5) + '·' + v.slice(5,9);
+  e.target.value = v;
+});
+
+document.getElementById('btn-do-join').addEventListener('click', () => {
+  const code = document.getElementById('join-code').value.trim();
+  if (code.length < 4) { toast('Ingresa un código válido'); return; }
+  document.getElementById('join-overlay').classList.remove('on');
+  G.socket.emit('room:join', { name: G.playerName, code, playerId: G.playerId });
+});
+
+document.getElementById('btn-lobby-back').addEventListener('click', () => {
+  G.roomCode = null;
+  showScreen('splash');
+});
+
+document.getElementById('btn-share').addEventListener('click', () => {
+  const code = G.roomCode || '';
+  if (navigator.share) {
+    navigator.share({ title: 'Gotchly', text: `Únete con el código ${code}` });
+  } else {
+    navigator.clipboard?.writeText(code).then(() => toast('¡Código copiado!')).catch(() => toast(code));
+  }
+});
+
+document.getElementById('btn-start').addEventListener('click', () => {
+  if (!G.isHost) return;
+  G.socket.emit('game:start');
+});
+
+document.getElementById('btn-play-again').addEventListener('click', () => {
+  G.socket.emit('game:play-again');
+});
+
+document.getElementById('btn-go-home').addEventListener('click', () => {
+  document.getElementById('home-name').textContent = G.playerName;
+  const initials = G.playerName.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('home-av').textContent = initials;
+  showScreen('home');
+  refreshHomeStats();
+});
+
+// Home screen create/join buttons
+document.getElementById('h-btn-create').addEventListener('click', () => {
+  G.socket.emit('room:create', { name: G.playerName, playerId: G.playerId });
+});
+document.getElementById('h-btn-join').addEventListener('click', () => {
+  document.getElementById('join-code').value = '';
+  document.getElementById('join-overlay').classList.add('on');
+  document.getElementById('join-code').focus();
+});
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+initSocket();
+</script>
+</body>
+</html>
