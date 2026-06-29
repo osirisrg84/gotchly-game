@@ -4,8 +4,8 @@
   "description": "Juego de adivinanza social con dibujos — Nadie sabe quién miente",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#060614",
-  "theme_color": "#8B5CF6",
+  "background_color": "#020C14",
+  "theme_color": "#0EA5E9",
   "orientation": "portrait",
   "icons": [
     {

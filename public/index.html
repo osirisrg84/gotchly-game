@@ -116,6 +116,13 @@ body{background:
     0 0 80px rgba(14,165,233,.07)}
 .notch{display:none}
 
+/* ── Full screen en móvil / PWA standalone ── */
+@media (max-width:430px){
+  body{align-items:flex-start;background:var(--body-bg)}
+  .phone{width:100vw;height:100vh;height:100dvh;border-radius:0;box-shadow:none;
+    border:none}
+}
+
 /* ── Status bar ── */
 .sb{height:40px;display:flex;align-items:center;justify-content:space-between;
   padding:0 24px;position:relative;z-index:10;flex-shrink:0}
