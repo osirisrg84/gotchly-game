@@ -89,7 +89,7 @@ body{background:
   transition:background-color .3s ease,border-color .3s ease,color .3s ease}
 
 /* ── Theme toggle switch ── */
-.theme-sw{position:absolute;top:15px;right:18px;z-index:60;
+.theme-sw{position:absolute;top:8px;right:18px;z-index:60;
   width:52px;height:28px;background:rgba(139,92,246,.14);
   border:1px solid rgba(139,92,246,.25);border-radius:100px;
   cursor:pointer;display:flex;align-items:center;padding:3px;
@@ -114,12 +114,11 @@ body{background:
   overflow:hidden;flex-shrink:0;
   box-shadow:0 48px 120px rgba(0,0,0,.92),0 0 0 1px rgba(139,92,246,.2),
     0 0 80px rgba(139,92,246,.07)}
-.notch{position:absolute;top:12px;left:50%;transform:translateX(-50%);
-  width:120px;height:34px;background:#000;border-radius:20px;z-index:50}
+.notch{display:none}
 
 /* ── Status bar ── */
-.sb{height:52px;display:flex;align-items:flex-end;justify-content:space-between;
-  padding:0 28px 8px;position:relative;z-index:10;flex-shrink:0}
+.sb{height:40px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;position:relative;z-index:10;flex-shrink:0}
 .sb-t{font:600 15px var(--f);color:var(--text)}
 .sb-i{display:flex;gap:6px;align-items:center}
 
@@ -219,7 +218,7 @@ body{background:
 #splash .orb:nth-child(2){width:340px;height:340px;bottom:60px;left:-70px;
   background:radial-gradient(circle,rgba(236,72,153,.35) 0%,transparent 65%)}
 #splash .body{flex:1;display:flex;flex-direction:column;align-items:center;
-  padding:36px 28px 40px;text-align:center;position:relative;z-index:5}
+  padding:12px 28px 36px;text-align:center;position:relative;z-index:5}
 .logo-box{width:96px;height:96px;border-radius:30px;background:var(--grad);
   display:flex;align-items:center;justify-content:center;margin-bottom:20px;
   box-shadow:0 0 0 1px rgba(255,255,255,.14),
