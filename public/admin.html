@@ -159,7 +159,11 @@ tr:hover td{background:rgba(14,165,233,.03)}
       <div class="stat-card"><div class="stat-val" id="st-accounts">—</div><div class="stat-lbl">Cuentas registradas</div></div>
       <div class="stat-card"><div class="stat-val" id="st-players">—</div><div class="stat-lbl">Jugadores totales</div></div>
       <div class="stat-card"><div class="stat-val" id="st-rooms">—</div><div class="stat-lbl">Salas activas</div></div>
-      <div class="stat-card"><div class="stat-val" id="st-online">—</div><div class="stat-lbl">Jugadores online</div></div>
+      <div class="stat-card">
+        <div class="stat-val" id="st-online">—</div>
+        <div class="stat-lbl">Conexiones activas</div>
+        <div style="font:400 11px var(--f);color:var(--dim);margin-top:4px" id="st-inrooms">— en partida</div>
+      </div>
       <div class="stat-card"><div class="stat-val" id="st-games">—</div><div class="stat-lbl">Partidas totales</div></div>
       <div class="stat-card"><div class="stat-val" id="st-pts">—</div><div class="stat-lbl">Puntos otorgados</div></div>
     </div>
@@ -275,6 +279,7 @@ function renderStats(s) {
   document.getElementById('st-players').textContent  = s.totalPlayers;
   document.getElementById('st-rooms').textContent    = s.activeRooms;
   document.getElementById('st-online').textContent   = s.activePlayers;
+  document.getElementById('st-inrooms').textContent  = `${s.playersInRooms} en partida`;
   document.getElementById('st-games').textContent    = s.totalGames;
   document.getElementById('st-pts').textContent      = s.totalPoints.toLocaleString();
 }

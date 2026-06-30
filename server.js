@@ -565,16 +565,18 @@ app.get('/admin', (_, res) => {
 
 app.get('/api/admin/stats', adminAuth, (req, res) => {
   const db = loadDB();
-  const accounts = Object.values(db.accounts || {});
-  const players  = Object.values(db.players  || {});
+  const accounts  = Object.values(db.accounts || {});
+  const players   = Object.values(db.players  || {});
   const activeRooms = Array.from(rooms.values());
   res.json({
-    totalAccounts: accounts.length,
-    totalPlayers:  players.length,
-    activeRooms:   rooms.size,
-    activePlayers: activeRooms.reduce((s, r) => s + Array.from(r.players.values()).filter(p => p.connected).length, 0),
-    totalGames:    players.reduce((s, p) => s + (p.total_games || 0), 0),
-    totalPoints:   players.reduce((s, p) => s + (p.points     || 0), 0),
+    totalAccounts:  accounts.length,
+    totalPlayers:   players.length,
+    activeRooms:    rooms.size,
+    activePlayers:  io.engine.clientsCount,           // todos los sockets conectados
+    playersInRooms: activeRooms.reduce((s, r) =>
+      s + Array.from(r.players.values()).filter(p => p.connected).length, 0),
+    totalGames:     players.reduce((s, p) => s + (p.total_games || 0), 0),
+    totalPoints:    players.reduce((s, p) => s + (p.points      || 0), 0),
   });
 });
 
