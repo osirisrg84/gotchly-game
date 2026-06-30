@@ -1095,6 +1095,8 @@ body{background:
             <div class="prof-ach" id="pb-ach2"><span>🏆</span><span>Primera victoria</span></div>
             <div class="prof-ach" id="pb-ach3"><span>🔥</span><span>Racha de 3</span></div>
             <div class="prof-ach" id="pb-ach4"><span>🎭</span><span>Impostor perfecto</span></div>
+            <div class="prof-ach" id="pb-ach5"><span>⭐</span><span>5 victorias</span></div>
+            <div class="prof-ach" id="pb-ach6"><span>🤝</span><span>Embajador</span></div>
           </div>
           <!-- Referral box -->
           <div class="ref-box" id="ref-box" style="display:none">
@@ -3041,6 +3043,7 @@ function updatePerfilTab() {
   document.getElementById('pb-ach2').classList.toggle('unlocked', wins   > 0);
   document.getElementById('pb-ach3').classList.toggle('unlocked', s >= 3);
   document.getElementById('pb-ach4').classList.toggle('unlocked', imp);
+  document.getElementById('pb-ach5').classList.toggle('unlocked', wins >= 5);
   loadReferralInfo();
 }
 
@@ -3059,6 +3062,8 @@ async function loadReferralInfo() {
     const link = `${origin}/?ref=${d.referralCode}`;
     document.getElementById('ref-link-txt').textContent = link;
     document.getElementById('ref-count-num').textContent = d.referralCount;
+    const ach6 = document.getElementById('pb-ach6');
+    if (ach6) ach6.classList.toggle('unlocked', d.referralCount >= 1);
     const nextEl = document.getElementById('ref-next');
     const nrLabel = d.nextReward ? (d.nextReward.label || d.nextReward) : null;
     nextEl.textContent = nrLabel ? `Próxima recompensa: ${nrLabel}` : '🏆 ¡Completaste todas las recompensas!';
