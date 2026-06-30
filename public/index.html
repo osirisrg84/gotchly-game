@@ -676,6 +676,10 @@ body{background:
       </div>
       <h1>GOTCHLY</h1>
       <p class="tag">Nadie sabe quién miente</p>
+      <button class="howto-btn" onclick="openHowTo()" style="margin-bottom:10px">
+        <svg width="13" height="13" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z" fill="currentColor"/></svg>
+        ¿Cómo se juega?
+      </button>
       <!-- Auth chip: shows login state -->
       <div id="auth-chip" class="auth-chip" style="display:none" onclick="openAuthSheet()">
         <div class="auth-chip-av" id="auth-chip-av">?</div>
@@ -688,10 +692,6 @@ body{background:
       <button class="bp" id="btn-create" style="margin-bottom:12px">Crear sala</button>
       <button class="bs" id="btn-join">Unirme con código</button>
       <span class="auth-link" id="auth-link" onclick="openAuthSheet()">Crear cuenta o iniciar sesión →</span>
-      <button class="howto-btn" onclick="openHowTo()">
-        <svg width="13" height="13" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z" fill="currentColor"/></svg>
-        ¿Cómo se juega?
-      </button>
       <button class="install-btn" id="btn-install">
         <svg width="16" height="16" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zm-8 2V5h2v6h1.17L12 13.17 9.83 11H11zm-6 7h14v2H5v-2z" fill="currentColor"/></svg>
         Instalar Gotchly en tu celular
