@@ -802,6 +802,22 @@ body{background:
 .sp-count{font:400 11px var(--f);color:var(--dim);margin-top:2px}
 .tvt .bp{width:100%;margin-bottom:0}
 
+/* ── Cosmetics store grid ── */
+.cos-store-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%}
+.cos-item{border-radius:14px;background:rgba(14,165,233,.05);border:1px solid rgba(14,165,233,.1);
+  padding:10px 6px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;
+  cursor:pointer;transition:all .18s;position:relative}
+.cos-item.free{border-color:rgba(16,185,129,.25);background:rgba(16,185,129,.06)}
+.cos-item.locked{opacity:.75}
+.cos-item.locked:active{opacity:1;background:rgba(14,165,233,.1)}
+.cos-preview{width:40px;height:40px;border-radius:50%;background:rgba(14,165,233,.08);
+  display:flex;align-items:center;justify-content:center;margin-bottom:2px}
+.cos-label{font:700 9px var(--f);color:var(--dim);letter-spacing:.06em;text-transform:uppercase;text-align:center}
+.cos-badge{font:700 8px var(--f);letter-spacing:.06em;text-transform:uppercase;
+  border-radius:6px;padding:2px 5px;margin-top:1px;text-align:center}
+.free-badge{background:rgba(16,185,129,.15);color:#10B981}
+.lock-badge{font-size:10px;background:none}
+
 /* ── Partidas tab ── */
 .tvp{padding:20px}
 .tvp-h{font:800 24px var(--f);color:var(--text);margin:0 0 4px}
@@ -1034,6 +1050,71 @@ body{background:
             <div class="sp-count">15 prompts</div>
           </div>
         </div>
+
+        <!-- Cosmetics section -->
+        <div class="tier-div">cosméticos</div>
+        <p style="font:400 12px var(--f);color:var(--dim);text-align:center;margin:0 0 14px">
+          Personaliza tu avatar y paleta · se desbloquean con Premium
+        </p>
+        <div class="cos-store-grid">
+          <!-- Free: equipped -->
+          <div class="cos-item free" title="Avatar Default">
+            <div class="cos-preview">
+              <svg viewBox="0 0 40 40" fill="none" width="26" height="26">
+                <path d="M4 20C8 12 14 8 20 8 26 8 32 12 36 20 32 28 26 32 20 32 14 32 8 28 4 20Z" stroke="white" stroke-width="2.5" fill="rgba(255,255,255,.15)"/>
+                <circle cx="20" cy="20" r="7" stroke="white" stroke-width="2.5"/>
+                <circle cx="20" cy="20" r="3" fill="white"/>
+              </svg>
+            </div>
+            <div class="cos-label">Default</div>
+            <div class="cos-badge free-badge">GRATIS</div>
+          </div>
+          <!-- Locked cosmetics -->
+          <div class="cos-item locked" onclick="SFX.tap();toast('Desbloquea Premium para obtener este cosmético ✨')">
+            <div class="cos-preview">
+              <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#F59E0B,#EF4444)"></div>
+            </div>
+            <div class="cos-label">Fuego</div>
+            <div class="cos-badge lock-badge">🔒</div>
+          </div>
+          <div class="cos-item locked" onclick="SFX.tap();toast('Desbloquea Premium para obtener este cosmético ✨')">
+            <div class="cos-preview">
+              <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#06B6D4,#6366F1)"></div>
+            </div>
+            <div class="cos-label">Hielo</div>
+            <div class="cos-badge lock-badge">🔒</div>
+          </div>
+          <div class="cos-item locked" onclick="SFX.tap();toast('Desbloquea Premium para obtener este cosmético ✨')">
+            <div class="cos-preview">
+              <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#10B981,#0EA5E9)"></div>
+            </div>
+            <div class="cos-label">Aurora</div>
+            <div class="cos-badge lock-badge">🔒</div>
+          </div>
+          <div class="cos-item locked" onclick="SFX.tap();toast('Desbloquea Premium para obtener este cosmético ✨')">
+            <div class="cos-preview" style="font-size:24px">🎭</div>
+            <div class="cos-label">Máscara</div>
+            <div class="cos-badge lock-badge">🔒</div>
+          </div>
+          <div class="cos-item locked" onclick="SFX.tap();toast('Desbloquea Premium para obtener este cosmético ✨')">
+            <div class="cos-preview" style="font-size:24px">👑</div>
+            <div class="cos-label">Corona</div>
+            <div class="cos-badge lock-badge">🔒</div>
+          </div>
+          <div class="cos-item locked" onclick="SFX.tap();toast('Desbloquea Premium para obtener este cosmético ✨')">
+            <div class="cos-preview">
+              <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#EC4899,#8B5CF6)"></div>
+            </div>
+            <div class="cos-label">Galaxy</div>
+            <div class="cos-badge lock-badge">🔒</div>
+          </div>
+          <div class="cos-item locked" onclick="SFX.tap();toast('Desbloquea Premium para obtener este cosmético ✨')">
+            <div class="cos-preview" style="font-size:24px">🌟</div>
+            <div class="cos-label">Estrella</div>
+            <div class="cos-badge lock-badge">🔒</div>
+          </div>
+        </div>
+        <div style="height:16px"></div>
       </div>
     </div>
 
