@@ -2140,6 +2140,8 @@ let submitted = false;
 
 function clearCanvas() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
   snaps = [];
 }
 function clearDrawing() {
@@ -2205,7 +2207,10 @@ document.getElementById('btn-undo').addEventListener('click', () => {
   if (snaps.length) ctx.putImageData(snaps.pop(), 0, 0);
 });
 document.getElementById('btn-clear').addEventListener('click', () => {
-  saveSnap(); ctx.clearRect(0, 0, canvas.width, canvas.height);
+  saveSnap();
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 });
 
 document.getElementById('btn-done').addEventListener('click', () => {
@@ -2214,7 +2219,14 @@ document.getElementById('btn-done').addEventListener('click', () => {
   const btn = document.getElementById('btn-done');
   btn.disabled = true;
   btn.textContent = '✓ Enviado';
-  const dataURL = canvas.toDataURL('image/jpeg', 0.6);
+  // Exportar con fondo blanco para que el color negro sea visible en thumbnails
+  const tmpC = document.createElement('canvas');
+  tmpC.width = canvas.width; tmpC.height = canvas.height;
+  const tmpCtx = tmpC.getContext('2d');
+  tmpCtx.fillStyle = '#FFFFFF';
+  tmpCtx.fillRect(0, 0, tmpC.width, tmpC.height);
+  tmpCtx.drawImage(canvas, 0, 0);
+  const dataURL = tmpC.toDataURL('image/jpeg', 0.6);
   G.socket.emit('game:submit-drawing', { dataURL });
 });
 
