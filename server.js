@@ -596,6 +596,7 @@ app.get('/api/admin/users', adminAuth, (req, res) => {
       premium:       a.premium || false,
       premiumSince:  a.premiumSince || null,
       packs:         a.packs || [],
+      online:        Array.from(socketToPlayer.values()).includes(a.id),
     };
   }).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   res.json({ users });

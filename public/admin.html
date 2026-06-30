@@ -86,6 +86,10 @@ tr:hover td{background:rgba(14,165,233,.03)}
 /* Pack chips */
 .pack-chip{display:inline-block;font-size:11px;padding:1px 6px;border-radius:5px;
   background:rgba(14,165,233,.1);color:var(--purple);margin:1px}
+.online-led{display:inline-block;width:8px;height:8px;border-radius:50%;
+  background:#22C55E;box-shadow:0 0 6px #22C55E;flex-shrink:0;margin-right:6px;
+  animation:ledPulse 2s ease-in-out infinite}
+@keyframes ledPulse{0%,100%{opacity:1;box-shadow:0 0 5px #22C55E}50%{opacity:.6;box-shadow:0 0 10px #22C55E}}
 
 /* Premium modal */
 .modal-overlay{position:fixed;inset:0;background:rgba(2,8,18,.8);display:flex;
@@ -303,7 +307,7 @@ function renderUsers(users) {
     return `
     <tr>
       <td style="color:var(--dim)">${i+1}</td>
-      <td><strong>${esc(u.username)}</strong></td>
+      <td style="display:flex;align-items:center">${u.online ? '<span class="online-led" title="Online ahora"></span>' : ''}<strong>${esc(u.username)}</strong></td>
       <td>${planBadge}</td>
       <td>${packChips || '<span style="color:var(--dim)">—</span>'}</td>
       <td style="color:var(--dim)">${fmtDate(u.createdAt)}</td>
