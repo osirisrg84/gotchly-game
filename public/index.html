@@ -2917,7 +2917,7 @@ function updateWinnerBox(data) {
   const played = parseInt(localStorage.getItem('gotchly_played')||'0');
   localStorage.setItem('gotchly_played', String(played + 1));
   const hist = JSON.parse(localStorage.getItem('gotchly_history')||'[]');
-  const players = Object.keys(G.players||{}).length || 0;
+  const players = (G.players||[]).length || 0;
   hist.unshift({ room: G.roomCode||'Sala', date: new Date().toLocaleDateString('es-AR',{day:'numeric',month:'short'}),
     players, pts: scoreUpdates[G.playerId]||0, won: myPts>0 });
   if (hist.length > 20) hist.pop();

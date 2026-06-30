@@ -550,6 +550,76 @@ app.get('/api/packs', (req, res) => {
 
 app.get('/health', (_, res) => res.json({ ok: true, rooms: rooms.size }));
 
+// ─── Admin Panel ──────────────────────────────────────────────────────────────
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Gotchly@Admin2025';
+
+function adminAuth(req, res, next) {
+  const token = (req.headers.authorization || '').replace('Bearer ', '');
+  if (token !== ADMIN_PASSWORD) return res.status(401).json({ error: 'No autorizado' });
+  next();
+}
+
+app.get('/admin', (_, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+
+app.get('/api/admin/stats', adminAuth, (req, res) => {
+  const db = loadDB();
+  const accounts = Object.values(db.accounts || {});
+  const players  = Object.values(db.players  || {});
+  const activeRooms = Array.from(rooms.values());
+  res.json({
+    totalAccounts: accounts.length,
+    totalPlayers:  players.length,
+    activeRooms:   rooms.size,
+    activePlayers: activeRooms.reduce((s, r) => s + Array.from(r.players.values()).filter(p => p.connected).length, 0),
+    totalGames:    players.reduce((s, p) => s + (p.total_games || 0), 0),
+    totalPoints:   players.reduce((s, p) => s + (p.points     || 0), 0),
+  });
+});
+
+app.get('/api/admin/users', adminAuth, (req, res) => {
+  const db = loadDB();
+  const users = Object.values(db.accounts || {}).map(a => {
+    const p = db.players[a.id] || {};
+    return {
+      username:    a.username,
+      id:          a.id,
+      createdAt:   a.createdAt,
+      lastSeen:    p.last_seen || null,
+      totalGames:  p.total_games || 0,
+      wins:        p.wins || 0,
+      points:      p.points || 0,
+      impostorGames: p.impostor_games || 0,
+    };
+  }).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  res.json({ users });
+});
+
+app.get('/api/admin/rooms', adminAuth, (req, res) => {
+  const active = Array.from(rooms.entries()).map(([code, room]) => ({
+    code,
+    state:   room.state,
+    round:   room.round,
+    pack:    room.packId || 'free',
+    players: Array.from(room.players.values()).map(p => ({
+      name: p.name, connected: p.connected, score: p.score, isHost: p.isHost,
+    })),
+  }));
+  res.json({ rooms: active });
+});
+
+app.delete('/api/admin/user/:username', adminAuth, (req, res) => {
+  const db = loadDB();
+  const key = req.params.username.toLowerCase();
+  if (!db.accounts?.[key]) return res.status(404).json({ error: 'Usuario no encontrado' });
+  const id = db.accounts[key].id;
+  delete db.accounts[key];
+  delete db.players[id];
+  saveDB(db);
+  res.json({ ok: true });
+});
+
 server.listen(PORT, () => {
   console.log(`\n🎮 Gotchly en http://localhost:${PORT}\n`);
 });

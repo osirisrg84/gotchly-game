@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gotchly — Admin</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#020C14;--card:#0D1F2D;--border:#0EA5E920;--purple:#0EA5E9;--green:#10B981;
+  --red:#EF4444;--text:#E0F9FF;--dim:rgba(125,211,252,.55);--f:'Inter',sans-serif}
+body{background:var(--bg);color:var(--text);font-family:var(--f);min-height:100vh}
+a{color:var(--purple)}
+
+/* ── Login ── */
+#login-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:100vh;padding:24px}
+.login-box{background:var(--card);border:1px solid var(--border);border-radius:20px;
+  padding:36px 32px;width:100%;max-width:380px;text-align:center}
+.login-logo{font-size:32px;margin-bottom:4px}
+.login-title{font-size:22px;font-weight:800;margin-bottom:6px}
+.login-sub{font-size:13px;color:var(--dim);margin-bottom:28px}
+.login-box input{width:100%;padding:12px 16px;background:rgba(14,165,233,.06);
+  border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;
+  margin-bottom:12px;outline:none}
+.login-box input:focus{border-color:var(--purple)}
+.btn{padding:12px 24px;border-radius:12px;border:none;cursor:pointer;
+  font:700 14px var(--f);transition:opacity .15s;width:100%}
+.btn-primary{background:linear-gradient(135deg,#0EA5E9,#10B981);color:#fff}
+.btn-primary:hover{opacity:.9}
+.btn-danger{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.25)}
+.btn-danger:hover{background:rgba(239,68,68,.25)}
+.login-err{color:var(--red);font-size:12px;margin-top:8px;min-height:18px}
+
+/* ── Dashboard ── */
+#dashboard{display:none;min-height:100vh}
+.topbar{background:var(--card);border-bottom:1px solid var(--border);
+  padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:10}
+.topbar-brand{font-size:16px;font-weight:800;display:flex;align-items:center;gap:8px}
+.topbar-brand span{background:linear-gradient(135deg,#0EA5E9,#10B981);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.refresh-btn{background:rgba(14,165,233,.1);border:1px solid var(--border);border-radius:8px;
+  color:var(--purple);font:600 12px var(--f);padding:6px 14px;cursor:pointer;transition:background .15s}
+.refresh-btn:hover{background:rgba(14,165,233,.2)}
+.logout-btn{background:none;border:none;color:var(--dim);font:500 12px var(--f);cursor:pointer}
+.last-update{font:400 11px var(--f);color:var(--dim)}
+
+.content{padding:24px;max-width:1200px;margin:0 auto}
+.section-title{font:700 11px var(--f);letter-spacing:.12em;text-transform:uppercase;
+  color:var(--dim);margin-bottom:12px;margin-top:28px}
+.section-title:first-child{margin-top:0}
+
+/* Stats cards */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px 20px}
+.stat-val{font:800 32px var(--f);background:linear-gradient(135deg,#0EA5E9,#10B981);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.stat-lbl{font:500 11px var(--f);color:var(--dim);margin-top:4px;text-transform:uppercase;letter-spacing:.08em}
+
+/* Table */
+.table-wrap{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead tr{border-bottom:1px solid var(--border)}
+th{padding:12px 16px;font:600 11px var(--f);color:var(--dim);text-align:left;
+  text-transform:uppercase;letter-spacing:.08em;white-space:nowrap}
+td{padding:11px 16px;font:400 13px var(--f);color:var(--text);border-bottom:1px solid rgba(14,165,233,.04)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(14,165,233,.03)}
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font:700 10px var(--f);
+  letter-spacing:.06em;text-transform:uppercase}
+.badge-green{background:rgba(16,185,129,.15);color:var(--green)}
+.badge-blue{background:rgba(14,165,233,.15);color:var(--purple)}
+.badge-yellow{background:rgba(245,158,11,.15);color:#F59E0B}
+.badge-red{background:rgba(239,68,68,.12);color:var(--red)}
+.del-btn{background:none;border:none;color:rgba(239,68,68,.5);cursor:pointer;
+  font-size:14px;padding:2px 6px;border-radius:6px;transition:color .15s}
+.del-btn:hover{color:var(--red);background:rgba(239,68,68,.1)}
+
+/* Rooms */
+.rooms-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.room-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px}
+.room-code{font:800 16px monospace;color:var(--purple);margin-bottom:6px}
+.room-meta{font:400 12px var(--f);color:var(--dim);margin-bottom:10px}
+.room-players{display:flex;flex-wrap:wrap;gap:6px}
+.room-player{font:500 11px var(--f);padding:3px 8px;border-radius:6px;
+  background:rgba(14,165,233,.08);color:var(--text)}
+.room-player.host{background:rgba(245,158,11,.12);color:#F59E0B}
+.room-player.disc{opacity:.4}
+.empty-state{text-align:center;padding:40px;color:var(--dim);font-size:13px}
+
+/* Loading spinner */
+.spin{width:20px;height:20px;border:2px solid var(--border);
+  border-top-color:var(--purple);border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<!-- Login -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">👁️</div>
+    <div class="login-title">Gotchly Admin</div>
+    <div class="login-sub">Ingresa la contraseña de administrador</div>
+    <input type="password" id="admin-pwd" placeholder="Contraseña admin" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="btn btn-primary" onclick="doLogin()">Entrar al panel →</button>
+    <div class="login-err" id="login-err"></div>
+  </div>
+</div>
+
+<!-- Dashboard -->
+<div id="dashboard">
+  <div class="topbar">
+    <div class="topbar-brand">
+      <svg width="20" height="20" viewBox="0 0 40 40" fill="none">
+        <path d="M4 20C8 12 14 8 20 8 26 8 32 12 36 20 32 28 26 32 20 32 14 32 8 28 4 20Z" stroke="#0EA5E9" stroke-width="2.5" fill="none"/>
+        <circle cx="20" cy="20" r="7" stroke="#10B981" stroke-width="2.5"/>
+        <circle cx="20" cy="20" r="3" fill="#0EA5E9"/>
+      </svg>
+      <span>GOTCHLY</span> <span style="-webkit-text-fill-color:var(--dim);background:none;font-weight:400;font-size:13px">Admin</span>
+    </div>
+    <div class="topbar-right">
+      <span class="last-update" id="last-update">—</span>
+      <button class="refresh-btn" onclick="loadAll()">↻ Actualizar</button>
+      <button class="logout-btn" onclick="doLogoutAdmin()">Salir</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="section-title">Resumen general</div>
+    <div class="stats-grid" id="stats-grid">
+      <div class="stat-card"><div class="stat-val" id="st-accounts">—</div><div class="stat-lbl">Cuentas registradas</div></div>
+      <div class="stat-card"><div class="stat-val" id="st-players">—</div><div class="stat-lbl">Jugadores totales</div></div>
+      <div class="stat-card"><div class="stat-val" id="st-rooms">—</div><div class="stat-lbl">Salas activas</div></div>
+      <div class="stat-card"><div class="stat-val" id="st-online">—</div><div class="stat-lbl">Jugadores online</div></div>
+      <div class="stat-card"><div class="stat-val" id="st-games">—</div><div class="stat-lbl">Partidas totales</div></div>
+      <div class="stat-card"><div class="stat-val" id="st-pts">—</div><div class="stat-lbl">Puntos otorgados</div></div>
+    </div>
+
+    <div class="section-title" style="margin-top:32px">Salas activas</div>
+    <div id="rooms-container"><div class="empty-state">No hay salas activas en este momento</div></div>
+
+    <div class="section-title" style="margin-top:32px">Usuarios registrados</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Usuario</th>
+            <th>Registrado</th>
+            <th>Último acceso</th>
+            <th>Partidas</th>
+            <th>Victorias</th>
+            <th>Puntos</th>
+            <th>Impostor</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="users-tbody">
+          <tr><td colspan="9" style="text-align:center;padding:24px;color:var(--dim)"><div class="spin"></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+let ADMIN_TOKEN = sessionStorage.getItem('gotchly_admin_token') || '';
+
+async function doLogin() {
+  const pwd = document.getElementById('admin-pwd').value;
+  if (!pwd) return;
+  document.getElementById('login-err').textContent = '';
+  try {
+    const r = await fetch('/api/admin/stats', {
+      headers: { 'Authorization': 'Bearer ' + pwd }
+    });
+    if (!r.ok) { document.getElementById('login-err').textContent = 'Contraseña incorrecta'; return; }
+    ADMIN_TOKEN = pwd;
+    sessionStorage.setItem('gotchly_admin_token', pwd);
+    showDashboard();
+  } catch {
+    document.getElementById('login-err').textContent = 'Error de conexión';
+  }
+}
+
+function doLogoutAdmin() {
+  sessionStorage.removeItem('gotchly_admin_token');
+  ADMIN_TOKEN = '';
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('admin-pwd').value = '';
+}
+
+function showDashboard() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  loadAll();
+}
+
+async function api(path) {
+  const r = await fetch(path, { headers: { 'Authorization': 'Bearer ' + ADMIN_TOKEN } });
+  if (!r.ok) throw new Error('Auth error');
+  return r.json();
+}
+
+async function loadAll() {
+  try {
+    const [stats, users, rooms] = await Promise.all([
+      api('/api/admin/stats'),
+      api('/api/admin/users'),
+      api('/api/admin/rooms'),
+    ]);
+    renderStats(stats);
+    renderUsers(users.users);
+    renderRooms(rooms.rooms);
+    document.getElementById('last-update').textContent = 'Actualizado: ' + new Date().toLocaleTimeString('es-AR');
+  } catch(e) {
+    if (e.message === 'Auth error') doLogoutAdmin();
+  }
+}
+
+function renderStats(s) {
+  document.getElementById('st-accounts').textContent = s.totalAccounts;
+  document.getElementById('st-players').textContent  = s.totalPlayers;
+  document.getElementById('st-rooms').textContent    = s.activeRooms;
+  document.getElementById('st-online').textContent   = s.activePlayers;
+  document.getElementById('st-games').textContent    = s.totalGames;
+  document.getElementById('st-pts').textContent      = s.totalPoints.toLocaleString();
+}
+
+function renderUsers(users) {
+  const tb = document.getElementById('users-tbody');
+  if (!users.length) {
+    tb.innerHTML = '<tr><td colspan="9" class="empty-state">Sin usuarios registrados aún</td></tr>';
+    return;
+  }
+  tb.innerHTML = users.map((u, i) => `
+    <tr>
+      <td style="color:var(--dim)">${i+1}</td>
+      <td><strong>${esc(u.username)}</strong></td>
+      <td style="color:var(--dim)">${fmtDate(u.createdAt)}</td>
+      <td style="color:var(--dim)">${u.lastSeen ? fmtDate(u.lastSeen) : '—'}</td>
+      <td>${u.totalGames}</td>
+      <td><span class="badge badge-green">${u.wins}</span></td>
+      <td><span class="badge badge-blue">${u.points}</span></td>
+      <td style="color:var(--dim)">${u.impostorGames}</td>
+      <td><button class="del-btn" onclick="deleteUser('${esc(u.username)}')" title="Eliminar">🗑</button></td>
+    </tr>`).join('');
+}
+
+function renderRooms(rooms) {
+  const el = document.getElementById('rooms-container');
+  if (!rooms.length) {
+    el.innerHTML = '<div class="empty-state">No hay salas activas en este momento</div>';
+    return;
+  }
+  const stateLabel = { waiting:'Esperando', drawing:'Dibujando', voting:'Votando', reveal:'Resultado' };
+  const stateClass = { waiting:'badge-yellow', drawing:'badge-blue', voting:'badge-green', reveal:'badge-red' };
+  el.innerHTML = '<div class="rooms-grid">' + rooms.map(r => `
+    <div class="room-card">
+      <div class="room-code">${r.code}</div>
+      <div class="room-meta">
+        <span class="badge ${stateClass[r.state]||'badge-blue'}">${stateLabel[r.state]||r.state}</span>
+        &nbsp;Pack: <strong>${r.pack}</strong> &nbsp;Ronda: ${r.round}
+      </div>
+      <div class="room-players">
+        ${r.players.map(p=>`<div class="room-player${p.isHost?' host':''}${!p.connected?' disc':''}">${esc(p.name)}${p.isHost?' ★':''}</div>`).join('')}
+      </div>
+    </div>`).join('') + '</div>';
+}
+
+async function deleteUser(username) {
+  if (!confirm(`¿Eliminar la cuenta de "${username}"?\nEsta acción no se puede deshacer.`)) return;
+  try {
+    const r = await fetch('/api/admin/user/'+encodeURIComponent(username), {
+      method: 'DELETE',
+      headers: { 'Authorization': 'Bearer ' + ADMIN_TOKEN }
+    });
+    if (r.ok) { loadAll(); } else { alert('Error al eliminar'); }
+  } catch { alert('Error de conexión'); }
+}
+
+function fmtDate(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  return d.toLocaleDateString('es-AR',{day:'numeric',month:'short',year:'numeric'}) + ' ' +
+         d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+}
+function esc(s) { return String(s).replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c])); }
+
+// Auto-refresh each 60s
+setInterval(loadAll, 60000);
+
+// Auto-login if token in session
+if (ADMIN_TOKEN) {
+  fetch('/api/admin/stats', { headers: { 'Authorization': 'Bearer ' + ADMIN_TOKEN } })
+    .then(r => r.ok ? showDashboard() : doLogoutAdmin())
+    .catch(() => {});
+}
+</script>
+</body>
+</html>
