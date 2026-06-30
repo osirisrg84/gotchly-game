@@ -641,6 +641,52 @@ body{background:
 /* ── Auth link spacing ── */
 .auth-link{margin-top:18px!important}
 
+/* ── Password visibility toggle ── */
+.pw-wrap{position:relative;width:100%}
+.pw-wrap .inp{width:100%;box-sizing:border-box}
+.pw-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;padding:4px;
+  color:rgba(125,211,252,.45);transition:color .2s;display:flex;align-items:center}
+.pw-eye:hover{color:rgba(125,211,252,.85)}
+.light .pw-eye{color:rgba(7,89,133,.4)}
+.light .pw-eye:hover{color:rgba(2,132,199,.8)}
+
+/* ── Profile menu ── */
+.prof-header{display:flex;align-items:center;gap:14px;padding:8px 0 20px}
+.prof-av{width:54px;height:54px;border-radius:50%;background:var(--grad);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font:800 22px var(--f);color:#fff;box-shadow:0 4px 20px rgba(14,165,233,.35)}
+.prof-info{flex:1;min-width:0}
+.prof-name{font:700 18px var(--f);color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prof-streak{font:500 12px var(--f);color:var(--dim);margin-top:3px}
+.prof-menu{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.prof-item{display:flex;align-items:center;gap:13px;padding:14px 16px;
+  border-radius:16px;background:var(--faint);border:1px solid var(--border);
+  cursor:pointer;text-align:left;transition:background .15s,border-color .15s;width:100%}
+.prof-item:hover,.prof-item:active{background:rgba(14,165,233,.12);border-color:rgba(14,165,233,.22)}
+.prof-item-ico{font-size:20px;flex-shrink:0;width:24px;text-align:center}
+.prof-item-txt{flex:1;font:600 14px var(--f);color:var(--text)}
+.prof-item-arr{font:600 16px var(--f);color:var(--dim)}
+.prof-item-danger .prof-item-txt{color:rgba(239,68,68,.8)}
+.prof-item-danger{border-color:rgba(239,68,68,.12)}
+.prof-item-danger:hover{background:rgba(239,68,68,.08)!important;border-color:rgba(239,68,68,.2)!important}
+
+/* Stats grid */
+.prof-stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
+  padding:12px 0 16px;border-top:1px solid var(--border)}
+.prof-stat{display:flex;flex-direction:column;align-items:center;gap:3px;
+  background:var(--faint);border-radius:12px;padding:10px 6px}
+.prof-stat-n{font:800 20px var(--f);background:var(--grad);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.prof-stat-l{font:600 9px var(--f);color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
+
+/* Achievements */
+.prof-achs{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 0 16px;border-top:1px solid var(--border)}
+.prof-ach{display:flex;align-items:center;gap:8px;padding:10px 12px;
+  border-radius:12px;background:var(--faint);border:1px solid var(--border);
+  font:600 11px var(--f);color:var(--dim);opacity:.45}
+.prof-ach.unlocked{opacity:1;color:var(--text);border-color:rgba(14,165,233,.25);background:rgba(14,165,233,.06)}
+
 /* ── Splash decorative layer ── */
 .sp-deco{position:absolute;inset:0;pointer-events:none;z-index:2;overflow:hidden}
 
@@ -874,22 +920,86 @@ body{background:
   <!-- ═══════════ AUTH OVERLAY ═══════════ -->
   <div class="overlay" id="auth-overlay">
     <div class="sheet">
-      <h3>Tu cuenta Gotchly</h3>
+      <h3 id="auth-sheet-title">Tu cuenta Gotchly</h3>
       <p id="auth-sheet-sub">Guardá tu progreso y competí en el ranking</p>
-      <div class="auth-tabs">
-        <button class="auth-tab on" id="tab-login" onclick="switchAuthTab('login')">Entrar</button>
-        <button class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Registrarse</button>
+
+      <!-- ── Logged-in: Profile menu ── -->
+      <div id="auth-profile" style="display:none">
+        <div class="prof-header">
+          <div class="prof-av" id="prof-av-big">?</div>
+          <div class="prof-info">
+            <div class="prof-name" id="prof-name-big">Usuario</div>
+            <div class="prof-streak" id="prof-streak-big">¡A ganar tu primera racha!</div>
+          </div>
+        </div>
+        <div class="prof-menu">
+          <button class="prof-item" onclick="openProfileStats()">
+            <span class="prof-item-ico">📊</span>
+            <span class="prof-item-txt">Mis estadísticas</span>
+            <span class="prof-item-arr">›</span>
+          </button>
+          <button class="prof-item" onclick="closeAuth();openPaywall()">
+            <span class="prof-item-ico">🛍️</span>
+            <span class="prof-item-txt">Tienda de packs</span>
+            <span class="prof-item-arr">›</span>
+          </button>
+          <button class="prof-item" onclick="openAchievements()">
+            <span class="prof-item-ico">🏅</span>
+            <span class="prof-item-txt">Mis logros</span>
+            <span class="prof-item-arr">›</span>
+          </button>
+          <button class="prof-item prof-item-danger" id="btn-auth-logout">
+            <span class="prof-item-ico">🚪</span>
+            <span class="prof-item-txt">Cerrar sesión</span>
+            <span class="prof-item-arr">›</span>
+          </button>
+        </div>
+        <!-- Inline stats panel (hidden until tapped) -->
+        <div id="prof-stats-panel" style="display:none">
+          <div class="prof-stats-grid">
+            <div class="prof-stat"><div class="prof-stat-n" id="pst-streak">0</div><div class="prof-stat-l">Racha</div></div>
+            <div class="prof-stat"><div class="prof-stat-n" id="pst-played">0</div><div class="prof-stat-l">Partidas</div></div>
+            <div class="prof-stat"><div class="prof-stat-n" id="pst-wins">0</div><div class="prof-stat-l">Victorias</div></div>
+            <div class="prof-stat"><div class="prof-stat-n" id="pst-wr">—</div><div class="prof-stat-l">Win rate</div></div>
+          </div>
+        </div>
+        <!-- Achievements panel -->
+        <div id="prof-ach-panel" style="display:none">
+          <div class="prof-achs">
+            <div class="prof-ach" id="ach-first"><span>🎨</span><span>Primera partida</span></div>
+            <div class="prof-ach" id="ach-win"><span>🏆</span><span>Primera victoria</span></div>
+            <div class="prof-ach" id="ach-streak3"><span>🔥</span><span>Racha de 3</span></div>
+            <div class="prof-ach" id="ach-impostor"><span>🎭</span><span>Impostor perfecto</span></div>
+          </div>
+        </div>
+        <div style="height:8px"></div>
+        <button class="bs" onclick="closeAuth()">Cerrar</button>
       </div>
-      <div class="auth-form">
-        <input class="inp" id="auth-username" type="text" maxlength="20"
-          placeholder="Tu nombre de usuario" autocomplete="username" autocorrect="off" autocapitalize="off">
-        <input class="inp" id="auth-password" type="password" maxlength="40"
-          placeholder="Contraseña (mín. 4 caracteres)" autocomplete="current-password">
-        <div class="auth-err" id="auth-err"></div>
-        <button class="bp" id="btn-auth-submit">Entrar →</button>
-        <button class="bs" id="btn-auth-logout" style="display:none">Cerrar sesión</button>
-        <div style="height:4px"></div>
-        <button class="bs" onclick="document.getElementById('auth-overlay').classList.remove('on')">Cancelar</button>
+
+      <!-- ── Logged-out: Login / register form ── -->
+      <div id="auth-form-wrap">
+        <div class="auth-tabs" id="auth-tabs">
+          <button class="auth-tab on" id="tab-login" onclick="switchAuthTab('login')">Entrar</button>
+          <button class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Registrarse</button>
+        </div>
+        <div class="auth-form">
+          <input class="inp" id="auth-username" type="text" maxlength="20"
+            placeholder="Tu nombre de usuario" autocomplete="username" autocorrect="off" autocapitalize="off">
+          <div class="pw-wrap">
+            <input class="inp" id="auth-password" type="password" maxlength="40"
+              placeholder="Contraseña (mín. 4 caracteres)" autocomplete="current-password" style="padding-right:44px">
+            <button type="button" class="pw-eye" id="pw-toggle" onclick="togglePwdVisibility()" aria-label="Mostrar contraseña">
+              <svg id="pw-eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M12 5C7 5 2.73 8.11 1 12.5 2.73 16.89 7 20 12 20s9.27-3.11 11-7.5C21.27 8.11 17 5 12 5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                <circle cx="12" cy="12.5" r="3.5" stroke="currentColor" stroke-width="1.8"/>
+              </svg>
+            </button>
+          </div>
+          <div class="auth-err" id="auth-err"></div>
+          <button class="bp" id="btn-auth-submit">Entrar →</button>
+          <div style="height:4px"></div>
+          <button class="bs" onclick="closeAuth()">Cancelar</button>
+        </div>
       </div>
     </div>
   </div>
@@ -2272,20 +2382,79 @@ function switchAuthTab(tab) {
     ? 'Contraseña' : 'Contraseña (mín. 4 caracteres)';
 }
 
+function closeAuth() {
+  document.getElementById('auth-overlay').classList.remove('on');
+}
+
+function togglePwdVisibility() {
+  const inp = document.getElementById('auth-password');
+  const icon = document.getElementById('pw-eye-icon');
+  const showing = inp.type === 'text';
+  inp.type = showing ? 'password' : 'text';
+  icon.innerHTML = showing
+    ? '<path d="M12 5C7 5 2.73 8.11 1 12.5 2.73 16.89 7 20 12 20s9.27-3.11 11-7.5C21.27 8.11 17 5 12 5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="12.5" r="3.5" stroke="currentColor" stroke-width="1.8"/>'
+    : '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-5 0-9.27-3.11-11-7.5a10.06 10.06 0 0 1 2.17-3.67M9.88 9.88A3.5 3.5 0 0 1 15.12 15.12M6.1 6.1L2 2m20 20-4.1-4.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>';
+}
+
 function openAuthSheet() {
   SFX.tap();
-  const overlay = document.getElementById('auth-overlay');
-  overlay.classList.add('on');
+  document.getElementById('auth-overlay').classList.add('on');
+  document.getElementById('prof-stats-panel').style.display = 'none';
+  document.getElementById('prof-ach-panel').style.display = 'none';
   const loggedIn = !!AUTH.token;
-  document.getElementById('auth-sheet-sub').textContent = loggedIn
-    ? `Sesión activa como ${AUTH.username}`
+
+  document.getElementById('auth-profile').style.display   = loggedIn ? 'block' : 'none';
+  document.getElementById('auth-form-wrap').style.display = loggedIn ? 'none'  : 'block';
+  document.getElementById('auth-sheet-title').textContent = loggedIn ? 'Mi cuenta' : 'Tu cuenta Gotchly';
+  document.getElementById('auth-sheet-sub').textContent   = loggedIn
+    ? `Hola, ${AUTH.username} 👋`
     : 'Guardá tu progreso y competí en el ranking';
-  document.getElementById('btn-auth-logout').style.display = loggedIn ? 'block' : 'none';
-  document.getElementById('btn-auth-submit').style.display = loggedIn ? 'none' : 'block';
-  document.getElementById('auth-tabs').style.display = loggedIn ? 'none' : 'flex';
-  document.getElementById('auth-username').style.display = loggedIn ? 'none' : 'block';
-  document.getElementById('auth-password').style.display = loggedIn ? 'none' : 'block';
-  if (!loggedIn) setTimeout(() => document.getElementById('auth-username').focus(), 200);
+
+  if (loggedIn) {
+    document.getElementById('prof-av-big').textContent = (AUTH.username||'?')[0].toUpperCase();
+    document.getElementById('prof-name-big').textContent = AUTH.username;
+    const s = STREAK.get();
+    document.getElementById('prof-streak-big').textContent = s > 0
+      ? `🔥 ${s} victoria${s>1?'s':''} seguida${s>1?'s':''}`
+      : '¡A ganar tu primera racha!';
+  } else {
+    setTimeout(() => document.getElementById('auth-username').focus(), 200);
+  }
+}
+
+function openProfileStats() {
+  SFX.tap();
+  const panel = document.getElementById('prof-stats-panel');
+  document.getElementById('prof-ach-panel').style.display = 'none';
+  const open = panel.style.display !== 'none';
+  panel.style.display = open ? 'none' : 'block';
+  if (!open) {
+    const played = parseInt(localStorage.getItem('gotchly_played')||'0');
+    const wins   = parseInt(localStorage.getItem('gotchly_wins')||'0');
+    const streak = STREAK.get();
+    document.getElementById('pst-streak').textContent = streak;
+    document.getElementById('pst-played').textContent = played;
+    document.getElementById('pst-wins').textContent   = wins;
+    document.getElementById('pst-wr').textContent     = played > 0 ? Math.round(wins/played*100)+'%' : '—';
+  }
+}
+
+function openAchievements() {
+  SFX.tap();
+  const panel = document.getElementById('prof-ach-panel');
+  document.getElementById('prof-stats-panel').style.display = 'none';
+  const open = panel.style.display !== 'none';
+  panel.style.display = open ? 'none' : 'block';
+  if (!open) {
+    const played = parseInt(localStorage.getItem('gotchly_played')||'0');
+    const wins   = parseInt(localStorage.getItem('gotchly_wins')||'0');
+    const streak = STREAK.get();
+    const imp    = localStorage.getItem('gotchly_impostor_win')==='1';
+    document.getElementById('ach-first').classList.toggle('unlocked', played > 0);
+    document.getElementById('ach-win').classList.toggle('unlocked',   wins  > 0);
+    document.getElementById('ach-streak3').classList.toggle('unlocked', streak >= 3);
+    document.getElementById('ach-impostor').classList.toggle('unlocked', imp);
+  }
 }
 
 document.getElementById('btn-auth-submit').addEventListener('click', async () => {
@@ -2328,7 +2497,7 @@ document.getElementById('btn-auth-submit').addEventListener('click', async () =>
 document.getElementById('btn-auth-logout').addEventListener('click', () => {
   AUTH.clear();
   updateAuthChip();
-  document.getElementById('auth-overlay').classList.remove('on');
+  closeAuth();
   toast('Sesión cerrada');
   SFX.tap();
 });
@@ -2380,11 +2549,22 @@ function updateWinnerBox(data) {
   const streakRow = document.getElementById('streak-row');
   const streakBadge = document.getElementById('streak-badge');
 
+  // Track games played
+  const played = parseInt(localStorage.getItem('gotchly_played')||'0');
+  localStorage.setItem('gotchly_played', String(played + 1));
+
   if (!iWon) {
     box.classList.remove('show');
     streakRow.style.display = 'none';
     STREAK.reset();
     return;
+  }
+
+  // Track wins
+  const wins = parseInt(localStorage.getItem('gotchly_wins')||'0');
+  localStorage.setItem('gotchly_wins', String(wins + 1));
+  if (G.isImpostor && !data.impostorCaught) {
+    localStorage.setItem('gotchly_impostor_win', '1');
   }
 
   // Increment streak
