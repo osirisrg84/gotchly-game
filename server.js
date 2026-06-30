@@ -302,6 +302,11 @@ io.on('connection', socket => {
       promptPair: null, impostorId: null,
       drawingOrder: [], timer: null, timerValue: 0, round: 0,
       packId: null,
+      maxRounds: 0,         // 0 = libre (sin límite)
+      sessionScores: {},    // acumulado entre rondas
+      nextImpostorId: null, // elegido por ganador de ronda anterior
+      roundWinnerId: null,
+      pickerTimer: null,
     });
     socketToRoom.set(socket.id, code);
     socketToPlayer.set(socket.id, playerId);
@@ -334,6 +339,36 @@ io.on('connection', socket => {
     console.log(`${playerName} unido a ${code}`);
   });
 
+  socket.on('game:set-rounds', ({ maxRounds }) => {
+    const code = socketToRoom.get(socket.id);
+    const playerId = socketToPlayer.get(socket.id);
+    if (!code) return;
+    const room = rooms.get(code);
+    if (!room || room.state !== 'waiting') return;
+    const player = room.players.get(playerId);
+    if (!player?.isHost) return;
+    room.maxRounds = Math.max(0, parseInt(maxRounds) || 0);
+    io.to(code).emit('room:config', { maxRounds: room.maxRounds });
+  });
+
+  socket.on('game:pick-impostor', ({ targetId }) => {
+    const code = socketToRoom.get(socket.id);
+    const playerId = socketToPlayer.get(socket.id);
+    if (!code) return;
+    const room = rooms.get(code);
+    if (!room || room.state !== 'picking') return;
+    if (playerId !== room.roundWinnerId) return; // solo el ganador puede elegir
+    clearTimeout(room.pickerTimer);
+    room.nextImpostorId = room.players.has(targetId) ? targetId : null;
+    room.state = 'waiting';
+    const pickedName = room.players.get(targetId)?.name || '?';
+    io.to(code).emit('game:impostor-picked', {
+      pickerName: room.players.get(playerId)?.name || '?',
+      pickedName,
+      auto: false,
+    });
+  });
+
   socket.on('game:start', ({ packId } = {}) => {
     const code = socketToRoom.get(socket.id);
     const playerId = socketToPlayer.get(socket.id);
@@ -352,9 +387,13 @@ io.on('connection', socket => {
     const promptPair = getPromptForRoom(room);
     room.promptPair = promptPair;
 
+    // Use winner-chosen impostor or random
     const ids = Array.from(room.players.keys());
-    const impostorId = ids[Math.floor(Math.random() * ids.length)];
+    const impostorId = room.nextImpostorId && room.players.has(room.nextImpostorId)
+      ? room.nextImpostorId
+      : ids[Math.floor(Math.random() * ids.length)];
     room.impostorId = impostorId;
+    room.nextImpostorId = null;
 
     room.players.forEach(p => {
       p.drawing = null; p.vote = null;
@@ -366,6 +405,8 @@ io.on('connection', socket => {
         isImpostor: p.isImpostor,
         timerSeconds: DRAWING_TIME,
         playerCount: room.players.size,
+        round: room.round,
+        maxRounds: room.maxRounds,
       });
     });
     startDrawingTimer(room);
@@ -536,6 +577,24 @@ function revealResults(room) {
     targetName: room.players.get(p.vote)?.name || '—',
     correct: p.vote === room.impostorId,
   }));
+  // Acumular puntajes de sesión
+  room.players.forEach(p => {
+    room.sessionScores[p.id] = (room.sessionScores[p.id] || 0) + (scoreUpdates[p.id] || 0);
+  });
+
+  // Ganador de la ronda = quien más puntos ganó en esta ronda (excluir empates al azar)
+  let maxDelta = -1, roundWinnerId = null;
+  Object.entries(scoreUpdates).forEach(([id, pts]) => {
+    if (pts > maxDelta) { maxDelta = pts; roundWinnerId = id; }
+  });
+  room.roundWinnerId = roundWinnerId;
+
+  const sessionStandings = Array.from(room.players.values())
+    .map(p => ({ id: p.id, name: p.name, score: p.score, sessionScore: room.sessionScores[p.id] || 0 }))
+    .sort((a, b) => b.sessionScore - a.sessionScore);
+
+  const isLastRound = room.maxRounds > 0 && room.round >= room.maxRounds;
+
   io.to(room.code).emit('game:reveal', {
     impostorId: room.impostorId,
     impostorName: impostor?.name || '?',
@@ -545,8 +604,67 @@ function revealResults(room) {
     impostorDrawing: (impostor?.drawing && impostor.drawing !== 'empty') ? impostor.drawing : null,
     voteSummary, scoreUpdates,
     players: publicPlayers(room).map(p => ({ ...p, score: room.players.get(p.id)?.score || 0 })),
+    round: room.round,
+    maxRounds: room.maxRounds,
+    roundWinnerId,
+    roundWinnerName: room.players.get(roundWinnerId)?.name || '?',
+    sessionStandings,
+    isLastRound,
   });
-  console.log(`Reveal ${room.code} — ${impostor?.name} ${impostorCaught ? 'ATRAPADO' : 'ESCAPÓ'}`);
+
+  // Emitir resumen de ronda a todos (antes de session-end o pick)
+  if (!isLastRound && room.maxRounds > 0) {
+    io.to(room.code).emit('game:round-end', {
+      roundWinnerId,
+      roundWinnerName: room.players.get(roundWinnerId)?.name || '?',
+      sessionStandings,
+      round: room.round,
+      maxRounds: room.maxRounds,
+      isLastRound: false,
+    });
+  }
+
+  if (isLastRound) {
+    // Entregar puntos extra al campeón de sesión
+    const champion = sessionStandings[0];
+    if (champion) {
+      try {
+        const _db = loadDB();
+        if (_db.players[champion.id]) { _db.players[champion.id].points = (_db.players[champion.id].points || 0) + 50; saveDB(_db); }
+      } catch {} // bonus 50 pts al campeón de sesión
+    }
+    room.state = 'waiting';
+    setTimeout(() => {
+      io.to(room.code).emit('game:session-end', {
+        champion,
+        standings: sessionStandings,
+        totalRounds: room.round,
+      });
+    }, 1000);
+  } else if (roundWinnerId) {
+    // Dar 30s al ganador para elegir impostor, luego auto-aleatorio
+    room.state = 'picking';
+    const winnerSocket = room.players.get(roundWinnerId)?.socketId;
+    if (winnerSocket) {
+      io.to(winnerSocket).emit('game:pick-impostor', {
+        players: Array.from(room.players.values())
+          .filter(p => p.connected && p.id !== roundWinnerId)
+          .map(p => ({ id: p.id, name: p.name })),
+        timeoutSec: 30,
+      });
+    }
+    // Auto-cancel after 30s
+    clearTimeout(room.pickerTimer);
+    room.pickerTimer = setTimeout(() => {
+      if (room.state === 'picking') {
+        room.state = 'waiting';
+        room.nextImpostorId = null;
+        io.to(room.code).emit('game:impostor-picked', { pickerName: null, auto: true });
+      }
+    }, 30000);
+  }
+
+  console.log(`Reveal ${room.code} — ${impostor?.name} ${impostorCaught ? 'ATRAPADO' : 'ESCAPÓ'} | Ronda ${room.round}/${room.maxRounds||'∞'}`);
 }
 
 // ─── REST ─────────────────────────────────────────────────────────────────────

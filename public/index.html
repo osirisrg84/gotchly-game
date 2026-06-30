@@ -229,19 +229,86 @@ body{background:
   background:radial-gradient(circle,rgba(16,185,129,.35) 0%,transparent 65%)}
 #splash .body{flex:1;display:flex;flex-direction:column;align-items:center;
   padding:12px 28px 36px;text-align:center;position:relative;z-index:5}
-.logo-box{width:96px;height:96px;border-radius:30px;background:var(--grad);
-  display:flex;align-items:center;justify-content:center;margin-bottom:20px;
-  box-shadow:0 0 0 1px rgba(255,255,255,.14),
-    0 24px 80px rgba(14,165,233,.7),
-    0 0 0 10px rgba(14,165,233,.08),
-    0 0 60px rgba(16,185,129,.28);
-  cursor:pointer;transition:transform .15s,box-shadow .15s;position:relative}
-.logo-box:active{transform:scale(.91)}
-.logo-box::after{content:'🏆';position:absolute;bottom:-9px;right:-9px;
-  width:26px;height:26px;border-radius:50%;background:rgba(245,158,11,.18);
-  border:1.5px solid rgba(245,158,11,.35);display:flex;align-items:center;
-  justify-content:center;font-size:12px;line-height:26px;text-align:center;
-  animation:ledPulse 2.5s ease-in-out infinite}
+/* ══ ULTRA PREMIUM LOGO ══ */
+.logo-box{
+  width:120px;height:120px;border-radius:36px;
+  background:linear-gradient(145deg,#0c2a4a 0%,#062040 30%,#051529 60%,#0a1e35 100%);
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:24px;cursor:pointer;position:relative;
+  border:1px solid rgba(14,165,233,.25);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.07),
+    0 0 40px rgba(14,165,233,.5),
+    0 0 80px rgba(14,165,233,.25),
+    0 0 120px rgba(16,185,129,.15),
+    inset 0 1px 0 rgba(255,255,255,.12),
+    inset 0 -1px 0 rgba(0,0,0,.5);
+  transition:transform .2s,box-shadow .2s;
+  animation:logoFloat 4s ease-in-out infinite}
+.logo-box::before{
+  content:'';position:absolute;inset:0;border-radius:36px;
+  background:conic-gradient(from 0deg,transparent 0%,rgba(14,165,233,.3) 20%,rgba(16,185,129,.3) 40%,transparent 60%);
+  animation:logoSpin 6s linear infinite;opacity:.6}
+.logo-box::after{content:'🏆';position:absolute;bottom:-11px;right:-11px;
+  width:30px;height:30px;border-radius:50%;
+  background:radial-gradient(circle,rgba(245,158,11,.3),rgba(245,158,11,.1));
+  border:1.5px solid rgba(245,158,11,.5);
+  display:flex;align-items:center;justify-content:center;font-size:14px;line-height:30px;text-align:center;
+  animation:ledPulse 2.5s ease-in-out infinite;
+  box-shadow:0 0 12px rgba(245,158,11,.4)}
+.logo-box:active{transform:scale(.88) !important;animation:none}
+.logo-box .eye-svg{position:relative;z-index:2}
+@keyframes logoFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-6px) scale(1.02)}}
+@keyframes logoSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+/* ── Eye glow rings ── */
+.logo-eye-wrap{position:relative;z-index:2;width:56px;height:56px;display:flex;align-items:center;justify-content:center}
+.logo-eye-wrap::before{
+  content:'';position:absolute;inset:-8px;border-radius:50%;
+  background:radial-gradient(circle,rgba(14,165,233,.35) 0%,transparent 70%);
+  animation:eyeGlow 2s ease-in-out infinite alternate}
+.logo-eye-wrap::after{
+  content:'';position:absolute;inset:-16px;border-radius:50%;
+  background:radial-gradient(circle,rgba(16,185,129,.15) 0%,transparent 65%);
+  animation:eyeGlow 2s ease-in-out infinite alternate-reverse}
+@keyframes eyeGlow{from{opacity:.5;transform:scale(.95)}to{opacity:1;transform:scale(1.05)}}
+
+/* ══ ULTRA PREMIUM TITLE ══ */
+#splash h1{
+  font:900 52px/1 var(--f);
+  letter-spacing:-1px;
+  margin:0 0 4px;
+  position:relative;
+  background:linear-gradient(180deg,
+    #ffffff 0%,
+    #a5f3fc 20%,
+    #0EA5E9 45%,
+    #10B981 70%,
+    #065f46 100%);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  filter:drop-shadow(0 0 20px rgba(14,165,233,.7)) drop-shadow(0 0 40px rgba(14,165,233,.4));
+  animation:titleShimmer 4s ease-in-out infinite}
+#splash h1::before{
+  content:'GOTCHLY';
+  position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.6) 50%,transparent 100%);
+  background-size:200% 100%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:titleSweep 3.5s ease-in-out infinite;pointer-events:none}
+#splash h1::after{
+  content:'GOTCHLY';
+  position:absolute;top:3px;left:0;right:0;
+  background:linear-gradient(180deg,transparent 50%,rgba(14,165,233,.25));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  transform:scaleY(-1) translateY(-100%);opacity:.35;pointer-events:none}
+@keyframes titleShimmer{
+  0%,100%{filter:drop-shadow(0 0 20px rgba(14,165,233,.7)) drop-shadow(0 0 40px rgba(14,165,233,.4))}
+  50%{filter:drop-shadow(0 0 30px rgba(16,185,129,.8)) drop-shadow(0 0 60px rgba(14,165,233,.5)) drop-shadow(0 2px 0 rgba(255,255,255,.3))}}
+@keyframes titleSweep{
+  0%{background-position:-200% 0}
+  40%,100%{background-position:200% 0}}
 
 /* ── Leaderboard modal ── */
 #lb-modal{position:fixed;inset:0;z-index:900;display:none;align-items:flex-end}
@@ -332,6 +399,27 @@ body{background:
 .wait-txt{font:500 13px var(--f);color:rgba(125,211,252,.55)}
 
 /* ── Lobby pack selector ── */
+/* ── Multi-round selector ── */
+.round-sel-wrap{margin:0 0 14px;padding:14px;border-radius:16px;
+  background:linear-gradient(135deg,rgba(251,191,36,.06),rgba(245,158,11,.04));
+  border:1px solid rgba(251,191,36,.15)}
+.round-sel-lbl{font:700 11px var(--f);color:rgba(251,191,36,.7);letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:10px}
+.round-sel-row{display:flex;gap:8px;margin-bottom:10px}
+.rnd-btn{flex:1;padding:8px 4px;border-radius:10px;border:1.5px solid rgba(251,191,36,.15);
+  background:rgba(251,191,36,.05);color:rgba(251,191,36,.5);font:700 16px var(--f);
+  cursor:pointer;transition:all .18s}
+.rnd-btn.on{background:rgba(251,191,36,.15);border-color:#FBBF24;color:#FBBF24;
+  box-shadow:0 0 12px rgba(251,191,36,.2)}
+.rnd-btn:active{transform:scale(.93)}
+.round-sel-info{font:400 11px var(--f);color:var(--dim);line-height:1.5}
+.round-badge{font:600 12px var(--f);color:#FBBF24;background:rgba(251,191,36,.1);
+  border:1px solid rgba(251,191,36,.2);border-radius:20px;padding:5px 14px;
+  text-align:center;margin-bottom:10px}
+.round-indicator{font:700 12px var(--f);color:#FBBF24;background:rgba(251,191,36,.1);
+  border:1px solid rgba(251,191,36,.2);border-radius:20px;padding:4px 14px;
+  text-align:center;margin:0 0 8px;letter-spacing:.05em}
+@keyframes confettiFall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
 .lby-packs{margin:0 0 16px}
 .lby-packs-lbl{font:700 11px var(--f);color:var(--dim);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
 .lby-packs-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;
@@ -1090,11 +1178,64 @@ body{background:
     <div class="tab-view on" id="tv-inicio">
       <div class="body">
         <div class="logo-box" onclick="openLeaderboard()" title="Ver ranking">
-          <svg viewBox="0 0 40 40" fill="none" width="40" height="40">
-            <path d="M4 20C8 12 14 8 20 8 26 8 32 12 36 20 32 28 26 32 20 32 14 32 8 28 4 20Z" stroke="white" stroke-width="2.5" fill="rgba(255,255,255,.1)"/>
-            <circle cx="20" cy="20" r="7" stroke="white" stroke-width="2.5"/>
-            <circle cx="20" cy="20" r="3" fill="white"/>
-          </svg>
+          <div class="logo-eye-wrap">
+            <svg class="eye-svg" viewBox="0 0 56 56" fill="none" width="56" height="56">
+              <defs>
+                <radialGradient id="eyeIrisGrad" cx="42%" cy="38%" r="55%">
+                  <stop offset="0%" stop-color="#38BDF8"/>
+                  <stop offset="40%" stop-color="#0EA5E9"/>
+                  <stop offset="80%" stop-color="#0369A1"/>
+                  <stop offset="100%" stop-color="#0c2240"/>
+                </radialGradient>
+                <radialGradient id="eyePupilGrad" cx="35%" cy="35%" r="60%">
+                  <stop offset="0%" stop-color="#1e293b"/>
+                  <stop offset="100%" stop-color="#020617"/>
+                </radialGradient>
+                <radialGradient id="eyeGlowRad" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="rgba(14,165,233,.6)"/>
+                  <stop offset="100%" stop-color="transparent"/>
+                </radialGradient>
+                <filter id="eyeBlur">
+                  <feGaussianBlur stdDeviation="1.5"/>
+                </filter>
+                <filter id="glowFilt" x="-40%" y="-40%" width="180%" height="180%">
+                  <feGaussianBlur stdDeviation="3" result="blur"/>
+                  <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+              </defs>
+              <!-- Outer glow halo -->
+              <ellipse cx="28" cy="28" rx="26" ry="14" fill="url(#eyeGlowRad)" filter="url(#eyeBlur)" opacity="0.7"/>
+              <!-- Eye white / sclera shape -->
+              <path d="M4 28 C10 16 18 10 28 10 C38 10 46 16 52 28 C46 40 38 46 28 46 C18 46 10 40 4 28Z"
+                fill="rgba(200,240,255,.06)" stroke="rgba(148,226,252,.4)" stroke-width="1"/>
+              <!-- Outer iris ring -->
+              <circle cx="28" cy="28" r="11" fill="url(#eyeIrisGrad)" filter="url(#glowFilt)"/>
+              <!-- Iris detail rings -->
+              <circle cx="28" cy="28" r="11" fill="none" stroke="rgba(56,189,248,.3)" stroke-width="0.5"/>
+              <circle cx="28" cy="28" r="8.5" fill="none" stroke="rgba(14,165,233,.2)" stroke-width="0.5"/>
+              <!-- Pupil -->
+              <circle cx="28" cy="28" r="5.5" fill="url(#eyePupilGrad)"/>
+              <!-- Pupil inner shine -->
+              <circle cx="28" cy="28" r="5.5" fill="none" stroke="rgba(56,189,248,.15)" stroke-width="1"/>
+              <!-- Highlight specular -->
+              <ellipse cx="25" cy="24.5" rx="2.5" ry="1.5" fill="rgba(255,255,255,.55)" transform="rotate(-20,25,24.5)"/>
+              <circle cx="30.5" cy="26" r="0.8" fill="rgba(255,255,255,.3)"/>
+              <!-- Lash lines -->
+              <path d="M10 22 Q14 19 18 18" stroke="rgba(148,226,252,.25)" stroke-width="0.8" stroke-linecap="round"/>
+              <path d="M10 34 Q14 37 18 38" stroke="rgba(148,226,252,.25)" stroke-width="0.8" stroke-linecap="round"/>
+              <path d="M46 22 Q42 19 38 18" stroke="rgba(148,226,252,.25)" stroke-width="0.8" stroke-linecap="round"/>
+              <path d="M46 34 Q42 37 38 38" stroke="rgba(148,226,252,.25)" stroke-width="0.8" stroke-linecap="round"/>
+              <!-- Animated scan line -->
+              <line id="eye-scan" x1="17" y1="28" x2="39" y2="28" stroke="rgba(14,165,233,.6)" stroke-width="0.7" stroke-linecap="round">
+                <animateTransform attributeName="transform" type="rotate" from="0 28 28" to="360 28 28" dur="3s" repeatCount="indefinite"/>
+              </line>
+              <!-- Center dot pulse -->
+              <circle cx="28" cy="28" r="1.5" fill="#38BDF8" opacity="0.9">
+                <animate attributeName="r" values="1.5;2.2;1.5" dur="2s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="0.9;0.4;0.9" dur="2s" repeatCount="indefinite"/>
+              </circle>
+            </svg>
+          </div>
         </div>
         <h1>GOTCHLY</h1>
         <p class="tag">Nadie sabe quién miente</p>
@@ -1566,6 +1707,20 @@ body{background:
           </div>
         </div>
 
+        <!-- Selector de rondas (solo host) -->
+        <div class="round-sel-wrap" id="round-sel-wrap" style="display:none">
+          <div class="round-sel-lbl">Número de rondas</div>
+          <div class="round-sel-row">
+            <button class="rnd-btn" data-r="1" onclick="setRounds(1,this)">1</button>
+            <button class="rnd-btn" data-r="3" onclick="setRounds(3,this)">3</button>
+            <button class="rnd-btn on" data-r="5" onclick="setRounds(5,this)">5</button>
+            <button class="rnd-btn" data-r="10" onclick="setRounds(10,this)">10</button>
+            <button class="rnd-btn" data-r="0" onclick="setRounds(0,this)">∞</button>
+          </div>
+          <div class="round-sel-info" id="round-sel-info">Torneo de 5 rondas — el ganador de cada ronda elige el siguiente impostor</div>
+        </div>
+        <div class="round-badge" id="round-badge" style="display:none"></div>
+
         <div class="wait-box">
           <div class="wait-dot fp"></div>
           <span class="wait-txt" id="wait-txt">Esperando jugadores · mín. 2 para iniciar</span>
@@ -1580,6 +1735,7 @@ body{background:
   <div class="sc" id="game">
     <div class="sb"><span class="sb-t" id="t-game">9:41</span><div class="sb-i"></div></div>
     <div class="body">
+      <div class="round-indicator" id="round-indicator" style="display:none">Ronda <span id="ri-cur">1</span> / <span id="ri-max">5</span></div>
       <div class="g-head">
         <div>
           <div class="g-phase">Dibujando</div>
@@ -2113,10 +2269,70 @@ function initSocket() {
     updateStartBtn(players);
   });
 
+  socket.on('room:config', ({ maxRounds }) => {
+    G.maxRounds = maxRounds;
+    const badge = document.getElementById('round-badge');
+    if (badge) {
+      if (maxRounds > 0) {
+        badge.textContent = `Torneo de ${maxRounds} rondas`;
+        badge.style.display = 'block';
+      } else {
+        badge.textContent = 'Partidas libres (sin límite)';
+        badge.style.display = 'block';
+      }
+    }
+  });
+
+  socket.on('game:round-end', ({ roundWinnerId, roundWinnerName, sessionStandings, round, maxRounds, isLastRound }) => {
+    const overlay = document.getElementById('round-end-overlay');
+    const scoresEl = document.getElementById('re-scores');
+    if (!overlay) return;
+    document.getElementById('re-winner-name').textContent = `🥇 ${roundWinnerName} ganó la ronda ${round}`;
+    document.getElementById('re-sub').textContent = maxRounds > 0 ? `Ronda ${round} de ${maxRounds}` : `Ronda ${round}`;
+    scoresEl.innerHTML = (sessionStandings||[]).map((p,i) =>
+      `<div style="display:flex;justify-content:space-between;padding:8px 12px;background:rgba(255,255,255,${i===0?.1:.05});border-radius:8px">
+        <span style="color:#F8F7F2">${i===0?'🥇':i===1?'🥈':i===2?'🥉':'  '} ${p.name}</span>
+        <span style="color:#FBBF24;font-weight:700">${p.sessionScore} pts</span>
+      </div>`
+    ).join('');
+    overlay.style.display = 'flex';
+    setTimeout(() => { overlay.style.display = 'none'; }, 4000);
+  });
+
+  socket.on('game:pick-impostor', ({ players, timeoutSec }) => {
+    showPickerOverlay(players, timeoutSec || 30);
+  });
+
+  socket.on('game:impostor-picked', ({ pickerName, pickedName, auto }) => {
+    const overlay = document.getElementById('picker-overlay');
+    if (overlay) overlay.style.display = 'none';
+    if (!auto && pickerName) {
+      showToast(`${pickerName} eligió al próximo impostor — ¡preparense!`, 3000);
+    }
+  });
+
+  socket.on('game:session-end', ({ champion, standings, totalRounds }) => {
+    // Ocultar picker si está abierto
+    const po = document.getElementById('picker-overlay');
+    if (po) po.style.display = 'none';
+    showSessionEnd(champion, standings, totalRounds);
+  });
+
   // ── Game events ──────────────────────────────────────────
-  socket.on('game:started', ({ prompt, isImpostor, timerSeconds, playerCount }) => {
+  socket.on('game:started', ({ prompt, isImpostor, timerSeconds, playerCount, round, maxRounds }) => {
     G.isImpostor = isImpostor;
     G.myPrompt = prompt;
+    G.round = round || 1;
+    G.maxRounds = maxRounds || 0;
+    // Indicador de ronda
+    const ri = document.getElementById('round-indicator');
+    if (ri) {
+      if (maxRounds > 0) {
+        document.getElementById('ri-cur').textContent = round || 1;
+        document.getElementById('ri-max').textContent = maxRounds;
+        ri.style.display = 'block';
+      } else { ri.style.display = 'none'; }
+    }
     clearCanvas();
     clearDrawing();
     // reset tools
@@ -2243,6 +2459,8 @@ function renderLobby(code, players, isHost) {
   if (!isHost) startBtn.disabled = true;
   const packsEl = document.getElementById('lby-packs');
   if (packsEl) packsEl.style.display = isHost ? 'block' : 'none';
+  const roundWrap = document.getElementById('round-sel-wrap');
+  if (roundWrap) roundWrap.style.display = isHost ? 'block' : 'none';
 }
 
 const AVATAR_COLORS = [
@@ -2736,6 +2954,8 @@ function selectLobbyPack(packId, el) {
 
 document.getElementById('btn-start').addEventListener('click', () => {
   if (!G.isHost) return;
+  // Sync rounds before start
+  G.socket.emit('game:set-rounds', { maxRounds: _selectedRounds });
   G.socket.emit('game:start', lobbyPackId !== 'free' ? { packId: lobbyPackId } : {});
 });
 
@@ -3770,8 +3990,137 @@ function escHtml(s) {
 }
 
 // ═══════════════════════════════════════════════════════════
+// MULTI-ROUND TOURNAMENT
+// ═══════════════════════════════════════════════════════════
+let _selectedRounds = 5;
+
+function setRounds(n, btn) {
+  _selectedRounds = n;
+  document.querySelectorAll('.rnd-btn').forEach(b => b.classList.remove('on'));
+  if (btn) btn.classList.add('on');
+  const info = document.getElementById('round-sel-info');
+  if (info) info.textContent = n === 0
+    ? 'Partidas libres — sin límite de rondas'
+    : `Torneo de ${n} rondas — el ganador de cada ronda elige el siguiente impostor`;
+  if (G.socket) G.socket.emit('game:set-rounds', { maxRounds: n });
+}
+
+function showPickerOverlay(players, timeoutSec) {
+  const overlay = document.getElementById('picker-overlay');
+  const list = document.getElementById('picker-list');
+  if (!overlay || !list) return;
+  list.innerHTML = players.map(p =>
+    `<button onclick="pickImpostor('${p.id}')" style="
+      padding:14px 20px;background:rgba(14,165,233,.1);border:1px solid rgba(14,165,233,.3);
+      border-radius:12px;color:#F8F7F2;font:600 16px var(--f);cursor:pointer;transition:.2s;width:100%
+    ">${p.name}</button>`
+  ).join('');
+  overlay.style.display = 'flex';
+  // Timer bar animation
+  const fill = document.getElementById('picker-timer-fill');
+  if (fill) {
+    fill.style.transition = 'none'; fill.style.width = '100%';
+    requestAnimationFrame(() => {
+      fill.style.transition = `width ${timeoutSec}s linear`;
+      fill.style.width = '0%';
+    });
+  }
+}
+
+function pickImpostor(targetId) {
+  if (G.socket) G.socket.emit('game:pick-impostor', { targetId });
+  const overlay = document.getElementById('picker-overlay');
+  if (overlay) overlay.style.display = 'none';
+}
+
+function showSessionEnd(champion, standings, totalRounds) {
+  const screen = document.getElementById('session-end-screen');
+  if (!screen) return;
+  document.getElementById('se-champion-name').textContent = champion?.name || '?';
+  const scEl = document.getElementById('se-final-scores');
+  scEl.innerHTML = (standings||[]).map((p, i) =>
+    `<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:rgba(255,255,255,${i===0?.12:.06})">
+      <div style="font-size:22px">${i===0?'🥇':i===1?'🥈':i===2?'🥉':`${i+1}.`}</div>
+      <div style="flex:1;text-align:left">
+        <div style="color:#F8F7F2;font:600 15px var(--f)">${escHtml(p.name)}</div>
+        <div style="color:var(--dim);font:400 12px var(--f)">${totalRounds} ronda${totalRounds!==1?'s':''}</div>
+      </div>
+      <div style="color:#FBBF24;font:700 18px var(--f)">${p.sessionScore}<span style="font-size:11px;color:var(--dim)"> pts</span></div>
+    </div>`
+  ).join('');
+  screen.style.display = 'block';
+  SFX.win && SFX.win(); vibe && vibe([100,50,100,50,200]);
+  launchConfetti();
+}
+
+function closeSessionEnd() {
+  const screen = document.getElementById('session-end-screen');
+  if (screen) screen.style.display = 'none';
+  showScreen('splash'); switchTab('inicio');
+}
+
+function launchConfetti() {
+  const layer = document.getElementById('confetti-layer');
+  if (!layer) return;
+  layer.innerHTML = '';
+  const colors = ['#FBBF24','#F59E0B','#0EA5E9','#10B981','#F87171','#A78BFA'];
+  for (let i = 0; i < 60; i++) {
+    const p = document.createElement('div');
+    const c = colors[Math.floor(Math.random()*colors.length)];
+    const x = Math.random()*100, delay = Math.random()*2, dur = 2+Math.random()*2;
+    const size = 6+Math.random()*10;
+    p.style.cssText = `position:absolute;left:${x}%;top:-20px;width:${size}px;height:${size}px;
+      background:${c};border-radius:${Math.random()>.5?'50%':'2px'};
+      animation:confettiFall ${dur}s ease-in ${delay}s forwards`;
+    layer.appendChild(p);
+  }
+}
+
+function showToast(msg, dur=2500) {
+  let t = document.getElementById('_toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = '_toast';
+    t.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:rgba(14,165,233,.9);color:#fff;padding:10px 20px;border-radius:24px;font:600 14px var(--f);z-index:9999;pointer-events:none;transition:opacity .3s';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg; t.style.opacity = '1';
+  clearTimeout(t._to);
+  t._to = setTimeout(() => { t.style.opacity = '0'; }, dur);
+}
+
+// ═══════════════════════════════════════════════════════════
 initSocket();
 </script>
+
+<!-- ══ Impostor picker overlay ══ -->
+<div id="picker-overlay" style="display:none;position:fixed;inset:0;z-index:900;background:rgba(2,6,23,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px">
+  <div style="font:700 22px var(--f);color:#F8F7F2;text-align:center">🏅 Eres el ganador de la ronda</div>
+  <div style="font:400 14px var(--f);color:var(--dim);text-align:center">Elige quién será el próximo impostor</div>
+  <div id="picker-timer-bar" style="width:200px;height:4px;background:rgba(14,165,233,.2);border-radius:2px;overflow:hidden">
+    <div id="picker-timer-fill" style="height:100%;background:#0EA5E9;width:100%;transition:width linear"></div>
+  </div>
+  <div id="picker-list" style="display:flex;flex-direction:column;gap:10px;width:100%;max-width:300px"></div>
+</div>
+
+<!-- ══ Round-end overlay ══ -->
+<div id="round-end-overlay" style="display:none;position:fixed;inset:0;z-index:800;background:rgba(2,6,23,.88);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center">
+  <div style="font:800 28px var(--f);color:#FBBF24">🎉 Ronda terminada</div>
+  <div id="re-winner-name" style="font:700 20px var(--f);color:#F8F7F2"></div>
+  <div id="re-sub" style="font:400 14px var(--f);color:var(--dim)"></div>
+  <div id="re-scores" style="width:100%;max-width:300px;display:flex;flex-direction:column;gap:6px;margin-top:8px"></div>
+</div>
+
+<!-- ══ Session champion screen ══ -->
+<div id="session-end-screen" style="display:none;position:fixed;inset:0;z-index:950;background:linear-gradient(135deg,#0c1445 0%,#1e0b35 50%,#0c1445 100%);overflow-y:auto">
+  <div style="min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;gap:20px;text-align:center">
+    <div id="confetti-layer" style="position:fixed;inset:0;pointer-events:none;overflow:hidden"></div>
+    <div style="font:800 36px var(--f);line-height:1.1">🏆<br><span id="se-champion-name" style="background:linear-gradient(90deg,#FBBF24,#F59E0B);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Campeón</span></div>
+    <div style="font:400 14px var(--f);color:var(--dim)">Ganó la sesión completa · +50 puntos bonus</div>
+    <div id="se-final-scores" style="width:100%;max-width:340px;background:rgba(255,255,255,.05);border-radius:16px;overflow:hidden"></div>
+    <button class="bp" style="margin-top:8px" onclick="closeSessionEnd()">Volver al inicio</button>
+  </div>
+</div>
 
 <!-- ══ Leaderboard modal ══ -->
 <div id="lb-modal" role="dialog" aria-modal="true">
