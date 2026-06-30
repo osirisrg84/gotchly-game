@@ -498,8 +498,9 @@ body{background:
 .rv-acts .bp,.rv-acts .bs{border-radius:14px;padding:15px;font-size:15px}
 .rv-scoreboard{background:var(--card);border:1px solid var(--border);border-radius:12px;
   padding:12px 14px;margin-bottom:14px;text-align:left}
-.sb-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0}
+.sb-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0}
 .sb-row + .sb-row{border-top:1px solid var(--border)}
+.sb-row.me{background:rgba(14,165,233,.06);border-radius:8px;padding:7px 8px;margin:2px -8px}
 .sb-name{font:600 13px var(--f);color:var(--text)}
 .sb-pts{font:700 13px var(--f);color:var(--purple)}
 .sb-pts.imp{color:#10B981}
@@ -649,24 +650,53 @@ body{background:
 @keyframes vcIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
 /* ── Reveal suspense overlay ── */
-.rv-suspense{position:absolute;inset:0;background:rgba(2,8,18,.97);
+.rv-suspense{position:absolute;inset:0;background:rgba(2,8,18,.98);
   z-index:40;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;gap:20px;transition:opacity .6s ease;pointer-events:none}
-.rv-suspense.fade-out{opacity:0}
-.rv-sus-icon{font-size:52px;animation:susSpin 1.4s ease-in-out infinite alternate}
-@keyframes susSpin{0%{transform:scale(1) rotate(-8deg)}100%{transform:scale(1.12) rotate(8deg)}}
-.rv-sus-line1{font:400 14px var(--f);color:var(--dim);letter-spacing:.2em;text-transform:uppercase}
+  justify-content:center;gap:20px;transition:opacity .7s ease;
+  pointer-events:none;cursor:default}
+.rv-suspense.active{pointer-events:auto}
+.rv-suspense.fade-out{opacity:0;pointer-events:none}
+.rv-sus-icon{font-size:64px;animation:susSpin 1.2s ease-in-out infinite alternate}
+@keyframes susSpin{0%{transform:scale(1) rotate(-10deg)}100%{transform:scale(1.15) rotate(10deg)}}
+.rv-sus-line1{font:400 13px var(--f);color:var(--dim);letter-spacing:.25em;text-transform:uppercase}
+.rv-sus-tap{font:400 11px var(--f);color:rgba(125,211,252,.3);margin-top:8px;animation:tapBlink 1.4s ease-in-out infinite}
+@keyframes tapBlink{0%,100%{opacity:.3}50%{opacity:.8}}
 .rv-sus-line2{font:800 28px var(--f);color:var(--text);letter-spacing:.05em;
   background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 
+/* ── Reveal result card ── */
+.rv-result-card{border-radius:20px;padding:20px 18px;margin-bottom:14px;text-align:center;
+  position:relative;overflow:hidden}
+.rv-result-card.caught{background:linear-gradient(135deg,rgba(14,165,233,.12),rgba(16,185,129,.08));
+  border:1.5px solid rgba(14,165,233,.3)}
+.rv-result-card.escaped{background:linear-gradient(135deg,rgba(239,68,68,.1),rgba(245,158,11,.08));
+  border:1.5px solid rgba(239,68,68,.25)}
+.rv-result-badge{font-size:48px;display:block;margin-bottom:8px;animation:badgePop .5s cubic-bezier(.25,1,.5,1) both}
+@keyframes badgePop{0%{transform:scale(0) rotate(-20deg)}80%{transform:scale(1.15) rotate(4deg)}100%{transform:scale(1) rotate(0)}}
+.rv-result-title{font:800 22px/1.1 var(--f);margin-bottom:6px}
+.rv-result-sub{font:400 13px var(--f);color:var(--dim)}
+/* ── Social share row ── */
+.share-row{display:flex;gap:8px;margin-bottom:14px}
+.share-btn-social{flex:1;padding:13px 6px;border-radius:14px;border:1.5px solid rgba(14,165,233,.2);
+  background:rgba(14,165,233,.07);color:var(--text);font:700 11px var(--f);
+  cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;
+  transition:transform .12s,background .12s}
+.share-btn-social:active{transform:scale(.93);background:rgba(14,165,233,.14)}
+.share-btn-social .s-ico{font-size:20px}
+.share-btn-social.wa{border-color:rgba(37,211,102,.3);background:rgba(37,211,102,.07)}
+.share-btn-social.wa:active{background:rgba(37,211,102,.14)}
+.share-btn-social.ig{border-color:rgba(225,48,108,.3);background:rgba(225,48,108,.07)}
+.share-btn-social.ig:active{background:rgba(225,48,108,.14)}
 /* ── Share result button ── */
-.share-result-btn{width:100%;padding:16px;border-radius:16px;margin-bottom:12px;
-  background:linear-gradient(135deg,rgba(14,165,233,.14),rgba(16,185,129,.1));
-  border:1px solid rgba(14,165,233,.3);color:var(--text);
-  font:700 15px var(--f);cursor:pointer;display:flex;align-items:center;
+.share-result-btn{width:100%;padding:14px;border-radius:14px;margin-bottom:10px;
+  background:rgba(14,165,233,.1);border:1px solid rgba(14,165,233,.25);color:var(--purple);
+  font:700 14px var(--f);cursor:pointer;display:flex;align-items:center;
   justify-content:center;gap:8px;transition:opacity .15s,transform .1s}
 .share-result-btn:active{opacity:.75;transform:scale(.98)}
 .light .share-result-btn{background:rgba(2,132,199,.1);border-color:rgba(2,132,199,.28)}
+/* ── Scoreboard ── */
+.rv-acts{display:flex;gap:10px;padding-bottom:16px}
+.rv-acts .bp,.rv-acts .bs{border-radius:14px;padding:15px;font-size:15px;flex:1}
 
 /* ── Score pop animation ── */
 @keyframes scorePop{0%{transform:scale(1)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
@@ -1671,31 +1701,30 @@ body{background:
   <div class="sc" id="reveal">
     <div class="orb fa"></div>
     <div class="orb fb"></div>
-    <!-- Suspense overlay -->
-    <div class="rv-suspense" id="rv-suspense">
+    <!-- Suspense overlay — toca para saltar -->
+    <div class="rv-suspense active" id="rv-suspense" onclick="skipSuspense()">
       <div class="rv-sus-icon">🎭</div>
       <div class="rv-sus-line1">El impostor era...</div>
       <div class="rv-sus-line2" id="rv-sus-name">???</div>
+      <div class="rv-sus-tap">Toca para continuar</div>
     </div>
     <div class="sb"><span class="sb-t" id="t-reveal">9:41</span><div class="sb-i"></div></div>
-    <div class="scroll" style="padding-bottom:20px">
+    <div class="scroll" style="padding-bottom:24px">
       <div class="body">
-        <!-- Winner reward box -->
-        <div class="winner-box" id="winner-box">
-          <div class="winner-icon" id="winner-icon">🏆</div>
-          <div class="winner-info">
-            <div class="winner-title" id="winner-title">¡Ganaste esta ronda!</div>
-            <div class="winner-sub" id="winner-sub">+100 pts por identificar al impostor</div>
-          </div>
+
+        <!-- Result card -->
+        <div class="rv-result-card" id="rv-result-card">
+          <span class="rv-result-badge" id="rv-result-badge">🔍</span>
+          <div class="rv-result-title" id="rv-result-title">—</div>
+          <div class="rv-result-sub" id="rv-result-sub">—</div>
         </div>
-        <!-- Streak row -->
-        <div class="streak-row" id="streak-row" style="display:none">
-          <div class="streak-badge" id="streak-badge">🔥 Racha ×2</div>
-        </div>
+
+        <!-- Impostor identity -->
         <div class="rv-lbl">El impostor era...</div>
         <div class="rv-name" id="rv-name">?</div>
         <div class="rv-av" id="rv-av">?</div>
-        <div class="rv-sub" id="rv-sub">—</div>
+
+        <!-- Prompt reveal -->
         <div class="rv-grid">
           <div class="rv-cell r">
             <div class="rv-cl">PROMPT REAL</div>
@@ -1708,23 +1737,55 @@ body{background:
             <div class="rv-img" id="rv-imp-img"><svg width="56" height="44" viewBox="0 0 56 44" fill="none"><circle cx="28" cy="22" r="14" stroke="#34D399" stroke-width="1.5" fill="rgba(16,185,129,.06)"/><path d="M20 18 Q28 12 36 18" stroke="#34D399" stroke-width="1.5" fill="none"/><circle cx="28" cy="26" r="4" fill="rgba(16,185,129,.2)"/></svg></div>
           </div>
         </div>
+
+        <!-- Score -->
         <div class="score-box" id="score-box">
           <div class="score-pts" id="score-pts">+0 pts</div>
           <div class="score-desc" id="score-desc">—</div>
         </div>
-        <button class="share-result-btn" id="btn-share-result">
-          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M18 16c-.8 0-1.5.3-2 .8l-7.1-4.1c.1-.2.1-.5.1-.7s0-.5-.1-.7L16 7.2c.5.5 1.2.8 2 .8 1.7 0 3-1.3 3-3s-1.3-3-3-3-3 1.3-3 3c0 .2 0 .5.1.7L8 9.8C7.5 9.3 6.8 9 6 9c-1.7 0-3 1.3-3 3s1.3 3 3 3c.8 0 1.5-.3 2-.8l7.1 4.1c-.1.2-.1.4-.1.7 0 1.6 1.3 3 3 3s3-1.4 3-3-1.3-3-3-3z" fill="currentColor"/></svg>
-          Compartir resultado
-        </button>
+
+        <!-- Winner reward + streak -->
+        <div class="winner-box" id="winner-box">
+          <div class="winner-icon" id="winner-icon">🏆</div>
+          <div class="winner-info">
+            <div class="winner-title" id="winner-title">¡Ganaste esta ronda!</div>
+            <div class="winner-sub" id="winner-sub">+100 pts por identificar al impostor</div>
+          </div>
+        </div>
+        <div class="streak-row" id="streak-row" style="display:none">
+          <div class="streak-badge" id="streak-badge">🔥 Racha ×2</div>
+        </div>
+
+        <!-- Social share -->
+        <div class="share-row">
+          <button class="share-btn-social wa" onclick="shareWhatsApp()">
+            <span class="s-ico">💬</span>WhatsApp
+          </button>
+          <button class="share-btn-social ig" onclick="shareImage()">
+            <span class="s-ico">🖼️</span>Imagen
+          </button>
+          <button class="share-btn-social" onclick="shareLink()">
+            <span class="s-ico">🔗</span>Link
+          </button>
+          <button class="share-btn-social" onclick="doShareReveal()">
+            <span class="s-ico">📤</span>Compartir
+          </button>
+        </div>
+
+        <!-- Scoreboard -->
         <div class="rv-scoreboard" id="rv-scoreboard">
-          <div class="lbl" style="margin-bottom:10px;display:block">Puntajes</div>
+          <div class="lbl" style="margin-bottom:10px;display:block">🏆 Puntajes de la sala</div>
         </div>
+
+        <!-- Votes -->
         <div class="votes-box" id="votes-box">
-          <span class="lbl">Votos</span>
+          <span class="lbl">Quién votó a quién</span>
         </div>
+
+        <!-- Actions -->
         <div class="rv-acts">
-          <button class="bp" id="btn-play-again" style="display:none">Jugar de nuevo</button>
-          <button class="bs" id="btn-go-home">Ir al inicio</button>
+          <button class="bp" id="btn-play-again" style="display:none">🔄 Otra ronda</button>
+          <button class="bs" id="btn-go-home">Inicio</button>
         </div>
       </div>
     </div>
@@ -2120,29 +2181,25 @@ function initSocket() {
 
   socket.on('game:reveal', data => {
     G.lastReveal = data;
-    // Show suspense overlay first
     showScreen('reveal');
     const sus = document.getElementById('rv-suspense');
-    const susName = document.getElementById('rv-sus-name');
+    // Reset overlay
     if (sus) {
       sus.classList.remove('fade-out');
-      sus.style.opacity = '1';
-      sus.style.pointerEvents = 'auto';
-      if (susName) susName.textContent = data.impostorName.toUpperCase();
+      sus.classList.add('active');
+      sus.style.opacity = '';
     }
+    document.getElementById('rv-sus-name').textContent = data.impostorName.toUpperCase();
     SFX.reveal(); vibe([50,100,50,100,50]);
-    setTimeout(() => {
-      renderReveal(data);
-      updateWinnerBox(data);
-      if (sus) {
-        sus.classList.add('fade-out');
-        setTimeout(() => { sus.style.pointerEvents='none'; }, 600);
-      }
-      if (data.impostorCaught) { SFX.caught(); launchConfetti('caught'); vibe([80,120,80]); }
-      else { SFX.escaped(); launchConfetti('escaped'); vibe([40,60,200]); }
-    }, 2200);
+
+    // Pre-render content while overlay is showing
+    renderReveal(data);
+    updateWinnerBox(data);
     addToHistory(data);
     refreshHomeStats();
+
+    // Auto-dismiss after 2.5s (or user taps to skip)
+    G._suspenseTimer = setTimeout(() => skipSuspense(data), 2500);
   });
 
   socket.on('game:reset', ({ players }) => {
@@ -2393,56 +2450,80 @@ document.getElementById('btn-confirm-vote').addEventListener('click', () => {
 // ═══════════════════════════════════════════════════════════
 // REVEAL
 // ═══════════════════════════════════════════════════════════
+function skipSuspense() {
+  clearTimeout(G._suspenseTimer);
+  const sus = document.getElementById('rv-suspense');
+  if (!sus || sus.classList.contains('fade-out')) return;
+  sus.classList.add('fade-out');
+  // Ensure always cleans up
+  setTimeout(() => { sus.classList.remove('active'); }, 700);
+  const data = G.lastReveal;
+  if (!data) return;
+  if (data.impostorCaught) { SFX.caught(); launchConfetti('caught'); vibe([80,120,80]); }
+  else                     { SFX.escaped(); launchConfetti('escaped'); vibe([40,60,200]); }
+}
+
 function renderReveal(data) {
   const { impostorId, impostorName, impostorCaught, realPrompt, impostorPrompt,
           impostorDrawing, voteSummary, scoreUpdates, players } = data;
 
+  // Result card
+  const card = document.getElementById('rv-result-card');
+  const badge = document.getElementById('rv-result-badge');
+  const title = document.getElementById('rv-result-title');
+  const sub   = document.getElementById('rv-result-sub');
+  if (card) {
+    card.className = 'rv-result-card ' + (impostorCaught ? 'caught' : 'escaped');
+    badge.textContent = impostorCaught ? '🔍' : '🎭';
+    title.textContent = impostorCaught ? '¡Atraparon al impostor!' : '¡El impostor escapó!';
+    sub.textContent   = impostorCaught
+      ? `${impostorName} no pudo engañarlos a todos`
+      : `${impostorName} los confundió a todos`;
+  }
+
   const initials = impostorName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
   document.getElementById('rv-name').textContent = impostorName.toUpperCase();
   document.getElementById('rv-av').textContent = initials;
-  document.getElementById('rv-sub').textContent = impostorCaught
-    ? `${impostorName} · ¡Atrapado! 🔍`
-    : `${impostorName} · Escapó de las sospechas 🎭`;
-
   document.getElementById('rv-real-p').textContent = realPrompt;
   document.getElementById('rv-imp-p').textContent = impostorPrompt;
 
   const impImg = document.getElementById('rv-imp-img');
-  if (impostorDrawing) {
+  if (impostorDrawing && impImg) {
     impImg.innerHTML = `<img src="${impostorDrawing}" alt="dibujo impostor">`;
   }
 
-  // My score
+  // Score
   const myPts = scoreUpdates[G.playerId] || 0;
   document.getElementById('score-pts').textContent = (myPts > 0 ? '+' : '') + myPts + ' pts';
   if (G.isImpostor) {
     document.getElementById('score-desc').textContent = impostorCaught
-      ? 'Te descubrieron — ¡mejor suerte la próxima!'
-      : '¡Escapaste! Nadie supo que eras el impostor';
+      ? 'Te descubrieron 😅 ¡mejor suerte la próxima!'
+      : '🎭 ¡Escapaste! Nadie supo que eras el impostor';
   } else {
     document.getElementById('score-desc').textContent = G.selectedVote === impostorId
-      ? '¡Bien! Identificaste al impostor'
-      : 'No lo identificaste esta vez';
+      ? '👏 ¡Buen ojo! Identificaste al impostor'
+      : '¡La próxima lo atraparás!';
   }
 
   // Scoreboard
   const sb = document.getElementById('rv-scoreboard');
-  sb.innerHTML = '<div class="lbl" style="margin-bottom:10px;display:block">Puntajes de la sala</div>';
+  sb.innerHTML = '<div class="lbl" style="margin-bottom:10px;display:block">🏆 Puntajes de la sala</div>';
   const sorted = [...players].sort((a,b) => b.score - a.score);
-  sorted.forEach(p => {
+  sorted.forEach((p, i) => {
     const delta = scoreUpdates[p.id] || 0;
     const isMe = p.id === G.playerId;
     const isImp = p.id === impostorId;
+    const medals = ['🥇','🥈','🥉'];
     const row = document.createElement('div');
-    row.className = 'sb-row';
+    row.className = 'sb-row' + (isMe ? ' me' : '');
     row.innerHTML = `
-      <span class="sb-name">${isMe ? '★ ' : ''}${p.name}${isImp ? ' 🎭' : ''}</span>
-      <span class="sb-pts ${isImp ? 'imp' : ''}">${p.score} pts ${delta > 0 ? '(+' + delta + ')' : ''}</span>
+      <span class="sb-name">${medals[i]||'  '} ${p.name}${isImp?' 🎭':''}${isMe?' ★':''}</span>
+      <span class="sb-pts ${isImp?'imp':''}">${p.score} pts${delta>0?' <small style="color:#34D399">(+'+delta+')</small>':''}</span>
     `;
     sb.appendChild(row);
   });
 
-  // Votes summary
+  // Votes
   const vb = document.getElementById('votes-box');
   vb.innerHTML = '<span class="lbl">Quién votó a quién</span><div style="height:8px"></div>';
   voteSummary.forEach(v => {
@@ -2450,13 +2531,52 @@ function renderReveal(data) {
     row.className = 'vote-row';
     row.innerHTML = `
       <span class="vote-who">${v.voterName}</span>
-      <span class="vote-arrow ${v.correct ? 'vote-ok' : 'vote-bad'}">→ ${v.targetName} ${v.correct ? '✓' : '✗'}</span>
+      <span class="vote-arrow ${v.correct?'vote-ok':'vote-bad'}">→ ${v.targetName} ${v.correct?'✓':'✗'}</span>
     `;
     vb.appendChild(row);
   });
 
-  // Play again button (host only)
   document.getElementById('btn-play-again').style.display = G.isHost ? 'block' : 'none';
+}
+
+// Share functions
+function _buildShareText() {
+  const d = G.lastReveal;
+  if (!d) return 'Jugué Gotchly 🎨';
+  const result = d.impostorCaught ? '¡Atraparon al impostor!' : '¡El impostor escapó!';
+  return `${result} El impostor era "${d.impostorName}" en Gotchly 🎭\nJugá conmigo: ${location.origin}`;
+}
+
+function shareWhatsApp() {
+  const text = encodeURIComponent(_buildShareText());
+  window.open(`https://wa.me/?text=${text}`, '_blank');
+  SFX.tap();
+}
+
+async function shareImage() {
+  try {
+    const dataURL = buildShareImg();
+    const blob = await (await fetch(dataURL)).blob();
+    const file = new File([blob], 'gotchly.png', { type: 'image/png' });
+    if (navigator.canShare?.({ files: [file] })) {
+      await navigator.share({ files: [file], title: 'Gotchly', text: _buildShareText() });
+    } else {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'gotchly-resultado.png'; a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      toast('¡Imagen descargada!');
+    }
+  } catch(e) { if (e.name !== 'AbortError') toast('No se pudo compartir la imagen'); }
+  SFX.tap();
+}
+
+function shareLink() {
+  const url = location.origin;
+  navigator.clipboard?.writeText(url)
+    .then(() => toast('¡Link copiado! Compártelo con tus amigos'))
+    .catch(() => toast(url));
+  SFX.tap();
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -2624,16 +2744,17 @@ document.getElementById('btn-play-again').addEventListener('click', () => {
 });
 
 document.getElementById('btn-go-home').addEventListener('click', () => {
-  document.getElementById('home-name').textContent = G.playerName;
-  const initials = G.playerName.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
-  document.getElementById('home-av').textContent = initials;
-  showScreen('home');
-  refreshHomeStats();
+  G.roomCode = null;
+  showScreen('splash');
+  switchTab('inicio');
+  SFX.tap();
 });
 
 // Home screen create/join buttons
 document.getElementById('h-btn-create').addEventListener('click', () => {
-  G.socket.emit('room:create', { name: G.playerName, playerId: G.playerId });
+  const name = G.playerName || document.getElementById('splash-name')?.value?.trim();
+  if (!name || name.length < 2) { toast('Primero escribe tu nombre en el inicio'); showScreen('splash'); return; }
+  G.socket.emit('room:create', { name, playerId: G.playerId });
 });
 document.getElementById('h-btn-join').addEventListener('click', () => {
   document.getElementById('join-code').value = '';
@@ -2909,9 +3030,7 @@ async function generateShareCard(data) {
 }
 
 async function doShareReveal() {
-  const btn = document.getElementById('btn-share-result');
-  if (!btn || !G.lastReveal) return;
-  btn.disabled = true; btn.textContent = '⏳ Generando tarjeta...';
+  if (!G.lastReveal) return;
   SFX.tap(); vibe(10);
   try {
     const dataURL = await generateShareCard(G.lastReveal);
@@ -2933,10 +3052,7 @@ async function doShareReveal() {
       toast('¡Imagen descargada!');
     }
   } catch(e) { if (e.name !== 'AbortError') toast('No se pudo compartir'); }
-  btn.disabled = false;
-  btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24"><path d="M18 16c-.8 0-1.5.3-2 .8l-7.1-4.1c.1-.2.1-.5.1-.7s0-.5-.1-.7L16 7.2c.5.5 1.2.8 2 .8 1.7 0 3-1.3 3-3s-1.3-3-3-3-3 1.3-3 3c0 .2 0 .5.1.7L8 9.8C7.5 9.3 6.8 9 6 9c-1.7 0-3 1.3-3 3s1.3 3 3 3c.8 0 1.5-.3 2-.8l7.1 4.1c-.1.2-.1.4-.1.7 0 1.6 1.3 3 3 3s3-1.4 3-3-1.3-3-3-3z" fill="currentColor"/></svg> Compartir resultado';
 }
-document.getElementById('btn-share-result').addEventListener('click', doShareReveal);
 
 // ═══════════════════════════════════════════════════════════
 // AUTH SYSTEM
