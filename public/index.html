@@ -1707,6 +1707,7 @@ function initSocket() {
 
   socket.on('connect', () => {
     console.log('Socket conectado:', socket.id);
+    if (AUTH.token) socket.emit('user:auth', { token: AUTH.token });
 
     // Leer código de sala desde URL (?join=XXXX) — solo en carga inicial
     const params = new URLSearchParams(window.location.search);
@@ -2767,6 +2768,7 @@ document.getElementById('btn-auth-submit').addEventListener('click', async () =>
       errEl.textContent = d.error || 'Error desconocido';
     } else {
       AUTH.save(d.token, d.id, d.username);
+      if (G.socket?.connected) G.socket.emit('user:auth', { token: d.token });
       // Pre-fill name
       G.playerName = d.username;
       G.playerId = d.id;

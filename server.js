@@ -223,6 +223,7 @@ function getPromptForRoom(room) {
 const rooms = new Map();
 const socketToRoom = new Map();
 const socketToPlayer = new Map();
+const socketToAccount = new Map(); // socketId → accountId (for online indicator)
 
 function genCode() {
   return 'GOTCH·' + Math.floor(1000 + Math.random() * 9000);
@@ -390,11 +391,17 @@ io.on('connection', socket => {
     socket.emit('player:stats', { stats: getStats(playerId) });
   });
 
+  socket.on('user:auth', ({ token }) => {
+    const user = verifyToken(token);
+    if (user) socketToAccount.set(socket.id, user.id);
+  });
+
   socket.on('disconnect', () => {
     const code = socketToRoom.get(socket.id);
     const playerId = socketToPlayer.get(socket.id);
     socketToRoom.delete(socket.id);
     socketToPlayer.delete(socket.id);
+    socketToAccount.delete(socket.id);
     if (!code || !playerId) return;
     const room = rooms.get(code);
     if (!room) return;
@@ -596,7 +603,7 @@ app.get('/api/admin/users', adminAuth, (req, res) => {
       premium:       a.premium || false,
       premiumSince:  a.premiumSince || null,
       packs:         a.packs || [],
-      online:        Array.from(socketToPlayer.values()).includes(a.id),
+      online:        Array.from(socketToAccount.values()).includes(a.id),
     };
   }).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   res.json({ users });
