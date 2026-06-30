@@ -607,6 +607,40 @@ body{background:
 .light .pack-card{background:rgba(2,132,199,.04);border-color:rgba(2,132,199,.14)}
 .light .pack-card.selected{background:rgba(2,132,199,.12);border-color:var(--purple)}
 
+/* ── How-to-play sheet ── */
+.howto-step{display:flex;align-items:flex-start;gap:14px;padding:14px 0;
+  border-bottom:1px solid var(--border)}
+.howto-step:last-child{border-bottom:none;padding-bottom:0}
+.howto-num{width:44px;height:44px;border-radius:14px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:22px}
+.howto-t{font:700 14px var(--f);color:var(--text);margin-bottom:3px}
+.howto-d{font:400 12px var(--f);color:var(--dim);line-height:1.6}
+.howto-btn{display:inline-flex;align-items:center;gap:5px;
+  font:600 11px var(--f);color:rgba(125,211,252,.55);cursor:pointer;
+  border:none;background:none;padding:0;margin-top:14px;letter-spacing:.04em}
+.howto-btn:hover{color:rgba(125,211,252,.9)}
+.light .howto-btn{color:rgba(7,89,133,.5)}
+
+/* ── Winner reward in reveal ── */
+.winner-box{border-radius:16px;padding:15px 16px;margin-bottom:14px;
+  display:none;align-items:center;gap:12px;
+  background:linear-gradient(135deg,rgba(245,158,11,.18),rgba(234,179,8,.08));
+  border:1.5px solid rgba(245,158,11,.35);
+  box-shadow:0 0 30px rgba(245,158,11,.1)}
+.winner-box.show{display:flex}
+.winner-icon{font-size:34px;flex-shrink:0}
+.winner-info{}
+.winner-title{font:800 16px var(--f);color:#FCD34D;margin-bottom:2px}
+.winner-sub{font:400 12px var(--f);color:rgba(252,211,77,.6);line-height:1.4}
+.streak-row{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.streak-badge{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;
+  border-radius:100px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.28);
+  font:700 11px var(--f);color:#F87171;letter-spacing:.04em}
+.mvp-crown{color:#FCD34D;font-size:13px;margin-left:3px}
+
+/* ── Auth link spacing ── */
+.auth-link{margin-top:18px!important}
+
 </style>
 </head>
 <body>
@@ -654,6 +688,10 @@ body{background:
       <button class="bp" id="btn-create" style="margin-bottom:12px">Crear sala</button>
       <button class="bs" id="btn-join">Unirme con código</button>
       <span class="auth-link" id="auth-link" onclick="openAuthSheet()">Crear cuenta o iniciar sesión →</span>
+      <button class="howto-btn" onclick="openHowTo()">
+        <svg width="13" height="13" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z" fill="currentColor"/></svg>
+        ¿Cómo se juega?
+      </button>
       <button class="install-btn" id="btn-install">
         <svg width="16" height="16" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zm-8 2V5h2v6h1.17L12 13.17 9.83 11H11zm-6 7h14v2H5v-2z" fill="currentColor"/></svg>
         Instalar Gotchly en tu celular
@@ -672,6 +710,51 @@ body{background:
       <button class="bp" id="btn-do-join">Entrar →</button>
       <div style="height:10px"></div>
       <button class="bs" id="btn-cancel-join">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ HOW TO PLAY ═══════════ -->
+  <div class="overlay" id="howto-overlay">
+    <div class="sheet" style="max-height:88%;overflow-y:auto">
+      <h3>¿Cómo se juega? 🕵️</h3>
+      <p style="margin-bottom:18px">Gotchly es un juego de dibujo y deducción — 2 a 8 jugadores</p>
+      <div class="howto-step">
+        <div class="howto-num" style="background:rgba(14,165,233,.18)">🎨</div>
+        <div>
+          <div class="howto-t">Todos dibujan el mismo tema</div>
+          <div class="howto-d">El host crea la sala y la comparte. Todos reciben un prompt y tienen 70 segundos para dibujarlo en silencio.</div>
+        </div>
+      </div>
+      <div class="howto-step">
+        <div class="howto-num" style="background:rgba(239,68,68,.15)">🎭</div>
+        <div>
+          <div class="howto-t">¡Pero hay un impostor!</div>
+          <div class="howto-d">Un jugador recibe un prompt <em>diferente pero parecido</em>. No sabe que es el impostor — ¡tiene que disimular y dibujar con confianza!</div>
+        </div>
+      </div>
+      <div class="howto-step">
+        <div class="howto-num" style="background:rgba(245,158,11,.15)">👁️</div>
+        <div>
+          <div class="howto-t">Mirá los dibujos y votá</div>
+          <div class="howto-d">Se muestran todos los dibujos sin nombres. Tenés 35 segundos para observar y votar quién dibujó algo sospechoso.</div>
+        </div>
+      </div>
+      <div class="howto-step">
+        <div class="howto-num" style="background:rgba(16,185,129,.15)">🏆</div>
+        <div>
+          <div class="howto-t">El resultado</div>
+          <div class="howto-d">Si la mayoría vota al impostor → los detectives ganan <strong>+130 pts</strong> cada uno.<br>Si el impostor escapa → gana <strong>+150 pts</strong> solo.</div>
+        </div>
+      </div>
+      <div class="howto-step">
+        <div class="howto-num" style="background:rgba(99,102,241,.15)">💡</div>
+        <div>
+          <div class="howto-t">Consejo pro</div>
+          <div class="howto-d">Si sos impostor, mirá los otros dibujos para captar el estilo del grupo. Si sos detective, buscá al dibujo que "casi encaja" pero algo está raro.</div>
+        </div>
+      </div>
+      <div style="height:10px"></div>
+      <button class="bp" onclick="document.getElementById('howto-overlay').classList.remove('on');SFX.tap()">¡Entendido, a jugar! →</button>
     </div>
   </div>
 
@@ -811,6 +894,18 @@ body{background:
     <div class="sb"><span class="sb-t" id="t-reveal">9:41</span><div class="sb-i"></div></div>
     <div class="scroll" style="padding-bottom:20px">
       <div class="body">
+        <!-- Winner reward box -->
+        <div class="winner-box" id="winner-box">
+          <div class="winner-icon" id="winner-icon">🏆</div>
+          <div class="winner-info">
+            <div class="winner-title" id="winner-title">¡Ganaste esta ronda!</div>
+            <div class="winner-sub" id="winner-sub">+100 pts por identificar al impostor</div>
+          </div>
+        </div>
+        <!-- Streak row -->
+        <div class="streak-row" id="streak-row" style="display:none">
+          <div class="streak-badge" id="streak-badge">🔥 Racha ×2</div>
+        </div>
         <div class="rv-lbl">El impostor era...</div>
         <div class="rv-name" id="rv-name">?</div>
         <div class="rv-av" id="rv-av">?</div>
@@ -1232,6 +1327,7 @@ function initSocket() {
     SFX.reveal(); vibe([50,100,50,100,50]);
     setTimeout(() => {
       renderReveal(data);
+      updateWinnerBox(data);
       if (sus) {
         sus.classList.add('fade-out');
         setTimeout(() => { sus.style.pointerEvents='none'; }, 600);
@@ -1641,9 +1737,16 @@ document.getElementById('btn-cancel-join').addEventListener('click', () => {
 });
 
 document.getElementById('join-overlay').addEventListener('click', e => {
-  if (e.target === document.getElementById('join-overlay')) {
+  if (e.target === document.getElementById('join-overlay'))
     document.getElementById('join-overlay').classList.remove('on');
-  }
+});
+document.getElementById('howto-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('howto-overlay'))
+    document.getElementById('howto-overlay').classList.remove('on');
+});
+document.getElementById('auth-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('auth-overlay'))
+    document.getElementById('auth-overlay').classList.remove('on');
 });
 
 document.getElementById('join-code').addEventListener('input', e => {
@@ -2133,7 +2236,98 @@ function updateAuthChip() {
 }
 
 // Verify token on load
-AUTH.verify().then(ok => { if (ok) updateAuthChip(); else updateAuthChip(); });
+AUTH.verify().then(() => updateAuthChip());
+
+// ═══════════════════════════════════════════════════════════
+// HOW TO PLAY
+// ═══════════════════════════════════════════════════════════
+function openHowTo() {
+  document.getElementById('howto-overlay').classList.add('on');
+  SFX.tap(); vibe(8);
+}
+
+// ═══════════════════════════════════════════════════════════
+// STREAK & WINNER REWARD
+// ═══════════════════════════════════════════════════════════
+const STREAK = {
+  get() { return parseInt(localStorage.getItem('gotchly_streak') || '0'); },
+  set(n) { localStorage.setItem('gotchly_streak', String(n)); },
+  reset() { localStorage.setItem('gotchly_streak', '0'); },
+};
+
+function updateWinnerBox(data) {
+  const { impostorId, impostorCaught, scoreUpdates } = data;
+  const myPts = scoreUpdates[G.playerId] || 0;
+  const iWon = myPts > 0;
+
+  const box = document.getElementById('winner-box');
+  const icon = document.getElementById('winner-icon');
+  const title = document.getElementById('winner-title');
+  const sub = document.getElementById('winner-sub');
+  const streakRow = document.getElementById('streak-row');
+  const streakBadge = document.getElementById('streak-badge');
+
+  if (!iWon) {
+    box.classList.remove('show');
+    streakRow.style.display = 'none';
+    STREAK.reset();
+    return;
+  }
+
+  // Increment streak
+  const prev = STREAK.get();
+  const newStreak = prev + 1;
+  STREAK.set(newStreak);
+
+  // Winner box content
+  if (G.isImpostor && !impostorCaught) {
+    icon.textContent = '🎭';
+    title.textContent = '¡El impostor escapó! Eres tú 😈';
+    sub.textContent = `+${myPts} pts · Nadie te descubrió`;
+    box.style.background = 'linear-gradient(135deg,rgba(239,68,68,.18),rgba(185,28,28,.08))';
+    box.style.borderColor = 'rgba(239,68,68,.35)';
+    title.style.color = '#F87171';
+    sub.style.color = 'rgba(248,113,113,.6)';
+  } else {
+    icon.textContent = '🔍';
+    title.textContent = '¡Atrapaste al impostor!';
+    sub.textContent = `+${myPts} pts · Buen detective`;
+    box.style.background = '';
+    box.style.borderColor = '';
+    title.style.color = '';
+    sub.style.color = '';
+  }
+  box.classList.add('show');
+
+  // Streak badge
+  if (newStreak >= 2) {
+    streakRow.style.display = 'flex';
+    streakBadge.textContent = `🔥 Racha ×${newStreak}`;
+  } else {
+    streakRow.style.display = 'none';
+  }
+
+  // MVP crown on scoreboard (highest scorer)
+  setTimeout(() => {
+    const sorted = [...data.players].sort((a,b) =>
+      (b.score + (scoreUpdates[b.id]||0)) - (a.score + (scoreUpdates[a.id]||0)));
+    const mvpId = sorted[0]?.id;
+    if (mvpId) {
+      document.querySelectorAll('.sb-name').forEach(el => {
+        if (el.textContent.startsWith('★')) {
+          const isTop = el.closest('.sb-row')?.querySelector('.sb-pts')?.dataset?.pid === mvpId;
+        }
+      });
+      // Add 👑 crown to first row in scoreboard
+      const firstRow = document.querySelector('#rv-scoreboard .sb-row:first-of-type .sb-name');
+      if (firstRow && !firstRow.querySelector('.mvp-crown')) {
+        const crown = document.createElement('span');
+        crown.className = 'mvp-crown'; crown.textContent = ' 👑';
+        firstRow.appendChild(crown);
+      }
+    }
+  }, 100);
+}
 
 // ═══════════════════════════════════════════════════════════
 // PROMPT PACKS
