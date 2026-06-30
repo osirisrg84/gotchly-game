@@ -562,6 +562,51 @@ body{background:
   background:rgba(255,255,255,.3);transform:scale(0);pointer-events:none}
 .bp-ripple.go{animation:ripple .5s ease-out forwards}
 
+/* ── Auth chip on splash ── */
+.auth-chip{display:flex;align-items:center;gap:8px;padding:8px 14px 8px 8px;
+  border-radius:100px;background:rgba(14,165,233,.08);border:1px solid rgba(14,165,233,.16);
+  cursor:pointer;transition:background .2s;margin-bottom:18px;align-self:flex-start}
+.auth-chip:active{background:rgba(14,165,233,.18)}
+.auth-chip-av{width:26px;height:26px;border-radius:50%;background:var(--grad);
+  display:flex;align-items:center;justify-content:center;font:700 10px var(--f);color:#fff;flex-shrink:0}
+.auth-chip-txt{font:500 12px var(--f);color:rgba(125,211,252,.8)}
+.light .auth-chip{background:rgba(2,132,199,.08);border-color:rgba(2,132,199,.2)}
+.light .auth-chip-txt{color:rgba(7,89,133,.7)}
+.auth-link{font:500 12px var(--f);color:rgba(125,211,252,.5);cursor:pointer;
+  text-decoration:underline;text-underline-offset:3px;margin-bottom:10px;text-align:center}
+.auth-link:hover{color:rgba(125,211,252,.8)}
+.light .auth-link{color:rgba(7,89,133,.5)}
+
+/* ── Auth sheet tabs ── */
+.auth-tabs{display:flex;background:rgba(255,255,255,.04);border-radius:12px;
+  padding:3px;margin-bottom:20px;gap:3px}
+.auth-tab{flex:1;padding:9px;border-radius:10px;border:none;
+  font:600 13px var(--f);cursor:pointer;transition:background .2s,color .2s;
+  color:var(--dim);background:none}
+.auth-tab.on{background:var(--grad);color:#fff;box-shadow:0 4px 16px rgba(14,165,233,.3)}
+.light .auth-tabs{background:rgba(2,132,199,.06)}
+.light .auth-tab{color:var(--dim)}
+.auth-form{display:flex;flex-direction:column;gap:10px}
+.auth-form .inp{padding:14px 16px}
+.auth-err{font:500 12px var(--f);color:#F87171;text-align:center;min-height:16px}
+.auth-ok{font:500 12px var(--f);color:#34D399;text-align:center;min-height:16px}
+
+/* ── Prompt packs grid ── */
+.pack-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.pack-card{background:var(--card);border:1.5px solid var(--border);border-radius:16px;
+  padding:14px;cursor:pointer;transition:border-color .2s,background .2s,transform .1s}
+.pack-card:active{transform:scale(.97)}
+.pack-card.selected{border-color:var(--purple);background:rgba(14,165,233,.1);
+  box-shadow:0 0 20px rgba(14,165,233,.15)}
+.pack-card.locked{opacity:.65}
+.pack-emoji{font-size:26px;margin-bottom:6px;display:block}
+.pack-name{font:700 13px var(--f);color:var(--text);margin-bottom:2px}
+.pack-price{font:600 12px var(--f);color:var(--purple)}
+.pack-price.free{color:#10B981}
+.pack-count{font:400 10px var(--f);color:var(--faint)}
+.light .pack-card{background:rgba(2,132,199,.04);border-color:rgba(2,132,199,.14)}
+.light .pack-card.selected{background:rgba(2,132,199,.12);border-color:var(--purple)}
+
 </style>
 </head>
 <body>
@@ -597,12 +642,18 @@ body{background:
       </div>
       <h1>GOTCHLY</h1>
       <p class="tag">Nadie sabe quién miente</p>
+      <!-- Auth chip: shows login state -->
+      <div id="auth-chip" class="auth-chip" style="display:none" onclick="openAuthSheet()">
+        <div class="auth-chip-av" id="auth-chip-av">?</div>
+        <span class="auth-chip-txt" id="auth-chip-txt">Mi cuenta</span>
+      </div>
       <div class="name-wrap">
         <label>Tu nombre</label>
         <input class="inp" id="splash-name" type="text" maxlength="16" placeholder="¿Cómo te llamas?" autocomplete="off">
       </div>
       <button class="bp" id="btn-create" style="margin-bottom:12px">Crear sala</button>
       <button class="bs" id="btn-join">Unirme con código</button>
+      <span class="auth-link" id="auth-link" onclick="openAuthSheet()">Crear cuenta o iniciar sesión →</span>
       <button class="install-btn" id="btn-install">
         <svg width="16" height="16" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zm-8 2V5h2v6h1.17L12 13.17 9.83 11H11zm-6 7h14v2H5v-2z" fill="currentColor"/></svg>
         Instalar Gotchly en tu celular
@@ -621,6 +672,29 @@ body{background:
       <button class="bp" id="btn-do-join">Entrar →</button>
       <div style="height:10px"></div>
       <button class="bs" id="btn-cancel-join">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ AUTH OVERLAY ═══════════ -->
+  <div class="overlay" id="auth-overlay">
+    <div class="sheet">
+      <h3>Tu cuenta Gotchly</h3>
+      <p id="auth-sheet-sub">Guardá tu progreso y competí en el ranking</p>
+      <div class="auth-tabs">
+        <button class="auth-tab on" id="tab-login" onclick="switchAuthTab('login')">Entrar</button>
+        <button class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Registrarse</button>
+      </div>
+      <div class="auth-form">
+        <input class="inp" id="auth-username" type="text" maxlength="20"
+          placeholder="Tu nombre de usuario" autocomplete="username" autocorrect="off" autocapitalize="off">
+        <input class="inp" id="auth-password" type="password" maxlength="40"
+          placeholder="Contraseña (mín. 4 caracteres)" autocomplete="current-password">
+        <div class="auth-err" id="auth-err"></div>
+        <button class="bp" id="btn-auth-submit">Entrar →</button>
+        <button class="bs" id="btn-auth-logout" style="display:none">Cerrar sesión</button>
+        <div style="height:4px"></div>
+        <button class="bs" onclick="document.getElementById('auth-overlay').classList.remove('on')">Cancelar</button>
+      </div>
     </div>
   </div>
 
@@ -905,10 +979,32 @@ body{background:
           </div>
         </div>
         <button class="bp" style="margin-bottom:16px;border-radius:16px" onclick="toast('Iniciando prueba gratis...')">Prueba 7 días gratis →</button>
-        <div class="or-div"><div class="or-ln"></div><span class="or-t">o elige un pack</span><div class="or-ln"></div></div>
-        <div class="packs">
-          <div class="pack" onclick="toast('Pack seleccionado')"><div class="pack-pr">$1.99</div><div class="pack-nm">Pack Básico</div><div class="pack-ct">10 partidas</div></div>
-          <div class="pack" onclick="toast('Pack seleccionado')"><div class="pack-pr">$3.49</div><div class="pack-nm">Pack Noche</div><div class="pack-ct">25 partidas</div></div>
+        <div class="or-div"><div class="or-ln"></div><span class="or-t">o elige un pack de prompts</span><div class="or-ln"></div></div>
+        <div class="pack-grid" id="pack-grid">
+          <div class="pack-card" onclick="selectPack('picantes',this)">
+            <span class="pack-emoji">🌶️</span>
+            <div class="pack-name">Picantes</div>
+            <div class="pack-price">$1.99</div>
+            <div class="pack-count">15 prompts</div>
+          </div>
+          <div class="pack-card" onclick="selectPack('parejas',this)">
+            <span class="pack-emoji">👫</span>
+            <div class="pack-name">Parejas</div>
+            <div class="pack-price">$1.99</div>
+            <div class="pack-count">15 prompts</div>
+          </div>
+          <div class="pack-card" onclick="selectPack('halloween',this)">
+            <span class="pack-emoji">🎃</span>
+            <div class="pack-name">Halloween</div>
+            <div class="pack-price">$0.99</div>
+            <div class="pack-count">15 prompts</div>
+          </div>
+          <div class="pack-card" onclick="selectPack('fiestas',this)">
+            <span class="pack-emoji">🎉</span>
+            <div class="pack-name">Fiestas</div>
+            <div class="pack-price">$2.99</div>
+            <div class="pack-count">15 prompts</div>
+          </div>
         </div>
       </div>
     </div>
@@ -1907,6 +2003,150 @@ async function doShareReveal() {
   btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24"><path d="M18 16c-.8 0-1.5.3-2 .8l-7.1-4.1c.1-.2.1-.5.1-.7s0-.5-.1-.7L16 7.2c.5.5 1.2.8 2 .8 1.7 0 3-1.3 3-3s-1.3-3-3-3-3 1.3-3 3c0 .2 0 .5.1.7L8 9.8C7.5 9.3 6.8 9 6 9c-1.7 0-3 1.3-3 3s1.3 3 3 3c.8 0 1.5-.3 2-.8l7.1 4.1c-.1.2-.1.4-.1.7 0 1.6 1.3 3 3 3s3-1.4 3-3-1.3-3-3-3z" fill="currentColor"/></svg> Compartir resultado';
 }
 document.getElementById('btn-share-result').addEventListener('click', doShareReveal);
+
+// ═══════════════════════════════════════════════════════════
+// AUTH SYSTEM
+// ═══════════════════════════════════════════════════════════
+const AUTH = {
+  token: localStorage.getItem('gotchly_token') || null,
+  accountId: localStorage.getItem('gotchly_account_id') || null,
+  username: localStorage.getItem('gotchly_username') || null,
+
+  save(token, id, username) {
+    this.token = token; this.accountId = id; this.username = username;
+    localStorage.setItem('gotchly_token', token);
+    localStorage.setItem('gotchly_account_id', id);
+    localStorage.setItem('gotchly_username', username);
+  },
+  clear() {
+    this.token = null; this.accountId = null; this.username = null;
+    localStorage.removeItem('gotchly_token');
+    localStorage.removeItem('gotchly_account_id');
+    localStorage.removeItem('gotchly_username');
+  },
+  async verify() {
+    if (!this.token) return false;
+    try {
+      const r = await fetch('/api/auth/verify', {
+        headers: { Authorization: 'Bearer ' + this.token }
+      });
+      if (!r.ok) { this.clear(); return false; }
+      const d = await r.json();
+      if (d.ok) {
+        this.username = d.username;
+        this.accountId = d.id;
+        localStorage.setItem('gotchly_username', d.username);
+        if (d.stats) renderProfile(d.stats);
+        return true;
+      }
+      this.clear(); return false;
+    } catch { return false; }
+  }
+};
+
+let authTab = 'login';
+
+function switchAuthTab(tab) {
+  authTab = tab;
+  document.getElementById('tab-login').classList.toggle('on', tab === 'login');
+  document.getElementById('tab-register').classList.toggle('on', tab === 'register');
+  document.getElementById('btn-auth-submit').textContent = tab === 'login' ? 'Entrar →' : 'Crear cuenta →';
+  document.getElementById('auth-err').textContent = '';
+  document.getElementById('auth-password').placeholder = tab === 'login'
+    ? 'Contraseña' : 'Contraseña (mín. 4 caracteres)';
+}
+
+function openAuthSheet() {
+  SFX.tap();
+  const overlay = document.getElementById('auth-overlay');
+  overlay.classList.add('on');
+  const loggedIn = !!AUTH.token;
+  document.getElementById('auth-sheet-sub').textContent = loggedIn
+    ? `Sesión activa como ${AUTH.username}`
+    : 'Guardá tu progreso y competí en el ranking';
+  document.getElementById('btn-auth-logout').style.display = loggedIn ? 'block' : 'none';
+  document.getElementById('btn-auth-submit').style.display = loggedIn ? 'none' : 'block';
+  document.getElementById('auth-tabs').style.display = loggedIn ? 'none' : 'flex';
+  document.getElementById('auth-username').style.display = loggedIn ? 'none' : 'block';
+  document.getElementById('auth-password').style.display = loggedIn ? 'none' : 'block';
+  if (!loggedIn) setTimeout(() => document.getElementById('auth-username').focus(), 200);
+}
+
+document.getElementById('btn-auth-submit').addEventListener('click', async () => {
+  const username = document.getElementById('auth-username').value.trim();
+  const password = document.getElementById('auth-password').value;
+  const errEl = document.getElementById('auth-err');
+  errEl.textContent = '';
+  if (username.length < 2) { errEl.textContent = 'El nombre debe tener al menos 2 caracteres'; return; }
+  if (password.length < 4) { errEl.textContent = 'La contraseña debe tener al menos 4 caracteres'; return; }
+  document.getElementById('btn-auth-submit').disabled = true;
+  document.getElementById('btn-auth-submit').textContent = '⏳...';
+  try {
+    const endpoint = authTab === 'login' ? '/api/auth/login' : '/api/auth/register';
+    const r = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+    const d = await r.json();
+    if (!r.ok || d.error) {
+      errEl.textContent = d.error || 'Error desconocido';
+    } else {
+      AUTH.save(d.token, d.id, d.username);
+      // Pre-fill name
+      G.playerName = d.username;
+      G.playerId = d.id;
+      localStorage.setItem('gotchly_name', d.username);
+      localStorage.setItem('gotchly_pid', d.id);
+      document.getElementById('splash-name').value = d.username;
+      updateAuthChip();
+      document.getElementById('auth-overlay').classList.remove('on');
+      toast(authTab === 'login' ? `¡Bienvenido, ${d.username}!` : `¡Cuenta creada! Hola, ${d.username} 🎉`);
+      SFX.success(); vibe([10,50,10]);
+    }
+  } catch { errEl.textContent = 'Error de conexión'; }
+  document.getElementById('btn-auth-submit').disabled = false;
+  document.getElementById('btn-auth-submit').textContent = authTab === 'login' ? 'Entrar →' : 'Crear cuenta →';
+});
+
+document.getElementById('btn-auth-logout').addEventListener('click', () => {
+  AUTH.clear();
+  updateAuthChip();
+  document.getElementById('auth-overlay').classList.remove('on');
+  toast('Sesión cerrada');
+  SFX.tap();
+});
+
+function updateAuthChip() {
+  const chip = document.getElementById('auth-chip');
+  const link = document.getElementById('auth-link');
+  if (AUTH.username) {
+    const initials = AUTH.username.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    document.getElementById('auth-chip-av').textContent = initials;
+    document.getElementById('auth-chip-txt').textContent = AUTH.username;
+    chip.style.display = 'flex';
+    if (link) link.style.display = 'none';
+  } else {
+    chip.style.display = 'none';
+    if (link) link.style.display = 'block';
+  }
+}
+
+// Verify token on load
+AUTH.verify().then(ok => { if (ok) updateAuthChip(); else updateAuthChip(); });
+
+// ═══════════════════════════════════════════════════════════
+// PROMPT PACKS
+// ═══════════════════════════════════════════════════════════
+let selectedPack = null;
+
+function selectPack(packId, el) {
+  selectedPack = selectedPack === packId ? null : packId;
+  document.querySelectorAll('.pack-card').forEach(c => c.classList.remove('selected'));
+  if (selectedPack && el) el.classList.add('selected');
+  SFX.tap(); vibe(8);
+  toast(selectedPack ? `Pack "${el.querySelector('.pack-name').textContent}" seleccionado` : 'Pack deseleccionado');
+}
 
 // ═══════════════════════════════════════════════════════════
 // BRUSH SIZES + ERASER
