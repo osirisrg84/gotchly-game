@@ -582,6 +582,33 @@ app.get('/api/auth/referral', (req, res) => {
   });
 });
 
+app.get('/api/leaderboard', (req, res) => {
+  const db = loadDB();
+  const players = Object.values(db.players || {});
+  const accounts = Object.values(db.accounts || {});
+  const accMap = {};
+  accounts.forEach(a => { accMap[a.id] = a; });
+
+  const ranked = players
+    .filter(p => p.total_games > 0)
+    .map(p => {
+      const acc = accMap[p.id] || {};
+      return {
+        id: p.id,
+        name: p.name,
+        wins: p.wins || 0,
+        games: p.total_games || 0,
+        points: p.points || 0,
+        premium: acc.premium || false,
+        wr: p.total_games > 0 ? Math.round((p.wins||0)/p.total_games*100) : 0,
+      };
+    })
+    .sort((a, b) => b.wins - a.wins || b.wr - a.wr)
+    .slice(0, 20);
+
+  res.json({ ok: true, players: ranked, totalPlayers: players.length, totalGames: players.reduce((s,p)=>s+(p.total_games||0),0) });
+});
+
 app.post('/api/auth/login', (req, res) => {
   const { username, password } = req.body || {};
   if (!username || !password) return res.status(400).json({ error: 'Faltan datos' });

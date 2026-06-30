@@ -234,7 +234,57 @@ body{background:
   box-shadow:0 0 0 1px rgba(255,255,255,.14),
     0 24px 80px rgba(14,165,233,.7),
     0 0 0 10px rgba(14,165,233,.08),
-    0 0 60px rgba(16,185,129,.28)}
+    0 0 60px rgba(16,185,129,.28);
+  cursor:pointer;transition:transform .15s,box-shadow .15s;position:relative}
+.logo-box:active{transform:scale(.91)}
+.logo-box::after{content:'🏆';position:absolute;bottom:-9px;right:-9px;
+  width:26px;height:26px;border-radius:50%;background:rgba(245,158,11,.18);
+  border:1.5px solid rgba(245,158,11,.35);display:flex;align-items:center;
+  justify-content:center;font-size:12px;line-height:26px;text-align:center;
+  animation:ledPulse 2.5s ease-in-out infinite}
+
+/* ── Leaderboard modal ── */
+#lb-modal{position:fixed;inset:0;z-index:900;display:none;align-items:flex-end}
+#lb-modal.on{display:flex}
+#lb-modal-bg{position:absolute;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px)}
+#lb-sheet{position:relative;z-index:1;width:100%;max-height:88vh;border-radius:28px 28px 0 0;
+  background:var(--panel);overflow:hidden;display:flex;flex-direction:column;
+  animation:slideUp .3s cubic-bezier(.25,1,.5,1)}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+#lb-header{padding:20px 20px 0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+#lb-title{font:800 18px var(--f);color:var(--text)}
+#lb-close{width:32px;height:32px;border-radius:50%;background:rgba(14,165,233,.1);
+  border:none;cursor:pointer;color:var(--dim);font-size:18px;display:flex;align-items:center;justify-content:center}
+#lb-meta{padding:6px 20px 14px;font:400 12px var(--f);color:var(--dim)}
+#lb-body{overflow-y:auto;padding:0 16px 32px;flex:1}
+.lb-podium{display:flex;align-items:flex-end;justify-content:center;gap:8px;margin-bottom:20px;padding:0 8px}
+.lb-pod{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1}
+.lb-pod-av{border-radius:16px;background:var(--grad);display:flex;align-items:center;
+  justify-content:center;font:800 18px var(--f);color:#fff;flex-shrink:0}
+.lb-pod-av.p1{width:60px;height:60px;border-radius:18px;box-shadow:0 0 0 3px rgba(245,158,11,.6),0 0 24px rgba(245,158,11,.3)}
+.lb-pod-av.p2{width:48px;height:48px;box-shadow:0 0 0 2px rgba(148,163,184,.4)}
+.lb-pod-av.p3{width:44px;height:44px;box-shadow:0 0 0 2px rgba(180,120,60,.4)}
+.lb-pod-name{font:700 11px var(--f);color:var(--text);text-align:center;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lb-pod-wins{font:500 10px var(--f);color:var(--dim)}
+.lb-pod-medal{font-size:20px;line-height:1}
+.lb-pod-bar{border-radius:4px 4px 0 0;width:100%}
+.lb-pod-bar.p1{height:48px;background:linear-gradient(to top,rgba(245,158,11,.5),rgba(245,158,11,.15))}
+.lb-pod-bar.p2{height:36px;background:linear-gradient(to top,rgba(148,163,184,.35),rgba(148,163,184,.08))}
+.lb-pod-bar.p3{height:28px;background:linear-gradient(to top,rgba(180,120,60,.35),rgba(180,120,60,.08))}
+.lb-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(14,165,233,.06)}
+.lb-row:last-child{border-bottom:none}
+.lb-rank{width:24px;font:700 13px var(--f);color:var(--dim);text-align:center;flex-shrink:0}
+.lb-av{width:36px;height:36px;border-radius:12px;background:rgba(14,165,233,.12);
+  display:flex;align-items:center;justify-content:center;font:700 13px var(--f);color:var(--purple);flex-shrink:0}
+.lb-av.me{background:rgba(16,185,129,.18);color:var(--green);box-shadow:0 0 0 2px rgba(16,185,129,.3)}
+.lb-name{flex:1;font:600 13px var(--f);color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lb-badge{font-size:11px;margin-left:4px}
+.lb-stat{text-align:right;flex-shrink:0}
+.lb-stat-wins{font:700 14px var(--f);color:var(--text)}
+.lb-stat-wr{font:400 11px var(--f);color:var(--dim)}
+.lb-me-row{background:rgba(16,185,129,.06);border-radius:12px;padding:10px 12px;margin-top:12px;
+  display:flex;align-items:center;gap:10px;border:1px solid rgba(16,185,129,.15)}
+.lb-empty{text-align:center;padding:32px;color:var(--dim);font:400 14px var(--f)}
 #splash h1{font:800 52px/1 var(--f);letter-spacing:-.05em;margin-bottom:12px;
   background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
   background-clip:text;filter:drop-shadow(0 0 28px rgba(14,165,233,.38))}
@@ -969,7 +1019,7 @@ body{background:
     <!-- ══ TAB: INICIO ══ -->
     <div class="tab-view on" id="tv-inicio">
       <div class="body">
-        <div class="logo-box">
+        <div class="logo-box" onclick="openLeaderboard()" title="Ver ranking">
           <svg viewBox="0 0 40 40" fill="none" width="40" height="40">
             <path d="M4 20C8 12 14 8 20 8 26 8 32 12 36 20 32 28 26 32 20 32 14 32 8 28 4 20Z" stroke="white" stroke-width="2.5" fill="rgba(255,255,255,.1)"/>
             <circle cx="20" cy="20" r="7" stroke="white" stroke-width="2.5"/>
@@ -3246,8 +3296,117 @@ document.getElementById('btn-eraser').addEventListener('click', () => {
 
 // ═══════════════════════════════════════════════════════════
 // INIT
+// ── Leaderboard ──────────────────────────────────────────
+async function openLeaderboard() {
+  SFX.tap();
+  const modal = document.getElementById('lb-modal');
+  modal.classList.add('on');
+  document.getElementById('lb-meta').textContent = 'Cargando…';
+  document.getElementById('lb-body').innerHTML = '';
+  try {
+    const r = await fetch('/api/leaderboard');
+    const d = await r.json();
+    if (!d.ok) throw new Error();
+    renderLeaderboard(d);
+  } catch(e) {
+    document.getElementById('lb-meta').textContent = 'No se pudo cargar el ranking';
+  }
+}
+
+function closeLeaderboard() {
+  document.getElementById('lb-modal').classList.remove('on');
+}
+
+function renderLeaderboard(d) {
+  const myId = AUTH.accountId || null;
+  const players = d.players || [];
+  document.getElementById('lb-meta').textContent =
+    `${d.totalPlayers} jugadores · ${d.totalGames} partidas jugadas`;
+
+  if (players.length === 0) {
+    document.getElementById('lb-body').innerHTML = '<div class="lb-empty">Aún no hay partidas jugadas.<br>¡Sé el primero en el ranking!</div>';
+    return;
+  }
+
+  const initials = n => (n||'?').slice(0,2).toUpperCase();
+  const medals = ['🥇','🥈','🥉'];
+  let html = '';
+
+  // Podium top 3
+  if (players.length >= 3) {
+    const [p1, p2, p3] = players;
+    html += `<div class="lb-podium">
+      <div class="lb-pod">
+        <div class="lb-pod-medal">${medals[1]}</div>
+        <div class="lb-pod-av p2">${initials(p2.name)}</div>
+        <div class="lb-pod-name">${escHtml(p2.name)}</div>
+        <div class="lb-pod-wins">${p2.wins}V</div>
+        <div class="lb-pod-bar p2"></div>
+      </div>
+      <div class="lb-pod">
+        <div class="lb-pod-medal">${medals[0]}</div>
+        <div class="lb-pod-av p1">${initials(p1.name)}</div>
+        <div class="lb-pod-name">${escHtml(p1.name)}</div>
+        <div class="lb-pod-wins">${p1.wins}V</div>
+        <div class="lb-pod-bar p1"></div>
+      </div>
+      <div class="lb-pod">
+        <div class="lb-pod-medal">${medals[2]}</div>
+        <div class="lb-pod-av p3">${initials(p3.name)}</div>
+        <div class="lb-pod-name">${escHtml(p3.name)}</div>
+        <div class="lb-pod-wins">${p3.wins}V</div>
+        <div class="lb-pod-bar p3"></div>
+      </div>
+    </div>`;
+  }
+
+  // Full list (skip podium entries already shown above)
+  const listStart = players.length >= 3 ? 3 : 0;
+  players.slice(listStart).forEach((p, i) => {
+    const rank = listStart + i + 1;
+    const isMe = p.id === myId;
+    html += `<div class="lb-row${isMe?' lb-me-row':''}">
+      <div class="lb-rank">${rank}</div>
+      <div class="lb-av${isMe?' me':''}">${initials(p.name)}</div>
+      <div class="lb-name">${escHtml(p.name)}${p.premium?'<span class="lb-badge">⭐</span>':''}</div>
+      <div class="lb-stat">
+        <div class="lb-stat-wins">${p.wins} vic.</div>
+        <div class="lb-stat-wr">${p.wr}% WR</div>
+      </div>
+    </div>`;
+  });
+
+  // My position if not in visible list
+  if (myId) {
+    const myIdx = players.findIndex(p => p.id === myId);
+    if (myIdx === -1) {
+      const myName = AUTH.username || '?';
+      html += `<div class="lb-me-row"><div class="lb-rank">—</div><div class="lb-av me">${initials(myName)}</div><div class="lb-name">${escHtml(myName)} <span style="font:400 11px var(--f);color:var(--dim)">(vos)</span></div><div class="lb-stat"><div class="lb-stat-wins">—</div><div class="lb-stat-wr">Jugá más</div></div></div>`;
+    }
+  }
+
+  document.getElementById('lb-body').innerHTML = html;
+}
+
+function escHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
 // ═══════════════════════════════════════════════════════════
 initSocket();
 </script>
+
+<!-- ══ Leaderboard modal ══ -->
+<div id="lb-modal" role="dialog" aria-modal="true">
+  <div id="lb-modal-bg" onclick="closeLeaderboard()"></div>
+  <div id="lb-sheet">
+    <div id="lb-header">
+      <div id="lb-title">🏆 Ranking global</div>
+      <button id="lb-close" onclick="closeLeaderboard()">✕</button>
+    </div>
+    <div id="lb-meta">Cargando…</div>
+    <div id="lb-body"></div>
+  </div>
+</div>
 </body>
 </html>
