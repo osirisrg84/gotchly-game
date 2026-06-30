@@ -641,6 +641,62 @@ body{background:
 /* ── Auth link spacing ── */
 .auth-link{margin-top:18px!important}
 
+/* ── Splash decorative layer ── */
+.sp-deco{position:absolute;inset:0;pointer-events:none;z-index:2;overflow:hidden}
+
+/* Floating game cards */
+.sp-card{position:absolute;border-radius:16px;width:70px;
+  background:rgba(14,165,233,.07);border:1px solid rgba(14,165,233,.14);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;
+  box-shadow:0 8px 32px rgba(14,165,233,.1),inset 0 1px 0 rgba(255,255,255,.06)}
+.sp-card-icon{font-size:22px;line-height:1.2}
+.sp-card-lbl{font:600 8px var(--f);color:rgba(125,211,252,.5);letter-spacing:.09em;text-transform:uppercase}
+.sp-card-val{font:800 14px var(--f);background:var(--grad);-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text}
+
+.sp-card.c1{top:11%;left:4px;animation:spF1 6.5s ease-in-out infinite}
+.sp-card.c2{top:9%;right:4px;animation:spF2 7.4s ease-in-out infinite}
+.sp-card.c3{top:53%;left:4px;animation:spF3 8.2s ease-in-out infinite}
+.sp-card.c4{top:57%;right:4px;animation:spF4 5.9s ease-in-out infinite}
+
+@keyframes spF1{0%,100%{transform:translateY(0) rotate(-4deg);opacity:.75}
+  50%{transform:translateY(-14px) rotate(-1deg);opacity:1}}
+@keyframes spF2{0%,100%{transform:translateY(0) rotate(4deg);opacity:.7}
+  50%{transform:translateY(-12px) rotate(1deg);opacity:1}}
+@keyframes spF3{0%,100%{transform:translateY(0) rotate(-3deg);opacity:.72}
+  50%{transform:translateY(-17px) rotate(2deg);opacity:1}}
+@keyframes spF4{0%,100%{transform:translateY(0) rotate(5deg);opacity:.78}
+  50%{transform:translateY(-10px) rotate(2deg);opacity:.96}}
+
+/* Floating sparkle dots */
+.sp-dot{position:absolute;border-radius:50%;pointer-events:none}
+@keyframes spDot{0%,100%{opacity:.12;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
+.sp-dot.d1{width:5px;height:5px;top:14%;left:22%;background:#0EA5E9;animation:spDot 3.8s ease-in-out infinite}
+.sp-dot.d2{width:3px;height:3px;top:22%;right:22%;background:#10B981;animation:spDot 4.5s ease-in-out infinite .5s}
+.sp-dot.d3{width:4px;height:4px;top:48%;left:14%;background:#38BDF8;animation:spDot 5s ease-in-out infinite .3s}
+.sp-dot.d4{width:3px;height:3px;top:58%;right:16%;background:#34D399;animation:spDot 4.2s ease-in-out infinite .8s}
+.sp-dot.d5{width:6px;height:6px;top:36%;left:8%;background:#0EA5E9;animation:spDot 6s ease-in-out infinite .2s;opacity:.1}
+.sp-dot.d6{width:4px;height:4px;top:32%;right:8%;background:#10B981;animation:spDot 3.5s ease-in-out infinite 1s}
+
+/* Bottom game-loop preview strip (in-flow, inside .body) */
+.sp-loop{display:flex;align-items:center;justify-content:center;gap:4px;
+  padding:18px 16px 4px;width:100%}
+.sp-loop-step{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;max-width:60px}
+.sp-loop-ico{width:38px;height:38px;border-radius:13px;
+  background:rgba(14,165,233,.08);border:1px solid rgba(14,165,233,.12);
+  display:flex;align-items:center;justify-content:center;font-size:17px;
+  box-shadow:0 4px 16px rgba(14,165,233,.08)}
+.sp-loop-txt{font:600 8px var(--f);color:rgba(125,211,252,.38);letter-spacing:.07em;text-transform:uppercase;text-align:center}
+.sp-loop-sep{font-size:11px;color:rgba(125,211,252,.18);padding-bottom:14px;flex-shrink:0}
+
+/* Light mode deco */
+.light .sp-card{background:rgba(2,132,199,.06);border-color:rgba(2,132,199,.16);
+  box-shadow:0 8px 24px rgba(2,132,199,.08)}
+.light .sp-card-lbl{color:rgba(7,89,133,.45)}
+.light .sp-loop-ico{background:rgba(2,132,199,.07);border-color:rgba(2,132,199,.15)}
+.light .sp-loop-txt{color:rgba(7,89,133,.38)}
+
 </style>
 </head>
 <body>
@@ -665,6 +721,39 @@ body{background:
   <div class="sc" id="splash">
     <div class="orb fa"></div>
     <div class="orb fb"></div>
+
+    <!-- ── Decorative animated layer ── -->
+    <div class="sp-deco" id="sp-deco">
+      <!-- Floating game cards (corners) -->
+      <div class="sp-card c1">
+        <div class="sp-card-icon">🎨</div>
+        <div class="sp-card-lbl">Dibuja</div>
+        <div class="sp-card-val">70s</div>
+      </div>
+      <div class="sp-card c2">
+        <div class="sp-card-icon">👁️</div>
+        <div class="sp-card-lbl">Descubrí</div>
+        <div class="sp-card-val">35s</div>
+      </div>
+      <div class="sp-card c3">
+        <div class="sp-card-icon">🏆</div>
+        <div class="sp-card-lbl">Puntos</div>
+        <div class="sp-card-val">+150</div>
+      </div>
+      <div class="sp-card c4">
+        <div class="sp-card-icon">🎭</div>
+        <div class="sp-card-lbl">Impostor</div>
+        <div class="sp-card-val">×1</div>
+      </div>
+      <!-- Sparkle dots -->
+      <div class="sp-dot d1"></div>
+      <div class="sp-dot d2"></div>
+      <div class="sp-dot d3"></div>
+      <div class="sp-dot d4"></div>
+      <div class="sp-dot d5"></div>
+      <div class="sp-dot d6"></div>
+    </div>
+
     <div class="sb"><span class="sb-t" id="t-splash">9:41</span><div class="sb-i"><!-- signals --></div></div>
     <div class="body">
       <div class="logo-box">
@@ -692,6 +781,30 @@ body{background:
       <button class="bp" id="btn-create" style="margin-bottom:12px">Crear sala</button>
       <button class="bs" id="btn-join">Unirme con código</button>
       <span class="auth-link" id="auth-link" onclick="openAuthSheet()">Crear cuenta o iniciar sesión →</span>
+
+      <!-- Game-loop preview strip -->
+      <div class="sp-loop">
+        <div class="sp-loop-step">
+          <div class="sp-loop-ico">🎨</div>
+          <div class="sp-loop-txt">Dibujá</div>
+        </div>
+        <div class="sp-loop-sep">→</div>
+        <div class="sp-loop-step">
+          <div class="sp-loop-ico">👁️</div>
+          <div class="sp-loop-txt">Observá</div>
+        </div>
+        <div class="sp-loop-sep">→</div>
+        <div class="sp-loop-step">
+          <div class="sp-loop-ico">🎭</div>
+          <div class="sp-loop-txt">Votá</div>
+        </div>
+        <div class="sp-loop-sep">→</div>
+        <div class="sp-loop-step">
+          <div class="sp-loop-ico">🏆</div>
+          <div class="sp-loop-txt">Ganá</div>
+        </div>
+      </div>
+
       <button class="install-btn" id="btn-install">
         <svg width="16" height="16" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zm-8 2V5h2v6h1.17L12 13.17 9.83 11H11zm-6 7h14v2H5v-2z" fill="currentColor"/></svg>
         Instalar Gotchly en tu celular
