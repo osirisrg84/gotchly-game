@@ -583,17 +583,32 @@ app.get('/api/admin/users', adminAuth, (req, res) => {
   const users = Object.values(db.accounts || {}).map(a => {
     const p = db.players[a.id] || {};
     return {
-      username:    a.username,
-      id:          a.id,
-      createdAt:   a.createdAt,
-      lastSeen:    p.last_seen || null,
-      totalGames:  p.total_games || 0,
-      wins:        p.wins || 0,
-      points:      p.points || 0,
+      username:      a.username,
+      id:            a.id,
+      createdAt:     a.createdAt,
+      lastSeen:      p.last_seen || null,
+      totalGames:    p.total_games || 0,
+      wins:          p.wins || 0,
+      points:        p.points || 0,
       impostorGames: p.impostor_games || 0,
+      premium:       a.premium || false,
+      premiumSince:  a.premiumSince || null,
+      packs:         a.packs || [],
     };
   }).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   res.json({ users });
+});
+
+app.post('/api/admin/user/:username/premium', adminAuth, (req, res) => {
+  const db = loadDB();
+  const key = req.params.username.toLowerCase();
+  if (!db.accounts?.[key]) return res.status(404).json({ error: 'Usuario no encontrado' });
+  const { premium, packs } = req.body;
+  db.accounts[key].premium = !!premium;
+  db.accounts[key].premiumSince = premium ? (db.accounts[key].premiumSince || new Date().toISOString()) : null;
+  if (Array.isArray(packs)) db.accounts[key].packs = packs;
+  saveDB(db);
+  res.json({ ok: true, premium: db.accounts[key].premium, packs: db.accounts[key].packs });
 });
 
 app.get('/api/admin/rooms', adminAuth, (req, res) => {

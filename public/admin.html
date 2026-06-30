@@ -76,6 +76,32 @@ tr:hover td{background:rgba(14,165,233,.03)}
 .del-btn{background:none;border:none;color:rgba(239,68,68,.5);cursor:pointer;
   font-size:14px;padding:2px 6px;border-radius:6px;transition:color .15s}
 .del-btn:hover{color:var(--red);background:rgba(239,68,68,.1)}
+.prem-toggle{background:none;border:1px solid var(--border);border-radius:8px;
+  font:600 11px var(--f);padding:3px 10px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.prem-toggle.is-premium{background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.3);color:#F59E0B}
+.prem-toggle.no-premium{color:var(--dim)}
+.prem-toggle:hover{opacity:.8}
+.badge-gold{background:rgba(245,158,11,.15);color:#F59E0B}
+
+/* Pack chips */
+.pack-chip{display:inline-block;font-size:11px;padding:1px 6px;border-radius:5px;
+  background:rgba(14,165,233,.1);color:var(--purple);margin:1px}
+
+/* Premium modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(2,8,18,.8);display:flex;
+  align-items:center;justify-content:center;z-index:100;padding:16px}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:20px;
+  padding:28px;width:100%;max-width:440px}
+.modal h3{font-size:17px;font-weight:700;margin-bottom:6px}
+.modal p{font-size:13px;color:var(--dim);margin-bottom:20px}
+.pack-toggle-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px}
+.pack-tog{border:1px solid var(--border);border-radius:10px;padding:10px 12px;
+  cursor:pointer;display:flex;align-items:center;gap:8px;font:500 13px var(--f);
+  background:none;color:var(--text);transition:all .15s;text-align:left}
+.pack-tog.on{background:rgba(14,165,233,.1);border-color:var(--purple)}
+.modal-actions{display:flex;gap:10px}
+.modal-actions button{flex:1;padding:11px;border-radius:10px;border:none;cursor:pointer;
+  font:600 13px var(--f)}
 
 /* Rooms */
 .rooms-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
@@ -141,26 +167,49 @@ tr:hover td{background:rgba(14,165,233,.03)}
     <div class="section-title" style="margin-top:32px">Salas activas</div>
     <div id="rooms-container"><div class="empty-state">No hay salas activas en este momento</div></div>
 
-    <div class="section-title" style="margin-top:32px">Usuarios registrados</div>
+    <div class="section-title" style="margin-top:32px">
+      Usuarios registrados
+      <span id="premium-count" style="font-weight:400;color:#F59E0B;margin-left:8px;font-size:11px"></span>
+    </div>
     <div class="table-wrap">
       <table>
         <thead>
           <tr>
             <th>#</th>
             <th>Usuario</th>
+            <th>Plan</th>
+            <th>Packs</th>
             <th>Registrado</th>
             <th>Último acceso</th>
             <th>Partidas</th>
             <th>Victorias</th>
             <th>Puntos</th>
-            <th>Impostor</th>
             <th></th>
           </tr>
         </thead>
         <tbody id="users-tbody">
-          <tr><td colspan="9" style="text-align:center;padding:24px;color:var(--dim)"><div class="spin"></div></td></tr>
+          <tr><td colspan="10" style="text-align:center;padding:24px;color:var(--dim)"><div class="spin"></div></td></tr>
         </tbody>
       </table>
+    </div>
+  </div>
+</div>
+
+<!-- Premium edit modal -->
+<div class="modal-overlay" id="prem-modal" style="display:none" onclick="if(event.target===this)closePremModal()">
+  <div class="modal">
+    <h3 id="prem-modal-title">Gestionar plan</h3>
+    <p id="prem-modal-sub">Activá o desactivá Premium y seleccioná los packs del usuario.</p>
+    <div class="pack-toggle-row">
+      <button class="pack-tog" id="ptog-premium" onclick="toggleModalPack('premium')">⭐ Premium completo</button>
+      <button class="pack-tog" id="ptog-picantes" onclick="toggleModalPack('picantes')">🌶️ Picantes</button>
+      <button class="pack-tog" id="ptog-parejas" onclick="toggleModalPack('parejas')">👫 Parejas</button>
+      <button class="pack-tog" id="ptog-halloween" onclick="toggleModalPack('halloween')">🎃 Halloween</button>
+      <button class="pack-tog" id="ptog-fiestas" onclick="toggleModalPack('fiestas')">🎉 Fiestas</button>
+    </div>
+    <div class="modal-actions">
+      <button style="background:rgba(14,165,233,.1);color:var(--purple)" onclick="savePremModal()">Guardar cambios</button>
+      <button style="background:rgba(125,211,252,.06);color:var(--dim)" onclick="closePremModal()">Cancelar</button>
     </div>
   </div>
 </div>
@@ -232,22 +281,85 @@ function renderStats(s) {
 
 function renderUsers(users) {
   const tb = document.getElementById('users-tbody');
+  const premCount = users.filter(u => u.premium).length;
+  const packCount = users.filter(u => (u.packs||[]).length > 0 && !u.premium).length;
+  document.getElementById('premium-count').textContent =
+    `⭐ ${premCount} premium · 📦 ${packCount} con packs`;
+
   if (!users.length) {
-    tb.innerHTML = '<tr><td colspan="9" class="empty-state">Sin usuarios registrados aún</td></tr>';
+    tb.innerHTML = '<tr><td colspan="10" class="empty-state">Sin usuarios registrados aún</td></tr>';
     return;
   }
-  tb.innerHTML = users.map((u, i) => `
+  tb.innerHTML = users.map((u, i) => {
+    const packChips = (u.packs||[]).map(p => `<span class="pack-chip">${packEmoji(p)} ${p}</span>`).join('');
+    const planBadge = u.premium
+      ? `<span class="badge badge-gold">⭐ Premium</span>${u.premiumSince ? `<br><small style="color:var(--dim);font-size:10px">desde ${fmtDate(u.premiumSince)}</small>` : ''}`
+      : `<span class="badge" style="color:var(--dim);background:rgba(255,255,255,.04)">Gratis</span>`;
+    return `
     <tr>
       <td style="color:var(--dim)">${i+1}</td>
       <td><strong>${esc(u.username)}</strong></td>
+      <td>${planBadge}</td>
+      <td>${packChips || '<span style="color:var(--dim)">—</span>'}</td>
       <td style="color:var(--dim)">${fmtDate(u.createdAt)}</td>
       <td style="color:var(--dim)">${u.lastSeen ? fmtDate(u.lastSeen) : '—'}</td>
       <td>${u.totalGames}</td>
       <td><span class="badge badge-green">${u.wins}</span></td>
       <td><span class="badge badge-blue">${u.points}</span></td>
-      <td style="color:var(--dim)">${u.impostorGames}</td>
-      <td><button class="del-btn" onclick="deleteUser('${esc(u.username)}')" title="Eliminar">🗑</button></td>
-    </tr>`).join('');
+      <td style="display:flex;gap:6px;align-items:center">
+        <button class="prem-toggle ${u.premium?'is-premium':'no-premium'}"
+          onclick="openPremModal('${esc(u.username)}',${u.premium},'${(u.packs||[]).join(',')}')">
+          ${u.premium ? '⭐ Gestionar' : '+ Plan'}
+        </button>
+        <button class="del-btn" onclick="deleteUser('${esc(u.username)}')" title="Eliminar">🗑</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function packEmoji(p) {
+  return {picantes:'🌶️',parejas:'👫',halloween:'🎃',fiestas:'🎉',premium:'⭐'}[p] || '📦';
+}
+
+// ── Premium modal ──
+let _pmUser = '', _pmPacks = new Set();
+
+function openPremModal(username, isPremium, packsStr) {
+  _pmUser  = username;
+  _pmPacks = new Set(packsStr ? packsStr.split(',').filter(Boolean) : []);
+  if (isPremium) _pmPacks.add('premium');
+
+  document.getElementById('prem-modal-title').textContent = `Plan de @${username}`;
+  document.getElementById('prem-modal-sub').textContent =
+    isPremium ? '⭐ Usuario Premium activo' : 'Sin plan de pago actualmente';
+
+  ['premium','picantes','parejas','halloween','fiestas'].forEach(k => {
+    document.getElementById('ptog-'+k).classList.toggle('on', _pmPacks.has(k));
+  });
+  document.getElementById('prem-modal').style.display = 'flex';
+}
+
+function toggleModalPack(key) {
+  if (_pmPacks.has(key)) _pmPacks.delete(key); else _pmPacks.add(key);
+  document.getElementById('ptog-'+key).classList.toggle('on', _pmPacks.has(key));
+}
+
+function closePremModal() {
+  document.getElementById('prem-modal').style.display = 'none';
+}
+
+async function savePremModal() {
+  const isPremium = _pmPacks.has('premium');
+  const packs = [..._pmPacks].filter(k => k !== 'premium');
+  try {
+    const r = await fetch('/api/admin/user/'+encodeURIComponent(_pmUser)+'/premium', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer '+ADMIN_TOKEN, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ premium: isPremium, packs }),
+    });
+    if (r.ok) { closePremModal(); loadAll(); }
+    else alert('Error al guardar');
+  } catch { alert('Error de conexión'); }
 }
 
 function renderRooms(rooms) {
