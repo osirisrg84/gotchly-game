@@ -743,6 +743,92 @@ body{background:
 .light .sp-loop-ico{background:rgba(2,132,199,.07);border-color:rgba(2,132,199,.15)}
 .light .sp-loop-txt{color:rgba(7,89,133,.38)}
 
+/* ── Bottom nav ── */
+.bot-nav{position:absolute;bottom:0;left:0;right:0;height:62px;
+  display:flex;align-items:stretch;
+  background:rgba(2,8,18,.96);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border-top:1px solid rgba(14,165,233,.12);z-index:30}
+.bot-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:2px;background:none;border:none;cursor:pointer;padding:0;
+  color:rgba(125,211,252,.3);transition:color .2s;
+  font:700 9px var(--f);letter-spacing:.07em;text-transform:uppercase}
+.bot-tab svg{width:22px;height:22px}
+.bot-tab.on{color:var(--purple)}
+.light .bot-nav{background:rgba(224,242,254,.97);border-top-color:rgba(2,132,199,.14)}
+.light .bot-tab{color:rgba(7,89,133,.32)}
+.light .bot-tab.on{color:var(--purple)}
+
+/* ── Tab views ── */
+.tab-view{display:none;position:absolute;inset:32px 0 62px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.tab-view.on{display:block}
+#tv-inicio .body{min-height:100%}
+
+/* ── Tienda tab ── */
+.tvt{padding:20px 20px 20px;display:flex;flex-direction:column;align-items:center}
+.tier-badge{font:800 10px var(--f);letter-spacing:.15em;text-transform:uppercase;
+  background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;margin-bottom:10px}
+.tvt h2{font:800 26px var(--f);color:var(--text);text-align:center;margin:0 0 6px}
+.tvt>p{font:400 13px var(--f);color:var(--dim);text-align:center;margin:0 0 20px}
+.premium-card{width:100%;border-radius:20px;
+  background:linear-gradient(135deg,rgba(14,165,233,.1),rgba(16,185,129,.06));
+  border:1px solid rgba(14,165,233,.2);padding:20px;margin-bottom:16px;
+  box-shadow:0 8px 32px rgba(14,165,233,.12)}
+.prem-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px}
+.prem-price-wrap{}
+.prem-price{font:800 38px var(--f);background:var(--grad);-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.prem-period{font:500 12px var(--f);color:var(--dim);margin-top:4px}
+.prem-popular{background:var(--grad);border-radius:8px;padding:5px 12px;
+  font:800 10px var(--f);color:#fff;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+.prem-feats{display:flex;flex-direction:column;gap:11px}
+.prem-feat{display:flex;align-items:center;gap:10px;font:500 13px var(--f);color:var(--text)}
+.prem-feat-chk{width:20px;height:20px;border-radius:50%;
+  background:linear-gradient(135deg,rgba(16,185,129,.2),rgba(14,165,233,.15));
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px}
+.tier-div{width:100%;display:flex;align-items:center;gap:12px;
+  margin:16px 0 14px;color:var(--dim);font:400 12px var(--f)}
+.tier-div::before,.tier-div::after{content:'';flex:1;height:1px;background:var(--border)}
+.store-packs{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;margin-bottom:8px}
+.store-pack{border-radius:16px;background:rgba(14,165,233,.05);
+  border:1px solid rgba(14,165,233,.1);padding:16px 14px;cursor:pointer;
+  transition:all .18s;text-align:left}
+.store-pack:active,.store-pack.on{background:rgba(14,165,233,.14);
+  border-color:var(--purple);box-shadow:0 0 0 1px var(--purple)}
+.sp-emoji{font-size:28px;margin-bottom:7px;display:block}
+.sp-name{font:700 14px var(--f);color:var(--text);margin-bottom:4px}
+.sp-price{font:800 13px var(--f);background:var(--grad);-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text}
+.sp-count{font:400 11px var(--f);color:var(--dim);margin-top:2px}
+.tvt .bp{width:100%;margin-bottom:0}
+
+/* ── Partidas tab ── */
+.tvp{padding:20px}
+.tvp-h{font:800 24px var(--f);color:var(--text);margin:0 0 4px}
+.tvp-s{font:400 13px var(--f);color:var(--dim);margin:0 0 20px}
+.rg{border-radius:16px;background:var(--faint);border:1px solid var(--border);
+  padding:14px 16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.rg-l{flex:1}
+.rg-t{font:700 14px var(--f);color:var(--text)}
+.rg-m{font:400 11px var(--f);color:var(--dim);margin-top:3px}
+.rg-pts{font:800 14px var(--f);background:var(--grad);-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text}
+.rg-empty{text-align:center;color:var(--dim);font:400 13px var(--f);padding:48px 0}
+
+/* ── Perfil tab ── */
+.tvpr{padding:20px}
+.tvpr-auth{text-align:center;padding:48px 0 20px}
+.tvpr-auth-ico{font-size:52px;margin-bottom:14px}
+.tvpr-auth-t{font:700 20px var(--f);color:var(--text);margin-bottom:8px}
+.tvpr-auth-s{font:400 13px var(--f);color:var(--dim);margin-bottom:22px}
+.prof-big-hdr{display:flex;align-items:center;gap:16px;margin-bottom:22px}
+.prof-big-av{width:64px;height:64px;border-radius:50%;background:var(--grad);
+  display:flex;align-items:center;justify-content:center;
+  font:800 26px var(--f);color:#fff;flex-shrink:0;
+  box-shadow:0 4px 24px rgba(14,165,233,.3)}
+.prof-big-name{font:800 22px var(--f);color:var(--text)}
+.prof-big-sub{font:500 12px var(--f);color:var(--dim);margin-top:4px}
+
 </style>
 </head>
 <body>
@@ -801,62 +887,184 @@ body{background:
     </div>
 
     <div class="sb"><span class="sb-t" id="t-splash">9:41</span><div class="sb-i"><!-- signals --></div></div>
-    <div class="body">
-      <div class="logo-box">
-        <svg viewBox="0 0 40 40" fill="none" width="40" height="40">
-          <path d="M4 20C8 12 14 8 20 8 26 8 32 12 36 20 32 28 26 32 20 32 14 32 8 28 4 20Z" stroke="white" stroke-width="2.5" fill="rgba(255,255,255,.1)"/>
-          <circle cx="20" cy="20" r="7" stroke="white" stroke-width="2.5"/>
-          <circle cx="20" cy="20" r="3" fill="white"/>
-        </svg>
-      </div>
-      <h1>GOTCHLY</h1>
-      <p class="tag">Nadie sabe quién miente</p>
-      <button class="howto-btn" onclick="openHowTo()" style="margin-bottom:10px">
-        <svg width="13" height="13" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z" fill="currentColor"/></svg>
-        ¿Cómo se juega?
-      </button>
-      <!-- Auth chip: shows login state -->
-      <div id="auth-chip" class="auth-chip" style="display:none" onclick="openAuthSheet()">
-        <div class="auth-chip-av" id="auth-chip-av">?</div>
-        <span class="auth-chip-txt" id="auth-chip-txt">Mi cuenta</span>
-      </div>
-      <div class="name-wrap">
-        <label>Tu nombre</label>
-        <input class="inp" id="splash-name" type="text" maxlength="16" placeholder="¿Cómo te llamas?" autocomplete="off">
-      </div>
-      <button class="bp" id="btn-create" style="margin-bottom:12px">Crear sala</button>
-      <button class="bs" id="btn-join">Unirme con código</button>
-      <span class="auth-link" id="auth-link" onclick="openAuthSheet()">Crear cuenta o iniciar sesión →</span>
 
-      <!-- Game-loop preview strip -->
-      <div class="sp-loop">
-        <div class="sp-loop-step">
-          <div class="sp-loop-ico">🎨</div>
-          <div class="sp-loop-txt">Dibujá</div>
+    <!-- ══ TAB: INICIO ══ -->
+    <div class="tab-view on" id="tv-inicio">
+      <div class="body">
+        <div class="logo-box">
+          <svg viewBox="0 0 40 40" fill="none" width="40" height="40">
+            <path d="M4 20C8 12 14 8 20 8 26 8 32 12 36 20 32 28 26 32 20 32 14 32 8 28 4 20Z" stroke="white" stroke-width="2.5" fill="rgba(255,255,255,.1)"/>
+            <circle cx="20" cy="20" r="7" stroke="white" stroke-width="2.5"/>
+            <circle cx="20" cy="20" r="3" fill="white"/>
+          </svg>
         </div>
-        <div class="sp-loop-sep">→</div>
-        <div class="sp-loop-step">
-          <div class="sp-loop-ico">👁️</div>
-          <div class="sp-loop-txt">Observá</div>
+        <h1>GOTCHLY</h1>
+        <p class="tag">Nadie sabe quién miente</p>
+        <button class="howto-btn" onclick="openHowTo()" style="margin-bottom:10px">
+          <svg width="13" height="13" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z" fill="currentColor"/></svg>
+          ¿Cómo se juega?
+        </button>
+        <div id="auth-chip" class="auth-chip" style="display:none" onclick="switchTab('perfil')">
+          <div class="auth-chip-av" id="auth-chip-av">?</div>
+          <span class="auth-chip-txt" id="auth-chip-txt">Mi cuenta</span>
         </div>
-        <div class="sp-loop-sep">→</div>
-        <div class="sp-loop-step">
-          <div class="sp-loop-ico">🎭</div>
-          <div class="sp-loop-txt">Votá</div>
+        <div class="name-wrap">
+          <label>Tu nombre</label>
+          <input class="inp" id="splash-name" type="text" maxlength="16" placeholder="¿Cómo te llamas?" autocomplete="off">
         </div>
-        <div class="sp-loop-sep">→</div>
-        <div class="sp-loop-step">
-          <div class="sp-loop-ico">🏆</div>
-          <div class="sp-loop-txt">Ganá</div>
-        </div>
+        <button class="bp" id="btn-create" style="margin-bottom:12px">Crear sala</button>
+        <button class="bs" id="btn-join">Unirme con código</button>
+        <span class="auth-link" id="auth-link" onclick="openAuthSheet()">Crear cuenta o iniciar sesión →</span>
+        <span class="ver" style="margin-top:auto;padding-top:16px">Gotchly · Para 2–8 amigos</span>
+        <button class="install-btn" id="btn-install">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zm-8 2V5h2v6h1.17L12 13.17 9.83 11H11zm-6 7h14v2H5v-2z" fill="currentColor"/></svg>
+          Instalar Gotchly en tu celular
+        </button>
       </div>
-
-      <button class="install-btn" id="btn-install">
-        <svg width="16" height="16" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zm-8 2V5h2v6h1.17L12 13.17 9.83 11H11zm-6 7h14v2H5v-2z" fill="currentColor"/></svg>
-        Instalar Gotchly en tu celular
-      </button>
-      <span class="ver">Gotchly · Para 2–8 amigos</span>
     </div>
+
+    <!-- ══ TAB: PARTIDAS ══ -->
+    <div class="tab-view" id="tv-partidas">
+      <div class="tvp">
+        <h2 class="tvp-h">Mis partidas</h2>
+        <p class="tvp-s">Historial de tus últimas sesiones</p>
+        <div id="recent-games-list">
+          <div class="rg-empty">Todavía no jugaste ninguna partida.<br>¡Creá o unite a una sala!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TAB: PERFIL ══ -->
+    <div class="tab-view" id="tv-perfil">
+      <div class="tvpr">
+        <!-- Not logged in -->
+        <div id="tvpr-out" class="tvpr-auth">
+          <div class="tvpr-auth-ico">👤</div>
+          <div class="tvpr-auth-t">Tu perfil Gotchly</div>
+          <div class="tvpr-auth-s">Guardá tus estadísticas,<br>rachas y logros</div>
+          <button class="bp" onclick="openAuthSheet()" style="max-width:200px">Iniciar sesión →</button>
+        </div>
+        <!-- Logged in -->
+        <div id="tvpr-in" style="display:none">
+          <div class="prof-big-hdr">
+            <div class="prof-big-av" id="pb-av">?</div>
+            <div>
+              <div class="prof-big-name" id="pb-name">Usuario</div>
+              <div class="prof-big-sub" id="pb-sub">¡A ganar tu primera racha!</div>
+            </div>
+          </div>
+          <!-- Stats grid -->
+          <div class="prof-stats-grid" style="margin-bottom:16px">
+            <div class="prof-stat"><div class="prof-stat-n" id="pb-streak">0</div><div class="prof-stat-l">Racha</div></div>
+            <div class="prof-stat"><div class="prof-stat-n" id="pb-played">0</div><div class="prof-stat-l">Partidas</div></div>
+            <div class="prof-stat"><div class="prof-stat-n" id="pb-wins">0</div><div class="prof-stat-l">Victorias</div></div>
+            <div class="prof-stat"><div class="prof-stat-n" id="pb-wr">—</div><div class="prof-stat-l">Win rate</div></div>
+          </div>
+          <!-- Achievements -->
+          <div style="font:700 11px var(--f);color:var(--dim);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px">Logros</div>
+          <div class="prof-achs" style="margin-bottom:20px">
+            <div class="prof-ach" id="pb-ach1"><span>🎨</span><span>Primera partida</span></div>
+            <div class="prof-ach" id="pb-ach2"><span>🏆</span><span>Primera victoria</span></div>
+            <div class="prof-ach" id="pb-ach3"><span>🔥</span><span>Racha de 3</span></div>
+            <div class="prof-ach" id="pb-ach4"><span>🎭</span><span>Impostor perfecto</span></div>
+          </div>
+          <!-- Menu -->
+          <div class="prof-menu">
+            <button class="prof-item" onclick="switchTab('tienda')">
+              <span class="prof-item-ico">🛍️</span>
+              <span class="prof-item-txt">Tienda de packs</span>
+              <span class="prof-item-arr">›</span>
+            </button>
+            <button class="prof-item prof-item-danger" onclick="doLogout()">
+              <span class="prof-item-ico">🚪</span>
+              <span class="prof-item-txt">Cerrar sesión</span>
+              <span class="prof-item-arr">›</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TAB: TIENDA ══ -->
+    <div class="tab-view" id="tv-tienda">
+      <div class="tvt">
+        <div class="tier-badge">✦ GOTCHLY PREMIUM</div>
+        <h2>Juega sin límites</h2>
+        <p>Acceso total para el que crea la sala</p>
+        <div class="premium-card">
+          <div class="prem-top">
+            <div class="prem-price-wrap">
+              <div class="prem-price">$4.99</div>
+              <div class="prem-period">por mes</div>
+            </div>
+            <div class="prem-popular">POPULAR</div>
+          </div>
+          <div class="prem-feats">
+            <div class="prem-feat"><div class="prem-feat-chk">✓</div>Salas hasta 12 jugadores</div>
+            <div class="prem-feat"><div class="prem-feat-chk">✓</div>Prompts exclusivos ilimitados</div>
+            <div class="prem-feat"><div class="prem-feat-chk">✓</div>Sin anuncios</div>
+            <div class="prem-feat"><div class="prem-feat-chk">✓</div>Cosméticos premium</div>
+          </div>
+        </div>
+        <button class="bp" style="width:100%;margin-bottom:0" onclick="SFX.tap();toast('¡Pronto disponible! 🚀')">Prueba 7 días gratis →</button>
+        <div class="tier-div">o elige un pack</div>
+        <div class="store-packs">
+          <div class="store-pack" id="sp-picantes" onclick="selectStorePack('picantes',this)">
+            <span class="sp-emoji">🌶️</span>
+            <div class="sp-name">Picantes</div>
+            <div class="sp-price">$1.99</div>
+            <div class="sp-count">15 prompts</div>
+          </div>
+          <div class="store-pack" id="sp-parejas" onclick="selectStorePack('parejas',this)">
+            <span class="sp-emoji">👫</span>
+            <div class="sp-name">Parejas</div>
+            <div class="sp-price">$1.99</div>
+            <div class="sp-count">15 prompts</div>
+          </div>
+          <div class="store-pack" id="sp-halloween" onclick="selectStorePack('halloween',this)">
+            <span class="sp-emoji">🎃</span>
+            <div class="sp-name">Halloween</div>
+            <div class="sp-price">$0.99</div>
+            <div class="sp-count">15 prompts</div>
+          </div>
+          <div class="store-pack" id="sp-fiestas" onclick="selectStorePack('fiestas',this)">
+            <span class="sp-emoji">🎉</span>
+            <div class="sp-name">Fiestas</div>
+            <div class="sp-price">$2.99</div>
+            <div class="sp-count">15 prompts</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ Bottom nav ══ -->
+    <nav class="bot-nav" id="bot-nav">
+      <button class="bot-tab on" id="btn-tab-inicio" onclick="switchTab('inicio')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M3 12L12 3l9 9"/><path d="M9 21V12h6v9"/>
+        </svg>
+        Inicio
+      </button>
+      <button class="bot-tab" id="btn-tab-partidas" onclick="switchTab('partidas')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <rect x="2" y="5" width="20" height="14" rx="3"/>
+          <path d="M8 12h8M8 9h4"/>
+        </svg>
+        Partidas
+      </button>
+      <button class="bot-tab" id="btn-tab-perfil" onclick="switchTab('perfil')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+        </svg>
+        Perfil
+      </button>
+      <button class="bot-tab" id="btn-tab-tienda" onclick="switchTab('tienda')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
+        </svg>
+        Tienda
+      </button>
+    </nav>
   </div>
 
   <!-- ═══════════ JOIN OVERLAY ═══════════ -->
@@ -938,7 +1146,7 @@ body{background:
             <span class="prof-item-txt">Mis estadísticas</span>
             <span class="prof-item-arr">›</span>
           </button>
-          <button class="prof-item" onclick="closeAuth();openPaywall()">
+          <button class="prof-item" onclick="closeAuth();switchTab('tienda')">
             <span class="prof-item-ico">🛍️</span>
             <span class="prof-item-txt">Tienda de packs</span>
             <span class="prof-item-arr">›</span>
@@ -2515,6 +2723,81 @@ function updateAuthChip() {
     chip.style.display = 'none';
     if (link) link.style.display = 'block';
   }
+  updatePerfilTab();
+}
+
+function updatePerfilTab() {
+  const loggedIn = !!AUTH.token;
+  const inEl  = document.getElementById('tvpr-in');
+  const outEl = document.getElementById('tvpr-out');
+  if (!inEl) return;
+  inEl.style.display  = loggedIn ? 'block' : 'none';
+  outEl.style.display = loggedIn ? 'none'  : 'block';
+  if (!loggedIn) return;
+  const un = AUTH.username || '?';
+  document.getElementById('pb-av').textContent   = un.slice(0,2).toUpperCase();
+  document.getElementById('pb-name').textContent = un;
+  const s = STREAK.get();
+  document.getElementById('pb-sub').textContent  = s > 0
+    ? `🔥 ${s} victoria${s>1?'s':''} seguida${s>1?'s':''}`
+    : '¡A ganar tu primera racha!';
+  const played = parseInt(localStorage.getItem('gotchly_played')||'0');
+  const wins   = parseInt(localStorage.getItem('gotchly_wins')||'0');
+  document.getElementById('pb-streak').textContent = s;
+  document.getElementById('pb-played').textContent = played;
+  document.getElementById('pb-wins').textContent   = wins;
+  document.getElementById('pb-wr').textContent     = played > 0 ? Math.round(wins/played*100)+'%' : '—';
+  const imp = localStorage.getItem('gotchly_impostor_win')==='1';
+  document.getElementById('pb-ach1').classList.toggle('unlocked', played > 0);
+  document.getElementById('pb-ach2').classList.toggle('unlocked', wins   > 0);
+  document.getElementById('pb-ach3').classList.toggle('unlocked', s >= 3);
+  document.getElementById('pb-ach4').classList.toggle('unlocked', imp);
+}
+
+function doLogout() {
+  AUTH.clear();
+  updateAuthChip();
+  switchTab('inicio');
+  toast('Sesión cerrada');
+  SFX.tap();
+}
+
+// ── Bottom tab navigation ──
+function switchTab(tab) {
+  SFX.tap();
+  ['inicio','partidas','perfil','tienda'].forEach(t => {
+    document.getElementById('tv-'+t).classList.toggle('on', t===tab);
+    document.getElementById('btn-tab-'+t).classList.toggle('on', t===tab);
+  });
+  const deco = document.getElementById('sp-deco');
+  if (deco) deco.style.display = tab==='inicio' ? 'block' : 'none';
+  if (tab==='perfil') updatePerfilTab();
+  if (tab==='partidas') renderRecentGames();
+}
+
+function renderRecentGames() {
+  const list = document.getElementById('recent-games-list');
+  const games = JSON.parse(localStorage.getItem('gotchly_history')||'[]');
+  if (!games.length) {
+    list.innerHTML = '<div class="rg-empty">Todavía no jugaste ninguna partida.<br>¡Creá o unite a una sala!</div>';
+    return;
+  }
+  list.innerHTML = games.slice(0,10).map(g => `
+    <div class="rg">
+      <div class="rg-l">
+        <div class="rg-t">${g.room||'Partida'}</div>
+        <div class="rg-m">${g.date||''} · ${g.players||0} jugadores${g.won?' · Ganaste':''}</div>
+      </div>
+      ${g.pts>0 ? `<div class="rg-pts">+${g.pts} pts</div>` : ''}
+    </div>`).join('');
+}
+
+function selectStorePack(packId, el) {
+  SFX.tap(); vibe(10);
+  document.querySelectorAll('.store-pack').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  toast('¡Pack seleccionado! Disponible al crear sala 🎮');
+  localStorage.setItem('gotchly_selected_store_pack', packId);
 }
 
 // Verify token on load
@@ -2549,9 +2832,15 @@ function updateWinnerBox(data) {
   const streakRow = document.getElementById('streak-row');
   const streakBadge = document.getElementById('streak-badge');
 
-  // Track games played
+  // Track games played + history
   const played = parseInt(localStorage.getItem('gotchly_played')||'0');
   localStorage.setItem('gotchly_played', String(played + 1));
+  const hist = JSON.parse(localStorage.getItem('gotchly_history')||'[]');
+  const players = Object.keys(G.players||{}).length || 0;
+  hist.unshift({ room: G.roomCode||'Sala', date: new Date().toLocaleDateString('es-AR',{day:'numeric',month:'short'}),
+    players, pts: scoreUpdates[G.playerId]||0, won: myPts>0 });
+  if (hist.length > 20) hist.pop();
+  localStorage.setItem('gotchly_history', JSON.stringify(hist));
 
   if (!iWon) {
     box.classList.remove('show');
