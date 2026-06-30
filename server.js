@@ -59,31 +59,69 @@ function addStats(id, win, impGame, caught, pts) {
 }
 
 // ─── Auth ─────────────────────────────────────────────────────────────────────
-function genId()    { return crypto.randomBytes(8).toString('hex'); }
-function genToken() { return crypto.randomBytes(24).toString('hex'); }
-function genSalt()  { return crypto.randomBytes(16).toString('hex'); }
+function genId()           { return crypto.randomBytes(8).toString('hex'); }
+function genToken()        { return crypto.randomBytes(24).toString('hex'); }
+function genSalt()         { return crypto.randomBytes(16).toString('hex'); }
+function genReferralCode() { return Math.random().toString(36).slice(2,7).toUpperCase(); }
 function hashPwd(pwd, salt) {
   return crypto.createHmac('sha256', salt).update(pwd).digest('hex');
 }
 
-function createAccount(username, password) {
+const REFERRAL_REWARDS = {
+  1: { pack: 'picantes',  label: '🌶️ Pack Picantes' },
+  2: { pack: 'parejas',   label: '👫 Pack Parejas'   },
+  3: { pack: 'halloween', label: '🎃 Pack Halloween' },
+  4: { pack: 'fiestas',   label: '🎉 Pack Fiestas'   },
+  5: { premium: true,     label: '⭐ Premium 1 mes'  },
+};
+
+function createAccount(username, password, referralCode) {
   const db = loadDB();
   if (!db.accounts) db.accounts = {};
   const key = username.toLowerCase().trim();
   if (db.accounts[key]) return { error: 'Ese nombre ya está en uso' };
   const salt = genSalt();
-  const id = genId();
+  const id   = genId();
   const token = genToken();
-  db.accounts[key] = { id, username: username.trim(), salt,
+  // ensure referral code is unique
+  let refCode;
+  const existingCodes = new Set(Object.values(db.accounts).map(a => a.referralCode));
+  do { refCode = genReferralCode(); } while (existingCodes.has(refCode));
+
+  db.accounts[key] = {
+    id, username: username.trim(), salt,
     passwordHash: hashPwd(password, salt), token,
-    createdAt: new Date().toISOString() };
+    createdAt: new Date().toISOString(),
+    referralCode: refCode, referralCount: 0, referralRewards: [],
+    packs: [], premium: false, premiumSince: null,
+  };
   if (!db.players[id]) {
     db.players[id] = { id, name: username.trim(), total_games: 0, wins: 0,
       impostor_games: 0, impostor_caught: 0, points: 0,
       created_at: new Date().toISOString() };
   }
+
+  // Process referral reward for the referrer
+  if (referralCode) {
+    const refKey = Object.keys(db.accounts).find(
+      k => db.accounts[k].referralCode === referralCode && k !== key
+    );
+    if (refKey) {
+      const referrer = db.accounts[refKey];
+      db.accounts[key].referredBy = referrer.id;
+      referrer.referralCount = (referrer.referralCount || 0) + 1;
+      const reward = REFERRAL_REWARDS[referrer.referralCount];
+      if (reward) {
+        if (reward.pack) referrer.packs = [...new Set([...(referrer.packs||[]), reward.pack])];
+        if (reward.premium) { referrer.premium = true; referrer.premiumSince = new Date().toISOString(); }
+        referrer.referralRewards = [...(referrer.referralRewards||[]),
+          { ...reward, at: new Date().toISOString(), fromUser: username.trim() }];
+      }
+    }
+  }
+
   saveDB(db);
-  return { id, username: username.trim(), token };
+  return { id, username: username.trim(), token, referralCode: refCode };
 }
 
 function loginAccount(username, password) {
@@ -518,14 +556,30 @@ app.get('/api/stats/:id', (req, res) => {
 });
 
 app.post('/api/auth/register', (req, res) => {
-  const { username, password } = req.body || {};
+  const { username, password, referralCode } = req.body || {};
   if (!username || username.trim().length < 2)
     return res.status(400).json({ error: 'El nombre debe tener al menos 2 caracteres' });
   if (!password || password.length < 4)
     return res.status(400).json({ error: 'La contraseña debe tener al menos 4 caracteres' });
-  const result = createAccount(username, password);
+  const result = createAccount(username, password, referralCode);
   if (result.error) return res.status(409).json(result);
   res.json({ ok: true, ...result });
+});
+
+app.get('/api/auth/referral', (req, res) => {
+  const token = (req.headers.authorization || '').replace('Bearer ', '');
+  const user = verifyToken(token);
+  if (!user) return res.status(401).json({ ok: false });
+  const db = loadDB();
+  const acc = Object.values(db.accounts || {}).find(a => a.id === user.id);
+  if (!acc) return res.status(404).json({ ok: false });
+  res.json({
+    ok: true,
+    referralCode:    acc.referralCode,
+    referralCount:   acc.referralCount   || 0,
+    referralRewards: acc.referralRewards || [],
+    nextReward:      REFERRAL_REWARDS[(acc.referralCount || 0) + 1] || null,
+  });
 });
 
 app.post('/api/auth/login', (req, res) => {
