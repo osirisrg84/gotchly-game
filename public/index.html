@@ -374,19 +374,59 @@ body{background:
   border-radius:10px;padding:8px 14px;margin-bottom:14px;
   font:500 12px var(--f);color:#34D399}
 .impostor-hint.show{display:block}
+.canvas-wrap{position:relative;margin-bottom:8px;flex-shrink:0}
 #canvas{border-radius:16px;background:#F8F7F2;display:block;touch-action:none;
-  cursor:crosshair;margin-bottom:12px;flex-shrink:0;width:327px;height:200px}
-.color-row{display:flex;align-items:center;gap:8px;margin-bottom:14px}
-.cd{width:28px;height:28px;border-radius:50%;cursor:pointer;transition:transform .15s;flex-shrink:0}
+  cursor:crosshair;width:327px;height:240px;transition:box-shadow .3s}
+#canvas.urgent{box-shadow:0 0 0 3px rgba(239,68,68,.7),0 0 24px rgba(239,68,68,.35);
+  animation:canvasUrgent .5s ease-in-out infinite alternate}
+@keyframes canvasUrgent{from{box-shadow:0 0 0 2px rgba(239,68,68,.5),0 0 12px rgba(239,68,68,.2)}
+  to{box-shadow:0 0 0 4px rgba(239,68,68,.9),0 0 32px rgba(239,68,68,.5)}}
+/* text overlay */
+#txt-overlay{position:absolute;display:flex;gap:6px;padding:6px;
+  background:rgba(15,23,42,.92);backdrop-filter:blur(8px);
+  border-radius:12px;border:1px solid rgba(14,165,233,.3);z-index:10;
+  box-shadow:0 8px 32px rgba(0,0,0,.4)}
+#txt-input{flex:1;background:transparent;border:none;outline:none;
+  color:var(--text);font:600 14px var(--f);min-width:160px;padding:2px 4px}
+#txt-ok{width:32px;height:32px;border-radius:8px;background:var(--grad);
+  border:none;color:#fff;font-size:16px;cursor:pointer;flex-shrink:0}
+/* draw toolbar */
+.draw-toolbar{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:8px}
+.dtool{display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 2px;
+  border-radius:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);
+  cursor:pointer;color:rgba(255,255,255,.5);font-size:10px;transition:all .15s;
+  letter-spacing:0}
+.dtool span{font:500 9px var(--f);margin-top:1px}
+.dtool:active{transform:scale(.92)}
+.dtool.on{background:rgba(14,165,233,.2);border-color:rgba(14,165,233,.5);color:#38BDF8}
+.dtool.on svg path{fill:#38BDF8}
+.dtool svg path{fill:rgba(255,255,255,.5);transition:fill .15s}
+/* brush sizes */
+.color-row{display:flex;align-items:center;gap:7px;margin-bottom:8px;flex-wrap:wrap}
+.cd{width:26px;height:26px;border-radius:50%;cursor:pointer;transition:transform .15s;flex-shrink:0}
 .cd:active{transform:scale(.8)}
-.cd.on{outline:2.5px solid rgba(255,255,255,.8);outline-offset:2px}
+.cd.on{outline:2.5px solid rgba(255,255,255,.9);outline-offset:2.5px;transform:scale(1.15)}
+/* emoji row */
+.emoji-row{display:flex;gap:6px;margin-bottom:8px;overflow-x:auto;padding-bottom:2px;-webkit-overflow-scrolling:touch}
+.emoji-row::-webkit-scrollbar{display:none}
+.estmp{font-size:22px;width:38px;height:38px;border-radius:10px;
+  background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.08);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  flex-shrink:0;transition:transform .12s,background .12s;user-select:none}
+.estmp:active,.estmp.on{transform:scale(.88);background:rgba(14,165,233,.18);border-color:rgba(14,165,233,.4)}
 .tool{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.06);
   border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;
   justify-content:center;cursor:pointer;flex-shrink:0}
 .tool:active{background:rgba(255,255,255,.14)}
-.prog-bar{height:3px;border-radius:2px;background:rgba(255,255,255,.08);margin-bottom:14px;overflow:hidden}
+.prog-bar{height:3px;border-radius:2px;background:rgba(255,255,255,.08);margin-bottom:10px;overflow:hidden}
 .prog-fill{height:100%;background:var(--grad);border-radius:2px;transition:width .5s ease;width:0%}
-#game .bp{border-radius:16px;flex-shrink:0;margin-top:auto}
+#game .bp{border-radius:16px;flex-shrink:0}
+/* timer urgency */
+.timer-n.urgent{color:#EF4444;animation:timerPulse .5s ease-in-out infinite alternate}
+@keyframes timerPulse{from{transform:scale(1)}to{transform:scale(1.2)}}
+/* prompt bounce on start */
+@keyframes promptBounce{0%{transform:scale(.85);opacity:0}70%{transform:scale(1.04)}100%{transform:scale(1);opacity:1}}
+.prompt-card.pop{animation:promptBounce .4s cubic-bezier(.25,1,.5,1) both}
 
 /* ═══════════════════ VOTE ═══════════════════ */
 #vote .body{padding:16px 24px;position:relative;z-index:5}
@@ -1531,27 +1571,79 @@ body{background:
       <div class="impostor-hint" id="impostor-hint">
         🎭 Eres el impostor — dibuja con confianza, nadie sabe tu prompt
       </div>
-      <canvas id="canvas" width="327" height="200"></canvas>
-      <div class="brush-row">
-        <button class="bsz on" data-sz="3"><div class="bsz-dot" style="width:5px;height:5px"></div></button>
-        <button class="bsz" data-sz="7"><div class="bsz-dot" style="width:9px;height:9px"></div></button>
-        <button class="bsz" data-sz="14"><div class="bsz-dot" style="width:14px;height:14px"></div></button>
-        <div style="margin-left:auto;display:flex;gap:6px">
-          <button class="tool" id="btn-eraser" title="Goma de borrar"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M15.14 3c-.51 0-1.02.2-1.41.59L2.59 14.73a2 2 0 0 0 0 2.83L5.03 20h11.97v-2H10.5l-1.29-1.29 7.78-7.78 2.3 2.29 1.42-1.41-5.17-5.17A1.98 1.98 0 0 0 15.14 3z" fill="rgba(255,255,255,.4)"/></svg></button>
-          <button class="tool" id="btn-undo" title="Deshacer"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z" fill="rgba(255,255,255,.4)"/></svg></button>
-          <button class="tool" id="btn-clear" title="Borrar todo"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="rgba(255,255,255,.4)"/></svg></button>
+      <!-- canvas wrap (for text overlay) -->
+      <div class="canvas-wrap">
+        <canvas id="canvas" width="327" height="240"></canvas>
+        <div id="txt-overlay" style="display:none">
+          <input id="txt-input" type="text" maxlength="60" placeholder="Escribí aquí…" autocomplete="off">
+          <button id="txt-ok">✓</button>
         </div>
       </div>
-      <div class="color-row" id="color-row">
-        <div class="cd on" data-c="#10B981" style="background:#10B981"></div>
-        <div class="cd" data-c="#0EA5E9" style="background:#0EA5E9"></div>
-        <div class="cd" data-c="#06B6D4" style="background:#06B6D4"></div>
-        <div class="cd" data-c="#F59E0B" style="background:#F59E0B"></div>
-        <div class="cd" data-c="#EF4444" style="background:#EF4444"></div>
-        <div class="cd" data-c="#A78BFA" style="background:#A78BFA"></div>
-        <div class="cd" data-c="#F97316" style="background:#F97316"></div>
-        <div class="cd" data-c="#000000" style="background:#000;border:1px solid rgba(255,255,255,.15)"></div>
+
+      <!-- tool bar -->
+      <div class="draw-toolbar">
+        <button class="dtool on" id="dt-pen" onclick="setTool('pen')">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/></svg>
+          <span>Pincel</span>
+        </button>
+        <button class="dtool" id="dt-text" onclick="setTool('text')">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M5 4v3h5.5v12h3V7H19V4z" fill="currentColor"/></svg>
+          <span>Texto</span>
+        </button>
+        <button class="dtool" id="dt-fill" onclick="setTool('fill')">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M16.56 8.94L7.62 0 6.21 1.41l2.38 2.38-5.15 5.15a1.49 1.49 0 000 2.12l5.5 5.5c.29.29.68.44 1.06.44s.77-.15 1.06-.44l5.5-5.5c.59-.58.59-1.53 0-2.12zM5.21 10L10 5.21 14.79 10H5.21zM19 11.5s-2 2.17-2 3.5c0 1.1.9 2 2 2s2-.9 2-2c0-1.33-2-3.5-2-3.5z" fill="currentColor"/><path d="M0 20h24v4H0z" fill="currentColor" opacity=".4"/></svg>
+          <span>Relleno</span>
+        </button>
+        <button class="dtool" id="dt-eraser" onclick="setTool('eraser')">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M15.14 3c-.51 0-1.02.2-1.41.59L2.59 14.73a2 2 0 000 2.83L5.03 20h11.97v-2H10.5l-1.29-1.29 7.78-7.78 2.3 2.29 1.42-1.41-5.17-5.17A1.98 1.98 0 0015.14 3z" fill="currentColor"/></svg>
+          <span>Goma</span>
+        </button>
+        <button class="dtool" id="btn-undo" onclick="doUndo()">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z" fill="currentColor"/></svg>
+          <span>Deshacer</span>
+        </button>
+        <button class="dtool" id="btn-clear" onclick="doClear()">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/></svg>
+          <span>Limpiar</span>
+        </button>
       </div>
+
+      <!-- brush sizes -->
+      <div class="brush-row" id="brush-row">
+        <button class="bsz on" data-sz="2"><div class="bsz-dot" style="width:4px;height:4px"></div></button>
+        <button class="bsz" data-sz="5"><div class="bsz-dot" style="width:8px;height:8px"></div></button>
+        <button class="bsz" data-sz="12"><div class="bsz-dot" style="width:14px;height:14px"></div></button>
+        <button class="bsz" data-sz="24"><div class="bsz-dot" style="width:22px;height:22px"></div></button>
+      </div>
+
+      <!-- color palette -->
+      <div class="color-row" id="color-row">
+        <div class="cd on" data-c="#000000" style="background:#000;border:1px solid rgba(0,0,0,.25)"></div>
+        <div class="cd" data-c="#FFFFFF" style="background:#fff;border:1px solid rgba(0,0,0,.15)"></div>
+        <div class="cd" data-c="#EF4444" style="background:#EF4444"></div>
+        <div class="cd" data-c="#F97316" style="background:#F97316"></div>
+        <div class="cd" data-c="#F59E0B" style="background:#F59E0B"></div>
+        <div class="cd" data-c="#10B981" style="background:#10B981"></div>
+        <div class="cd" data-c="#0EA5E9" style="background:#0EA5E9"></div>
+        <div class="cd" data-c="#8B5CF6" style="background:#8B5CF6"></div>
+        <div class="cd" data-c="#EC4899" style="background:#EC4899"></div>
+        <div class="cd" data-c="#6B7280" style="background:#6B7280"></div>
+        <div class="cd" data-c="#92400E" style="background:#92400E"></div>
+        <div class="cd" data-c="#065F46" style="background:#065F46"></div>
+      </div>
+
+      <!-- emoji stamps -->
+      <div class="emoji-row">
+        <span class="estmp" data-em="❤️">❤️</span>
+        <span class="estmp" data-em="😂">😂</span>
+        <span class="estmp" data-em="🔥">🔥</span>
+        <span class="estmp" data-em="⭐">⭐</span>
+        <span class="estmp" data-em="💥">💥</span>
+        <span class="estmp" data-em="🎨">🎨</span>
+        <span class="estmp" data-em="👍">👍</span>
+        <span class="estmp" data-em="💩">💩</span>
+      </div>
+
       <div class="prog-bar"><div class="prog-fill" id="draw-prog"></div></div>
       <button class="bp" id="btn-done">Listo →</button>
     </div>
@@ -1966,6 +2058,17 @@ function initSocket() {
     G.myPrompt = prompt;
     clearCanvas();
     clearDrawing();
+    // reset tools
+    setTool('pen');
+    color = '#000000';
+    document.querySelectorAll('.cd').forEach(d=>d.classList.remove('on'));
+    document.querySelector('.cd[data-c="#000000"]')?.classList.add('on');
+    document.getElementById('canvas').classList.remove('urgent');
+    document.getElementById('num-game').classList.remove('urgent');
+    // bounce prompt card
+    const pc = document.querySelector('.prompt-card');
+    pc.classList.remove('pop');
+    requestAnimationFrame(() => { requestAnimationFrame(() => pc.classList.add('pop')); });
     SFX.gameStart(); vibe([30,80,30]);
     document.getElementById('prompt-txt').textContent = 'Dibuja: ' + prompt;
     document.getElementById('impostor-hint').classList.toggle('show', isImpostor);
@@ -1980,7 +2083,10 @@ function initSocket() {
   socket.on('game:timer', ({ seconds, phase }) => {
     if (phase === 'drawing') {
       setTimerUI(seconds, 'game', 70);
-      if (seconds <= 10 && seconds > 0) SFX.tickWarn();
+      const urgent = seconds <= 10 && seconds > 0;
+      document.getElementById('num-game').classList.toggle('urgent', urgent);
+      document.getElementById('canvas').classList.toggle('urgent', urgent);
+      if (urgent) SFX.tickWarn();
     }
     if (phase === 'voting') {
       const el = document.getElementById('vote-timer');
@@ -2134,7 +2240,7 @@ function updateStartBtn(players) {
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 let drawing = false;
-let color = '#10B981';
+let color = '#000000';
 let snaps = [];
 let submitted = false;
 
@@ -2161,12 +2267,18 @@ function saveSnap() {
   if (snaps.length > 40) snaps.shift();
 }
 
-canvas.addEventListener('mousedown', e => { drawing = true; saveSnap(); const p = pos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); });
-canvas.addEventListener('mousemove', e => {
+function canvasDown(e) {
+  const p = pos(e);
+  if (toolMode === 'fill')  { floodFill(p.x, p.y); return; }
+  if (toolMode === 'text')  { showTxtOverlay(p); return; }
+  if (toolMode === 'emoji') { placeEmoji(p); return; }
+  drawing = true; saveSnap(); ctx.beginPath(); ctx.moveTo(p.x, p.y);
+}
+function canvasMove(e) {
   if (!drawing) return;
   const p = pos(e);
   ctx.lineTo(p.x, p.y);
-  if (eraserMode) {
+  if (toolMode === 'eraser') {
     ctx.globalCompositeOperation = 'destination-out';
     ctx.strokeStyle = 'rgba(0,0,0,1)';
     ctx.lineWidth = brushSize * 3;
@@ -2175,25 +2287,16 @@ canvas.addEventListener('mousemove', e => {
     ctx.strokeStyle = color; ctx.lineWidth = brushSize;
   }
   ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.stroke();
-});
-canvas.addEventListener('mouseup', () => { drawing = false; ctx.beginPath(); ctx.globalCompositeOperation='source-over'; });
-canvas.addEventListener('mouseleave', () => { drawing = false; ctx.beginPath(); ctx.globalCompositeOperation='source-over'; });
-canvas.addEventListener('touchstart', e => { e.preventDefault(); drawing = true; saveSnap(); const p = pos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); }, { passive: false });
-canvas.addEventListener('touchmove', e => {
-  e.preventDefault(); if (!drawing) return;
-  const p = pos(e);
-  ctx.lineTo(p.x, p.y);
-  if (eraserMode) {
-    ctx.globalCompositeOperation = 'destination-out';
-    ctx.strokeStyle = 'rgba(0,0,0,1)';
-    ctx.lineWidth = brushSize * 3;
-  } else {
-    ctx.globalCompositeOperation = 'source-over';
-    ctx.strokeStyle = color; ctx.lineWidth = brushSize;
-  }
-  ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.stroke();
-}, { passive: false });
-canvas.addEventListener('touchend', () => { drawing = false; ctx.beginPath(); ctx.globalCompositeOperation='source-over'; });
+}
+function canvasUp() { drawing = false; ctx.beginPath(); ctx.globalCompositeOperation = 'source-over'; }
+
+canvas.addEventListener('mousedown', canvasDown);
+canvas.addEventListener('mousemove', canvasMove);
+canvas.addEventListener('mouseup', canvasUp);
+canvas.addEventListener('mouseleave', canvasUp);
+canvas.addEventListener('touchstart', e => { e.preventDefault(); canvasDown(e); }, { passive: false });
+canvas.addEventListener('touchmove',  e => { e.preventDefault(); canvasMove(e); }, { passive: false });
+canvas.addEventListener('touchend', canvasUp);
 
 document.getElementById('color-row').addEventListener('click', e => {
   const cd = e.target.closest('.cd');
@@ -3289,27 +3392,168 @@ function selectPack(packId, el) {
 }
 
 // ═══════════════════════════════════════════════════════════
-// BRUSH SIZES + ERASER
+// DRAWING TOOLS
 // ═══════════════════════════════════════════════════════════
-let brushSize = 3;
-let eraserMode = false;
+let brushSize = 2;
+let toolMode = 'pen'; // pen | eraser | text | fill | emoji
+let activeEmoji = null;
+
+function setTool(mode) {
+  toolMode = mode;
+  document.querySelectorAll('.dtool').forEach(b => b.classList.remove('on'));
+  const map = { pen:'dt-pen', eraser:'dt-eraser', text:'dt-text', fill:'dt-fill' };
+  if (map[mode]) document.getElementById(map[mode])?.classList.add('on');
+  canvas.style.cursor = mode === 'fill' ? 'cell' : mode === 'text' ? 'text' : 'crosshair';
+  if (mode !== 'emoji') {
+    document.querySelectorAll('.estmp').forEach(e => e.classList.remove('on'));
+    activeEmoji = null;
+  }
+  hideTxtOverlay();
+  SFX.tap(); vibe(8);
+}
+
+function doUndo() {
+  if (snaps.length) ctx.putImageData(snaps.pop(), 0, 0);
+  SFX.tap();
+}
+function doClear() {
+  saveSnap();
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  SFX.tap();
+}
 
 document.querySelectorAll('.bsz').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.bsz').forEach(b=>b.classList.remove('on'));
     btn.classList.add('on');
     brushSize = parseInt(btn.dataset.sz);
-    eraserMode = false;
-    document.getElementById('btn-eraser')?.classList.remove('eraser-on');
+    if (toolMode !== 'eraser') setTool('pen');
     SFX.tap();
   });
 });
 
-document.getElementById('btn-eraser').addEventListener('click', () => {
-  eraserMode = !eraserMode;
-  document.getElementById('btn-eraser').classList.toggle('eraser-on', eraserMode);
-  SFX.tap(); vibe(8);
+// ── Emoji stamps ──────────────────────────────────────────
+document.querySelectorAll('.estmp').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const em = btn.dataset.em;
+    if (activeEmoji === em) {
+      activeEmoji = null;
+      toolMode = 'pen';
+      btn.classList.remove('on');
+      document.getElementById('dt-pen').classList.add('on');
+      canvas.style.cursor = 'crosshair';
+    } else {
+      document.querySelectorAll('.estmp').forEach(e => e.classList.remove('on'));
+      document.querySelectorAll('.dtool').forEach(b => b.classList.remove('on'));
+      btn.classList.add('on');
+      activeEmoji = em;
+      toolMode = 'emoji';
+      canvas.style.cursor = 'copy';
+    }
+    SFX.tap(); vibe(8);
+  });
 });
+
+function placeEmoji(p) {
+  if (!activeEmoji) return;
+  saveSnap();
+  const sz = Math.max(24, brushSize * 8);
+  ctx.font = `${sz}px serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(activeEmoji, p.x, p.y);
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'alphabetic';
+}
+
+// ── Text tool ─────────────────────────────────────────────
+let txtPos = null;
+
+function hideTxtOverlay() {
+  const ov = document.getElementById('txt-overlay');
+  ov.style.display = 'none';
+  document.getElementById('txt-input').value = '';
+  txtPos = null;
+}
+
+function showTxtOverlay(p) {
+  const ov = document.getElementById('txt-overlay');
+  const wrap = document.querySelector('.canvas-wrap');
+  const wrapRect = wrap.getBoundingClientRect();
+  const canvRect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / canvRect.width;
+  const scaleY = canvas.height / canvRect.height;
+
+  // Position overlay near tap point but keep it inside wrap
+  const screenX = p.x / scaleX;
+  const screenY = p.y / scaleY;
+  const left = Math.min(screenX, canvRect.width - 230);
+  const top  = Math.max(screenY + 8, 4);
+
+  ov.style.display = 'flex';
+  ov.style.left = left + 'px';
+  ov.style.top  = top  + 'px';
+  txtPos = p;
+  setTimeout(() => document.getElementById('txt-input').focus(), 50);
+}
+
+function commitText() {
+  const val = document.getElementById('txt-input').value.trim();
+  if (val && txtPos) {
+    saveSnap();
+    const sz = Math.max(14, brushSize * 5);
+    ctx.font = `bold ${sz}px "Space Grotesk", sans-serif`;
+    ctx.fillStyle = color;
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillText(val, txtPos.x, txtPos.y);
+  }
+  hideTxtOverlay();
+}
+
+document.getElementById('txt-ok').addEventListener('click', commitText);
+document.getElementById('txt-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); commitText(); }
+  if (e.key === 'Escape') hideTxtOverlay();
+});
+
+// ── Flood fill ────────────────────────────────────────────
+function hexToRgbArr(hex) {
+  const h = hex.replace('#','');
+  return [parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16)];
+}
+function floodFill(sx, sy) {
+  saveSnap();
+  const W = canvas.width, H = canvas.height;
+  const imgData = ctx.getImageData(0, 0, W, H);
+  const d = imgData.data;
+  const fc = hexToRgbArr(color);
+
+  const si = (Math.round(sy) * W + Math.round(sx)) * 4;
+  const tr = d[si], tg = d[si+1], tb = d[si+2];
+  if (tr===fc[0] && tg===fc[1] && tb===fc[2]) return;
+
+  const tol = 28;
+  function match(i) {
+    return Math.abs(d[i]-tr)<=tol && Math.abs(d[i+1]-tg)<=tol && Math.abs(d[i+2]-tb)<=tol;
+  }
+  const seen = new Uint8Array(W * H);
+  const stack = [Math.round(sy) * W + Math.round(sx)];
+  while (stack.length) {
+    const pos = stack.pop();
+    if (seen[pos]) continue;
+    if (!match(pos*4)) continue;
+    seen[pos] = 1;
+    const i = pos * 4;
+    d[i]=fc[0]; d[i+1]=fc[1]; d[i+2]=fc[2]; d[i+3]=255;
+    const x = pos % W, y = (pos/W)|0;
+    if (x>0)   stack.push(pos-1);
+    if (x<W-1) stack.push(pos+1);
+    if (y>0)   stack.push(pos-W);
+    if (y<H-1) stack.push(pos+W);
+  }
+  ctx.putImageData(imgData, 0, 0);
+}
 
 // ═══════════════════════════════════════════════════════════
 // INIT
