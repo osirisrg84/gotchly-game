@@ -359,13 +359,13 @@ io.on('connection', socket => {
     if (!room || room.state !== 'picking') return;
     if (playerId !== room.roundWinnerId) return; // solo el ganador puede elegir
     clearTimeout(room.pickerTimer);
-    room.nextImpostorId = room.players.has(targetId) ? targetId : null;
+    room.nextImpostorId = (targetId && room.players.has(targetId)) ? targetId : null;
     room.state = 'waiting';
-    const pickedName = room.players.get(targetId)?.name || '?';
+    const pickedName = room.players.get(targetId)?.name || null;
     io.to(code).emit('game:impostor-picked', {
       pickerName: room.players.get(playerId)?.name || '?',
       pickedName,
-      auto: false,
+      auto: !pickedName,
     });
   });
 

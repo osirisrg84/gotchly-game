@@ -420,6 +420,14 @@ body{background:
   border:1px solid rgba(251,191,36,.2);border-radius:20px;padding:4px 14px;
   text-align:center;margin:0 0 8px;letter-spacing:.05em}
 @keyframes confettiFall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
+#picker-overlay{position:fixed;inset:0;z-index:900;background:rgba(2,6,23,.92);
+  display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px}
+#picker-overlay.show{display:flex}
+#round-end-overlay{position:fixed;inset:0;z-index:800;background:rgba(2,6,23,.88);
+  display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center}
+#round-end-overlay.show{display:flex}
+#picker-list{display:flex;flex-direction:column;gap:10px;width:100%;max-width:300px}
+#re-scores{width:100%;max-width:300px;display:flex;flex-direction:column;gap:6px;margin-top:8px}
 .lby-packs{margin:0 0 16px}
 .lby-packs-lbl{font:700 11px var(--f);color:var(--dim);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
 .lby-packs-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;
@@ -2295,8 +2303,8 @@ function initSocket() {
         <span style="color:#FBBF24;font-weight:700">${p.sessionScore} pts</span>
       </div>`
     ).join('');
-    overlay.style.display = 'flex';
-    setTimeout(() => { overlay.style.display = 'none'; }, 4000);
+    overlay.classList.add('show');
+    setTimeout(() => { overlay.classList.remove('show'); }, 4000);
   });
 
   socket.on('game:pick-impostor', ({ players, timeoutSec }) => {
@@ -2305,7 +2313,7 @@ function initSocket() {
 
   socket.on('game:impostor-picked', ({ pickerName, pickedName, auto }) => {
     const overlay = document.getElementById('picker-overlay');
-    if (overlay) overlay.style.display = 'none';
+    if (overlay) overlay.classList.remove('show');
     if (!auto && pickerName) {
       showToast(`${pickerName} eligió al próximo impostor — ¡preparense!`, 3000);
     }
@@ -2314,7 +2322,7 @@ function initSocket() {
   socket.on('game:session-end', ({ champion, standings, totalRounds }) => {
     // Ocultar picker si está abierto
     const po = document.getElementById('picker-overlay');
-    if (po) po.style.display = 'none';
+    if (po) po.classList.remove('show');
     showSessionEnd(champion, standings, totalRounds);
   });
 
@@ -4009,13 +4017,21 @@ function showPickerOverlay(players, timeoutSec) {
   const overlay = document.getElementById('picker-overlay');
   const list = document.getElementById('picker-list');
   if (!overlay || !list) return;
-  list.innerHTML = players.map(p =>
-    `<button onclick="pickImpostor('${p.id}')" style="
-      padding:14px 20px;background:rgba(14,165,233,.1);border:1px solid rgba(14,165,233,.3);
-      border-radius:12px;color:#F8F7F2;font:600 16px var(--f);cursor:pointer;transition:.2s;width:100%
-    ">${p.name}</button>`
-  ).join('');
-  overlay.style.display = 'flex';
+  const playerBtns = players.length > 0
+    ? players.map(p =>
+        `<button onclick="pickImpostor('${p.id}')" style="
+          padding:14px 20px;background:rgba(14,165,233,.1);border:1px solid rgba(14,165,233,.3);
+          border-radius:12px;color:#F8F7F2;font:600 16px var(--f);cursor:pointer;width:100%
+        ">${escHtml(p.name)}</button>`
+      ).join('')
+    : '<div style="color:var(--dim);font:400 13px var(--f)">No hay otros jugadores disponibles</div>';
+  // Botón saltar siempre presente para no bloquear
+  list.innerHTML = playerBtns +
+    `<button onclick="pickImpostor(null)" style="
+      margin-top:6px;padding:10px 20px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);
+      border-radius:12px;color:rgba(255,255,255,.4);font:400 13px var(--f);cursor:pointer;width:100%
+    ">Saltar — elegir al azar</button>`;
+  overlay.classList.add('show');
   // Timer bar animation
   const fill = document.getElementById('picker-timer-fill');
   if (fill) {
@@ -4028,9 +4044,10 @@ function showPickerOverlay(players, timeoutSec) {
 }
 
 function pickImpostor(targetId) {
-  if (G.socket) G.socket.emit('game:pick-impostor', { targetId });
+  if (targetId && G.socket) G.socket.emit('game:pick-impostor', { targetId });
+  else if (!targetId && G.socket) G.socket.emit('game:pick-impostor', { targetId: null });
   const overlay = document.getElementById('picker-overlay');
-  if (overlay) overlay.style.display = 'none';
+  if (overlay) overlay.classList.remove('show');
 }
 
 function showSessionEnd(champion, standings, totalRounds) {
@@ -4094,21 +4111,21 @@ initSocket();
 </script>
 
 <!-- ══ Impostor picker overlay ══ -->
-<div id="picker-overlay" style="display:none;position:fixed;inset:0;z-index:900;background:rgba(2,6,23,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px">
+<div id="picker-overlay" style="display:none">
   <div style="font:700 22px var(--f);color:#F8F7F2;text-align:center">🏅 Eres el ganador de la ronda</div>
   <div style="font:400 14px var(--f);color:var(--dim);text-align:center">Elige quién será el próximo impostor</div>
   <div id="picker-timer-bar" style="width:200px;height:4px;background:rgba(14,165,233,.2);border-radius:2px;overflow:hidden">
     <div id="picker-timer-fill" style="height:100%;background:#0EA5E9;width:100%;transition:width linear"></div>
   </div>
-  <div id="picker-list" style="display:flex;flex-direction:column;gap:10px;width:100%;max-width:300px"></div>
+  <div id="picker-list"></div>
 </div>
 
 <!-- ══ Round-end overlay ══ -->
-<div id="round-end-overlay" style="display:none;position:fixed;inset:0;z-index:800;background:rgba(2,6,23,.88);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center">
+<div id="round-end-overlay" style="display:none">
   <div style="font:800 28px var(--f);color:#FBBF24">🎉 Ronda terminada</div>
   <div id="re-winner-name" style="font:700 20px var(--f);color:#F8F7F2"></div>
   <div id="re-sub" style="font:400 14px var(--f);color:var(--dim)"></div>
-  <div id="re-scores" style="width:100%;max-width:300px;display:flex;flex-direction:column;gap:6px;margin-top:8px"></div>
+  <div id="re-scores"></div>
 </div>
 
 <!-- ══ Session champion screen ══ -->
