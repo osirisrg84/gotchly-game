@@ -281,6 +281,32 @@ body{background:
 .wait-dot{width:8px;height:8px;border-radius:50%;background:var(--purple)}
 .wait-txt{font:500 13px var(--f);color:rgba(125,211,252,.55)}
 
+/* ── Lobby pack selector ── */
+.lby-packs{margin:0 0 16px}
+.lby-packs-lbl{font:700 11px var(--f);color:var(--dim);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.lby-packs-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none}
+.lby-packs-row::-webkit-scrollbar{display:none}
+.lp{flex-shrink:0;border-radius:16px;background:rgba(14,165,233,.05);
+  border:1.5px solid rgba(14,165,233,.1);padding:12px 10px 10px;
+  cursor:pointer;transition:all .18s;width:82px;text-align:center;position:relative}
+.lp.on{background:rgba(14,165,233,.13);border-color:var(--purple);
+  box-shadow:0 0 0 1px var(--purple),0 4px 16px rgba(14,165,233,.15)}
+.lp:active{transform:scale(.95)}
+.lp-em{font-size:26px;line-height:1.1;margin-bottom:5px;display:block}
+.lp-nm{font:700 11px var(--f);color:var(--text);margin-bottom:3px}
+.lp-tag{font:500 9px var(--f);color:rgba(125,211,252,.4);letter-spacing:.04em}
+.lp.on .lp-nm{color:var(--purple)}
+.lp-sel-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;
+  border-radius:50%;background:var(--purple);display:none}
+.lp.on .lp-sel-dot{display:block}
+.lby-pack-note{font:400 11px var(--f);color:rgba(245,158,11,.7);
+  padding:8px 12px;border-radius:10px;background:rgba(245,158,11,.06);
+  border:1px solid rgba(245,158,11,.14);margin-bottom:12px;display:none}
+.light .lp{background:rgba(2,132,199,.04);border-color:rgba(2,132,199,.12)}
+.light .lp.on{background:rgba(2,132,199,.1);border-color:var(--purple)}
+.light .lp-tag{color:rgba(7,89,133,.4)}
+
 /* ═══════════════════ GAME ═══════════════════ */
 #game .body{padding:16px 24px;position:relative;z-index:5;flex:1;display:flex;flex-direction:column}
 .g-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
@@ -1314,6 +1340,46 @@ body{background:
         <div id="lobby-join-url" style="font:400 11px var(--f);color:rgba(14,165,233,.6);word-break:break-all;margin-bottom:14px;cursor:pointer"></div>
         <div class="lbl" style="margin-bottom:12px" id="lobby-count">Jugadores (1/8)</div>
         <div class="pgrid" id="pgrid"></div>
+        <!-- Pack selector (host only) -->
+        <div class="lby-packs" id="lby-packs" style="display:none">
+          <div class="lby-packs-lbl">Tipo de contenido</div>
+          <div class="lby-packs-row">
+            <div class="lp on" id="lp-free" onclick="selectLobbyPack('free',this)">
+              <div class="lp-sel-dot"></div>
+              <span class="lp-em">🎨</span>
+              <div class="lp-nm">Básico</div>
+              <div class="lp-tag">GRATIS</div>
+            </div>
+            <div class="lp" id="lp-picantes" onclick="selectLobbyPack('picantes',this)">
+              <div class="lp-sel-dot"></div>
+              <span class="lp-em">🌶️</span>
+              <div class="lp-nm">Picantes</div>
+              <div class="lp-tag">🔒 $1.99</div>
+            </div>
+            <div class="lp" id="lp-parejas" onclick="selectLobbyPack('parejas',this)">
+              <div class="lp-sel-dot"></div>
+              <span class="lp-em">👫</span>
+              <div class="lp-nm">Parejas</div>
+              <div class="lp-tag">🔒 $1.99</div>
+            </div>
+            <div class="lp" id="lp-halloween" onclick="selectLobbyPack('halloween',this)">
+              <div class="lp-sel-dot"></div>
+              <span class="lp-em">🎃</span>
+              <div class="lp-nm">Halloween</div>
+              <div class="lp-tag">🔒 $0.99</div>
+            </div>
+            <div class="lp" id="lp-fiestas" onclick="selectLobbyPack('fiestas',this)">
+              <div class="lp-sel-dot"></div>
+              <span class="lp-em">🎉</span>
+              <div class="lp-nm">Fiestas</div>
+              <div class="lp-tag">🔒 $2.99</div>
+            </div>
+          </div>
+          <div class="lby-pack-note" id="lby-pack-note">
+            🔒 Este pack requiere compra — <span style="text-decoration:underline;cursor:pointer" onclick="showScreen('splash');switchTab('tienda')">ver Tienda</span>
+          </div>
+        </div>
+
         <div class="wait-box">
           <div class="wait-dot fp"></div>
           <span class="wait-txt" id="wait-txt">Esperando jugadores · mín. 2 para iniciar</span>
@@ -1856,6 +1922,10 @@ function initSocket() {
     G.players = players;
     G.isImpostor = false;
     G.myPrompt = null;
+    lobbyPackId = 'free';
+    document.querySelectorAll('.lp').forEach(c => c.classList.remove('on'));
+    document.getElementById('lp-free')?.classList.add('on');
+    document.getElementById('lby-pack-note') && (document.getElementById('lby-pack-note').style.display='none');
     renderLobby(G.roomCode, players, G.isHost);
     showScreen('lobby');
     toast('¡Nueva partida! Esperando que el host inicie...');
@@ -1886,8 +1956,9 @@ function renderLobby(code, players, isHost) {
   updateStartBtn(players);
   const startBtn = document.getElementById('btn-start');
   startBtn.textContent = isHost ? 'Iniciar partida' : 'Esperando al host...';
-  startBtn.style.display = isHost ? 'block' : 'block';
   if (!isHost) startBtn.disabled = true;
+  const packsEl = document.getElementById('lby-packs');
+  if (packsEl) packsEl.style.display = isHost ? 'block' : 'none';
 }
 
 const AVATAR_COLORS = [
@@ -2296,9 +2367,20 @@ document.getElementById('btn-share').addEventListener('click', () => {
   }
 });
 
+let lobbyPackId = 'free';
+
+function selectLobbyPack(packId, el) {
+  lobbyPackId = packId;
+  document.querySelectorAll('.lp').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+  SFX.tap(); vibe(8);
+  const note = document.getElementById('lby-pack-note');
+  if (note) note.style.display = packId !== 'free' ? 'block' : 'none';
+}
+
 document.getElementById('btn-start').addEventListener('click', () => {
   if (!G.isHost) return;
-  G.socket.emit('game:start');
+  G.socket.emit('game:start', lobbyPackId !== 'free' ? { packId: lobbyPackId } : {});
 });
 
 document.getElementById('btn-play-again').addEventListener('click', () => {
