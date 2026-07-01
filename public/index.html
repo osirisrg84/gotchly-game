@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="/icon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Orbitron:wght@700;800;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Bebas+Neue&family=Orbitron:wght@700;800;900&display=swap">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
@@ -273,73 +273,63 @@ body{background:
   animation:eyeGlow 2s ease-in-out infinite alternate-reverse}
 @keyframes eyeGlow{from{opacity:.5;transform:scale(.95)}to{opacity:1;transform:scale(1.05)}}
 
-/* ══ ULTRA PREMIUM GAMING TITLE ══ */
+/* ══ ULTRA PREMIUM GAMING TITLE — Bebas Neue ══ */
 #splash h1{
-  font:900 48px/1 'Orbitron', var(--f);
-  letter-spacing:5px;
+  font:400 82px/1 'Bebas Neue', var(--f);
+  letter-spacing:10px;
   text-transform:uppercase;
-  margin:0 0 6px;
+  margin:0 0 4px;
   position:relative;
   display:inline-block;
-  /* Chrome → Cyan → Teal gradient */
-  background:linear-gradient(180deg,
-    #f0fdff 0%,
-    #ffffff 8%,
-    #bae6fd 22%,
-    #38bdf8 42%,
-    #0ea5e9 58%,
-    #10b981 78%,
+  padding-right:10px;
+  background:linear-gradient(175deg,
+    #ffffff 0%,
+    #e0f7ff 14%,
+    #7dd3fc 32%,
+    #0ea5e9 54%,
+    #0284c7 72%,
+    #10b981 90%,
     #047857 100%);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
   background-clip:text;
-  /* Neon glow layers */
   filter:
-    drop-shadow(0 0 6px rgba(14,165,233,1))
-    drop-shadow(0 0 18px rgba(14,165,233,.85))
-    drop-shadow(0 0 40px rgba(14,165,233,.55))
-    drop-shadow(0 0 70px rgba(16,185,129,.3));
-  animation:gTitle 3s ease-in-out infinite}
+    drop-shadow(0 1px 0 rgba(0,0,0,.9))
+    drop-shadow(0 0 8px rgba(14,165,233,1))
+    drop-shadow(0 0 22px rgba(14,165,233,.7))
+    drop-shadow(0 0 48px rgba(14,165,233,.35));
+  animation:gTitle 3.5s ease-in-out infinite}
 
-/* 3D extrusion depth */
 #splash h1::before{
   content:'GOTCHLY';
-  position:absolute;top:4px;left:4px;right:0;
-  font:inherit;letter-spacing:inherit;
-  background:linear-gradient(180deg,#0c3554,#052e1a);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  filter:blur(1.5px);
-  z-index:-1;pointer-events:none}
-
-/* Light sweep shimmer */
-#splash h1::after{
-  content:'GOTCHLY';
-  position:absolute;inset:0;
+  position:absolute;inset:0;padding-right:10px;
   font:inherit;letter-spacing:inherit;
   background:linear-gradient(105deg,
-    transparent 20%,
-    transparent 38%,
-    rgba(255,255,255,.9) 50%,
-    transparent 62%,
-    transparent 80%);
-  background-size:300% 100%;
+    transparent 28%,
+    rgba(255,255,255,.8) 48%,
+    rgba(255,255,255,.95) 50%,
+    rgba(255,255,255,.8) 52%,
+    transparent 72%);
+  background-size:250% 100%;
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  animation:gTitleSweep 4s ease-in-out infinite;pointer-events:none}
+  animation:gSweep 5s ease-in-out infinite;pointer-events:none}
+
+#splash h1::after{content:none}
 
 .title-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:6px}
-.title-line{width:80%;height:2px;border-radius:2px;overflow:hidden;
-  background:rgba(14,165,233,.1);margin-top:-2px}
+.title-line{width:85%;height:2px;border-radius:2px;overflow:hidden;
+  background:rgba(14,165,233,.1);margin-top:2px}
 .title-line-fill{height:100%;
-  background:linear-gradient(90deg,transparent,#0EA5E9,#10B981,transparent);
+  background:linear-gradient(90deg,transparent,#38bdf8,#10B981,transparent);
   background-size:200% 100%;
   animation:titleLineFlow 2.5s linear infinite}
 @keyframes titleLineFlow{from{background-position:200% 0}to{background-position:-200% 0}}
 @keyframes gTitle{
-  0%,100%{filter:drop-shadow(0 0 6px #0EA5E9) drop-shadow(0 0 18px rgba(14,165,233,.85)) drop-shadow(0 0 40px rgba(14,165,233,.55)) drop-shadow(0 0 70px rgba(16,185,129,.3))}
-  50%{filter:drop-shadow(0 0 10px #10B981) drop-shadow(0 0 25px rgba(16,185,129,.9)) drop-shadow(0 0 55px rgba(14,165,233,.6)) drop-shadow(0 0 90px rgba(16,185,129,.35))}}
-@keyframes gTitleSweep{
-  0%,20%{background-position:-100% 0}
-  70%,100%{background-position:200% 0}}
+  0%,100%{filter:drop-shadow(0 1px 0 rgba(0,0,0,.9)) drop-shadow(0 0 8px rgba(14,165,233,1)) drop-shadow(0 0 22px rgba(14,165,233,.7)) drop-shadow(0 0 48px rgba(14,165,233,.35))}
+  50%{filter:drop-shadow(0 1px 0 rgba(0,0,0,.9)) drop-shadow(0 0 10px #10B981) drop-shadow(0 0 26px rgba(16,185,129,.85)) drop-shadow(0 0 55px rgba(16,185,129,.4))}}
+@keyframes gSweep{
+  0%,15%{background-position:-150% 0}
+  65%,100%{background-position:250% 0}}
 
 /* ── Leaderboard modal ── */
 #lb-modal{position:fixed;inset:0;z-index:900;display:none;align-items:flex-end}
