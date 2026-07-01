@@ -317,17 +317,24 @@ body{background:
 #splash h1::after{content:none}
 
 .welcome-msg{
-  min-height:36px;
-  font:500 13px var(--f);
-  color:rgba(186,230,253,.75);
+  width:100%;
+  background:linear-gradient(135deg,rgba(14,165,233,.07),rgba(16,185,129,.05));
+  border:1px solid rgba(14,165,233,.18);
+  border-radius:16px;
+  padding:13px 18px;
+  font:500 14px var(--f);
+  color:rgba(186,230,253,.85);
   text-align:center;
-  line-height:1.5;
-  padding:6px 20px 10px;
-  letter-spacing:.01em}
+  line-height:1.55;
+  margin-bottom:6px;
+  backdrop-filter:blur(6px);
+  box-shadow:0 0 0 1px rgba(255,255,255,.04) inset,0 4px 20px rgba(0,0,0,.2)}
 .welcome-msg .wm-hi{
-  font:700 14px var(--f);
+  display:block;
+  font:700 15px var(--f);
   background:linear-gradient(90deg,#38bdf8,#10b981);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:2px}
 .title-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:6px}
 .title-line{width:85%;height:2px;border-radius:2px;overflow:hidden;
   background:rgba(14,165,233,.08);margin-top:2px}
@@ -1298,6 +1305,7 @@ body{background:
           </div>
         </div>
         <p class="tag">🎨 Dibuja &nbsp;·&nbsp; 🤪 Improvisa &nbsp;·&nbsp; 🕵️ Descubre</p>
+        <div id="welcome-msg" class="welcome-msg"></div>
         <button class="howto-btn" onclick="openHowTo()" style="margin-bottom:10px">
           <svg width="13" height="13" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z" fill="currentColor"/></svg>
           ¿Cómo se juega?
