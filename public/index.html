@@ -386,10 +386,25 @@ body{background:
 #splash h1{font:800 52px/1 var(--f);letter-spacing:-.05em;margin-bottom:12px;
   background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
   background-clip:text;filter:drop-shadow(0 0 28px rgba(14,165,233,.38))}
-#splash .tag{display:inline-block;background:rgba(14,165,233,.1);
-  border:1px solid rgba(14,165,233,.22);border-radius:100px;
-  padding:7px 18px;font:500 12px var(--f);color:rgba(125,211,252,.72);
-  margin-bottom:28px;letter-spacing:.06em}
+#splash .tag{
+  display:inline-flex;align-items:center;gap:4px;
+  background:linear-gradient(135deg,rgba(14,165,233,.12) 0%,rgba(16,185,129,.08) 100%);
+  border:1px solid rgba(14,165,233,.28);
+  border-radius:100px;
+  padding:9px 22px;
+  font:600 13px 'Orbitron', var(--f);
+  color:rgba(186,230,253,.85);
+  margin-bottom:26px;
+  letter-spacing:.12em;
+  backdrop-filter:blur(8px);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.04) inset,
+    0 0 20px rgba(14,165,233,.12),
+    0 4px 16px rgba(0,0,0,.3);
+  animation:tagPulse 4s ease-in-out infinite}
+@keyframes tagPulse{
+  0%,100%{box-shadow:0 0 0 1px rgba(255,255,255,.04) inset,0 0 20px rgba(14,165,233,.12),0 4px 16px rgba(0,0,0,.3)}
+  50%{box-shadow:0 0 0 1px rgba(255,255,255,.07) inset,0 0 30px rgba(16,185,129,.2),0 4px 20px rgba(0,0,0,.35),0 0 0 3px rgba(14,165,233,.08)}}
 #splash .name-wrap{width:100%;margin-bottom:20px}
 #splash .name-wrap label{display:block;font:600 11px var(--f);color:var(--dim);
   letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;text-align:left}
@@ -1282,7 +1297,7 @@ body{background:
             <div class="title-line-fill"></div>
           </div>
         </div>
-        <p class="tag">Nadie sabe quién miente</p>
+        <p class="tag">🎨 Dibuja &nbsp;·&nbsp; 🎭 Engaña &nbsp;·&nbsp; 🔍 Descubre</p>
         <button class="howto-btn" onclick="openHowTo()" style="margin-bottom:10px">
           <svg width="13" height="13" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z" fill="currentColor"/></svg>
           ¿Cómo se juega?
