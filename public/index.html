@@ -316,6 +316,18 @@ body{background:
 
 #splash h1::after{content:none}
 
+.welcome-msg{
+  min-height:36px;
+  font:500 13px var(--f);
+  color:rgba(186,230,253,.75);
+  text-align:center;
+  line-height:1.5;
+  padding:6px 20px 10px;
+  letter-spacing:.01em}
+.welcome-msg .wm-hi{
+  font:700 14px var(--f);
+  background:linear-gradient(90deg,#38bdf8,#10b981);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .title-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:6px}
 .title-line{width:85%;height:2px;border-radius:2px;overflow:hidden;
   background:rgba(14,165,233,.08);margin-top:2px}
@@ -1286,6 +1298,7 @@ body{background:
           </div>
         </div>
         <p class="tag">🎨 Dibuja &nbsp;·&nbsp; 🤪 Improvisa &nbsp;·&nbsp; 🔍 Descubre</p>
+        <div id="welcome-msg" class="welcome-msg"></div>
         <button class="howto-btn" onclick="openHowTo()" style="margin-bottom:10px">
           <svg width="13" height="13" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z" fill="currentColor"/></svg>
           ¿Cómo se juega?
@@ -3513,6 +3526,28 @@ function updateAuthChip() {
     if (link) link.style.display = 'block';
   }
   updatePerfilTab();
+  updateWelcomeMsg();
+}
+
+const _WM_PHRASES = [
+  '¡Reúne a tus amigos y que empiece el juego! 🎮',
+  '¡El juego perfecto para reírse con quien más quieres! 😂',
+  '¡Dibuja, improvisa y descubre quién miente mejor! 🕵️',
+  '¡Diversión garantizada en cada ronda! 🚀',
+  '¡El impostor está entre ustedes... ¿lo adivinas? 🎭',
+];
+function updateWelcomeMsg() {
+  const el = document.getElementById('welcome-msg');
+  if (!el) return;
+  const h = new Date().getHours();
+  const greet = h < 12 ? '¡Buenos días' : h < 19 ? '¡Buenas tardes' : '¡Buenas noches';
+  if (AUTH.username) {
+    const first = AUTH.username.split(' ')[0];
+    el.innerHTML = `<span class="wm-hi">${greet}, ${first}!</span><br>¿Listo para tu próxima partida épica? 🎯`;
+  } else {
+    const phrase = _WM_PHRASES[Math.floor(Math.random() * _WM_PHRASES.length)];
+    el.innerHTML = phrase;
+  }
 }
 
 function updatePerfilTab() {
@@ -4146,6 +4181,7 @@ function showToast(msg, dur=2500) {
 }
 
 // ═══════════════════════════════════════════════════════════
+updateWelcomeMsg();
 initSocket();
 </script>
 
