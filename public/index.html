@@ -273,63 +273,60 @@ body{background:
   animation:eyeGlow 2s ease-in-out infinite alternate-reverse}
 @keyframes eyeGlow{from{opacity:.5;transform:scale(.95)}to{opacity:1;transform:scale(1.05)}}
 
-/* ══ ULTRA PREMIUM GAMING TITLE — Bebas Neue ══ */
+/* ══ ULTRA PRO GAMING TITLE — Bebas Neue ══ */
 #splash h1{
-  font:400 82px/1 'Bebas Neue', var(--f);
+  font:400 84px/1 'Bebas Neue', var(--f);
   letter-spacing:10px;
   text-transform:uppercase;
   margin:0 0 4px;
   position:relative;
   display:inline-block;
   padding-right:10px;
+  /* Chrome metal: white highlight → ice blue → deep navy. Sin verde = sin aura */
   background:linear-gradient(175deg,
-    #ffffff 0%,
-    #e0f7ff 14%,
-    #7dd3fc 32%,
-    #0ea5e9 54%,
-    #0284c7 72%,
-    #10b981 90%,
-    #047857 100%);
+    #ffffff  0%,
+    #f0f9ff  6%,
+    #e0f2fe 14%,
+    #bae6fd 26%,
+    #38bdf8 42%,
+    #0ea5e9 58%,
+    #0369a1 76%,
+    #0c4a6e 90%,
+    #082032 100%);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
   background-clip:text;
-  filter:
-    drop-shadow(0 1px 0 rgba(0,0,0,.9))
-    drop-shadow(0 0 8px rgba(14,165,233,1))
-    drop-shadow(0 0 22px rgba(14,165,233,.7))
-    drop-shadow(0 0 48px rgba(14,165,233,.35));
-  animation:gTitle 3.5s ease-in-out infinite}
+  /* Solo sombra de profundidad — cero glow difuso */
+  filter:drop-shadow(0 4px 4px rgba(0,0,0,.95)) drop-shadow(0 1px 0 rgba(0,0,0,1))}
 
+/* Sweep de luz premium — se mantiene */
 #splash h1::before{
   content:'GOTCHLY';
   position:absolute;inset:0;padding-right:10px;
   font:inherit;letter-spacing:inherit;
   background:linear-gradient(105deg,
-    transparent 28%,
-    rgba(255,255,255,.8) 48%,
-    rgba(255,255,255,.95) 50%,
-    rgba(255,255,255,.8) 52%,
-    transparent 72%);
+    transparent 25%,
+    rgba(255,255,255,.6) 46%,
+    rgba(255,255,255,.92) 50%,
+    rgba(255,255,255,.6) 54%,
+    transparent 75%);
   background-size:250% 100%;
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  animation:gSweep 5s ease-in-out infinite;pointer-events:none}
+  animation:gSweep 6s ease-in-out infinite;pointer-events:none}
 
 #splash h1::after{content:none}
 
 .title-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:6px}
 .title-line{width:85%;height:2px;border-radius:2px;overflow:hidden;
-  background:rgba(14,165,233,.1);margin-top:2px}
+  background:rgba(14,165,233,.08);margin-top:2px}
 .title-line-fill{height:100%;
-  background:linear-gradient(90deg,transparent,#38bdf8,#10B981,transparent);
+  background:linear-gradient(90deg,transparent,rgba(56,189,248,.7),rgba(14,165,233,.5),transparent);
   background-size:200% 100%;
-  animation:titleLineFlow 2.5s linear infinite}
+  animation:titleLineFlow 3s linear infinite}
 @keyframes titleLineFlow{from{background-position:200% 0}to{background-position:-200% 0}}
-@keyframes gTitle{
-  0%,100%{filter:drop-shadow(0 1px 0 rgba(0,0,0,.9)) drop-shadow(0 0 8px rgba(14,165,233,1)) drop-shadow(0 0 22px rgba(14,165,233,.7)) drop-shadow(0 0 48px rgba(14,165,233,.35))}
-  50%{filter:drop-shadow(0 1px 0 rgba(0,0,0,.9)) drop-shadow(0 0 10px #10B981) drop-shadow(0 0 26px rgba(16,185,129,.85)) drop-shadow(0 0 55px rgba(16,185,129,.4))}}
 @keyframes gSweep{
-  0%,15%{background-position:-150% 0}
-  65%,100%{background-position:250% 0}}
+  0%,20%{background-position:-150% 0}
+  70%,100%{background-position:250% 0}}
 
 /* ── Leaderboard modal ── */
 #lb-modal{position:fixed;inset:0;z-index:900;display:none;align-items:flex-end}
