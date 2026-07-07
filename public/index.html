@@ -986,7 +986,7 @@ body{background:
   backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
   padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;
   box-shadow:0 8px 32px rgba(14,165,233,.1),inset 0 1px 0 rgba(255,255,255,.06)}
-.sp-card-icon{font-size:22px;line-height:1.2;display:flex;align-items:center;justify-content:center;height:26px}
+.sp-card-icon{display:flex;align-items:center;justify-content:center;height:32px;margin-bottom:1px}
 .sp-card-lbl{font:600 8px var(--f);color:rgba(125,211,252,.5);letter-spacing:.09em;text-transform:uppercase}
 .sp-card-val{font:800 14px var(--f);background:var(--grad);-webkit-background-clip:text;
   -webkit-text-fill-color:transparent;background-clip:text}
@@ -1199,30 +1199,110 @@ body{background:
     <!-- ── Decorative animated layer ── -->
     <div class="sp-deco" id="sp-deco">
       <!-- Floating game cards (corners) -->
+      <!-- DIBUJA — pincel gaming con trazo -->
       <div class="sp-card c1">
         <div class="sp-card-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="url(#ic1)"/><defs><linearGradient id="ic1" x1="3" y1="3" x2="21" y2="21"><stop stop-color="#38bdf8"/><stop offset="1" stop-color="#10b981"/></linearGradient></defs></svg>
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <defs>
+              <linearGradient id="gDib" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#e0f2fe"/>
+                <stop offset="45%" stop-color="#38bdf8"/>
+                <stop offset="100%" stop-color="#0284c7"/>
+              </linearGradient>
+              <filter id="fDib"><feGaussianBlur stdDeviation="0.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            </defs>
+            <!-- mango del pincel -->
+            <rect x="15" y="2" width="4" height="10" rx="2" fill="url(#gDib)" filter="url(#fDib)" transform="rotate(45 17 7)"/>
+            <!-- cuerpo del pincel -->
+            <path d="M7 13 L15 5 L20 10 L12 18 Z" fill="url(#gDib)" opacity=".9"/>
+            <!-- punta/bristles -->
+            <path d="M5 20 L8 17 L11 20 L8 23 Z" fill="#e0f2fe"/>
+            <!-- trazo de pintura -->
+            <path d="M3 25 Q7 22 10 24 Q13 26 16 23" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round" fill="none" opacity=".55"/>
+          </svg>
         </div>
         <div class="sp-card-lbl">Dibuja</div>
         <div class="sp-card-val">70s</div>
       </div>
+
+      <!-- DESCUBRÍ — retícula de francotirador -->
       <div class="sp-card c2">
         <div class="sp-card-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="url(#ic2)" stroke-width="2"/><circle cx="12" cy="12" r="5" stroke="url(#ic2)" stroke-width="2"/><circle cx="12" cy="12" r="1.5" fill="url(#ic2)"/><defs><linearGradient id="ic2" x1="3" y1="3" x2="21" y2="21"><stop stop-color="#f87171"/><stop offset="1" stop-color="#fbbf24"/></linearGradient></defs></svg>
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <defs>
+              <linearGradient id="gDes" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#fca5a5"/>
+                <stop offset="100%" stop-color="#dc2626"/>
+              </linearGradient>
+              <filter id="fDes"><feGaussianBlur stdDeviation="0.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            </defs>
+            <!-- anillo exterior -->
+            <circle cx="14" cy="14" r="11" stroke="url(#gDes)" stroke-width="1.5" filter="url(#fDes)"/>
+            <!-- anillo medio -->
+            <circle cx="14" cy="14" r="6.5" stroke="url(#gDes)" stroke-width="1.2"/>
+            <!-- punto central -->
+            <circle cx="14" cy="14" r="2" fill="url(#gDes)"/>
+            <!-- miras -->
+            <line x1="14" y1="2" x2="14" y2="7" stroke="url(#gDes)" stroke-width="1.8" stroke-linecap="round"/>
+            <line x1="14" y1="21" x2="14" y2="26" stroke="url(#gDes)" stroke-width="1.8" stroke-linecap="round"/>
+            <line x1="2" y1="14" x2="7" y2="14" stroke="url(#gDes)" stroke-width="1.8" stroke-linecap="round"/>
+            <line x1="21" y1="14" x2="26" y2="14" stroke="url(#gDes)" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
         </div>
         <div class="sp-card-lbl">Descubrí</div>
         <div class="sp-card-val">35s</div>
       </div>
+
+      <!-- PUNTOS — gema/cristal 3D -->
       <div class="sp-card c3">
         <div class="sp-card-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M13 2L4.09 12.37A1 1 0 005 14h6l-2 8 8.91-10.37A1 1 0 0017 10h-6l2-8z" fill="url(#ic3)"/><defs><linearGradient id="ic3" x1="4" y1="2" x2="18" y2="22"><stop stop-color="#fbbf24"/><stop offset="1" stop-color="#f59e0b"/></linearGradient></defs></svg>
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <defs>
+              <linearGradient id="gPts1" x1="14" y1="3" x2="14" y2="26" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#fef9c3"/>
+                <stop offset="45%" stop-color="#fbbf24"/>
+                <stop offset="100%" stop-color="#b45309"/>
+              </linearGradient>
+              <linearGradient id="gPts2" x1="0" y1="0" x2="14" y2="14" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#fff" stop-opacity=".6"/>
+                <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <!-- gema hexagonal -->
+            <path d="M14 3 L24 9 L24 19 L14 25 L4 19 L4 9 Z" fill="url(#gPts1)"/>
+            <!-- brillo superior izquierdo -->
+            <path d="M14 3 L24 9 L14 11 L4 9 Z" fill="url(#gPts2)"/>
+            <!-- línea de faceta central -->
+            <line x1="4" y1="9" x2="24" y2="9" stroke="rgba(255,255,255,.25)" stroke-width="1"/>
+            <!-- reflejo especular -->
+            <ellipse cx="10" cy="8" rx="3" ry="1.5" fill="rgba(255,255,255,.45)" transform="rotate(-20 10 8)"/>
+          </svg>
         </div>
         <div class="sp-card-lbl">Puntos</div>
         <div class="sp-card-val">+150</div>
       </div>
+
+      <!-- IMPOSTOR — fantasma gaming -->
       <div class="sp-card c4">
         <div class="sp-card-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" fill="url(#ic4)"/><defs><linearGradient id="ic4" x1="2" y1="2" x2="22" y2="22"><stop stop-color="#a78bfa"/><stop offset="1" stop-color="#7c3aed"/></linearGradient></defs></svg>
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <defs>
+              <linearGradient id="gImp" x1="14" y1="2" x2="14" y2="26" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#c4b5fd"/>
+                <stop offset="60%" stop-color="#7c3aed"/>
+                <stop offset="100%" stop-color="#4c1d95"/>
+              </linearGradient>
+              <filter id="fImp"><feGaussianBlur stdDeviation="0.7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            </defs>
+            <!-- cuerpo fantasma -->
+            <path d="M14 3 C9 3 5 7 5 12 L5 24 L7.5 21.5 L10 24 L12.5 21.5 L14 23 L15.5 21.5 L18 24 L20.5 21.5 L23 24 L23 12 C23 7 19 3 14 3 Z" fill="url(#gImp)" filter="url(#fImp)"/>
+            <!-- ojos brillantes -->
+            <circle cx="10.5" cy="12.5" r="2" fill="rgba(2,6,23,.75)"/>
+            <circle cx="17.5" cy="12.5" r="2" fill="rgba(2,6,23,.75)"/>
+            <!-- brillo en ojos -->
+            <circle cx="11.3" cy="11.7" r=".6" fill="rgba(255,255,255,.8)"/>
+            <circle cx="18.3" cy="11.7" r=".6" fill="rgba(255,255,255,.8)"/>
+          </svg>
         </div>
         <div class="sp-card-lbl">Impostor</div>
         <div class="sp-card-val">×1</div>
