@@ -448,6 +448,27 @@ body{background:
 
 /* ── Lobby pack selector ── */
 /* ── Multi-round selector ── */
+/* ── Custom prompt ── */
+.custom-prompt-wrap{margin:0 0 14px;padding:14px;border-radius:16px;
+  background:linear-gradient(135deg,rgba(56,189,248,.07),rgba(16,185,129,.04));
+  border:1px solid rgba(56,189,248,.2)}
+.custom-prompt-lbl{font:700 11px var(--f);color:rgba(125,211,252,.7);
+  letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.custom-prompt-row{display:flex;gap:8px;align-items:center}
+.custom-prompt-inp{flex:1;background:rgba(14,165,233,.08);border:1.5px solid rgba(14,165,233,.2);
+  border-radius:12px;padding:10px 14px;font:500 14px var(--f);color:var(--text);
+  outline:none;transition:.18s}
+.custom-prompt-inp:focus{border-color:#38bdf8;background:rgba(14,165,233,.12);
+  box-shadow:0 0 0 3px rgba(14,165,233,.1)}
+.custom-prompt-inp::placeholder{color:var(--faint)}
+.custom-prompt-clear{width:32px;height:32px;border-radius:50%;
+  background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);
+  color:rgba(239,68,68,.7);font-size:14px;cursor:pointer;flex-shrink:0}
+.custom-prompt-hint{font:400 11px var(--f);color:var(--dim);margin-top:8px;line-height:1.5}
+.custom-prompt-badge{font:600 12px var(--f);color:#38bdf8;
+  background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.2);
+  border-radius:20px;padding:6px 14px;text-align:center;margin-bottom:10px;
+  animation:tagPulse 3s ease-in-out infinite}
 .round-sel-wrap{margin:0 0 14px;padding:14px;border-radius:16px;
   background:linear-gradient(135deg,rgba(251,191,36,.06),rgba(245,158,11,.04));
   border:1px solid rgba(251,191,36,.15)}
@@ -1877,6 +1898,30 @@ body{background:
         </div>
         <div class="round-badge" id="round-badge" style="display:none"></div>
 
+        <!-- Pregunta personalizada (host only) -->
+        <div class="custom-prompt-wrap" id="custom-prompt-wrap" style="display:none">
+          <div class="custom-prompt-lbl">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="vertical-align:-2px;margin-right:5px"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" stroke="#38bdf8" stroke-width="2" stroke-linecap="round"/></svg>
+            Tu pregunta para la sala
+          </div>
+          <div class="custom-prompt-row">
+            <input class="custom-prompt-inp" id="custom-prompt-inp"
+              type="text" maxlength="80"
+              placeholder="Ej: Tu película favorita…"
+              oninput="onCustomPromptInput(this.value)">
+            <button class="custom-prompt-clear" id="custom-prompt-clear"
+              onclick="clearCustomPrompt()" style="display:none" title="Quitar pregunta">✕</button>
+          </div>
+          <div class="custom-prompt-hint" id="custom-prompt-hint">
+            Todos dibujarán esto. El impostor recibirá una pista diferente.
+          </div>
+        </div>
+        <!-- Badge visible para todos (no host) -->
+        <div class="custom-prompt-badge" id="custom-prompt-badge" style="display:none">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="vertical-align:-1px;margin-right:4px"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round"/></svg>
+          Pregunta personalizada activa
+        </div>
+
         <div class="wait-box">
           <div class="wait-dot fp"></div>
           <span class="wait-txt" id="wait-txt">Esperando jugadores · mín. 2 para iniciar</span>
@@ -2425,6 +2470,19 @@ function initSocket() {
     updateStartBtn(players);
   });
 
+  socket.on('room:custom-prompt', ({ prompt }) => {
+    const badge = document.getElementById('custom-prompt-badge');
+    // Para el host: actualizar hint
+    const hint = document.getElementById('custom-prompt-hint');
+    if (prompt) {
+      if (badge) { badge.textContent = `✏️ Pregunta: "${prompt}"`; badge.style.display = 'block'; }
+      if (hint) hint.textContent = `Todos dibujarán: "${prompt}"`;
+    } else {
+      if (badge) badge.style.display = 'none';
+      if (hint) hint.textContent = 'Todos dibujarán esto. El impostor recibirá una pista diferente.';
+    }
+  });
+
   socket.on('room:config', ({ maxRounds }) => {
     G.maxRounds = maxRounds;
     const badge = document.getElementById('round-badge');
@@ -2582,6 +2640,11 @@ function initSocket() {
     document.querySelectorAll('.lp').forEach(c => c.classList.remove('on'));
     document.getElementById('lp-free')?.classList.add('on');
     document.getElementById('lby-pack-note') && (document.getElementById('lby-pack-note').style.display='none');
+    // Reset custom prompt field
+    const inp = document.getElementById('custom-prompt-inp');
+    if (inp) inp.value = '';
+    const cpBadge = document.getElementById('custom-prompt-badge');
+    if (cpBadge) cpBadge.style.display = 'none';
     renderLobby(G.roomCode, players, G.isHost);
     showScreen('lobby');
     toast('¡Nueva partida! Esperando que el host inicie...');
@@ -2617,6 +2680,8 @@ function renderLobby(code, players, isHost) {
   if (packsEl) packsEl.style.display = isHost ? 'block' : 'none';
   const roundWrap = document.getElementById('round-sel-wrap');
   if (roundWrap) roundWrap.style.display = isHost ? 'block' : 'none';
+  const cpWrap = document.getElementById('custom-prompt-wrap');
+  if (cpWrap) cpWrap.style.display = isHost ? 'block' : 'none';
 }
 
 const AVATAR_COLORS = [
@@ -4277,6 +4342,25 @@ function showToast(msg, dur=2500) {
 }
 
 // ═══════════════════════════════════════════════════════════
+// ── Custom prompt ──────────────────────────────────────────
+let _customPromptTimer = null;
+function onCustomPromptInput(val) {
+  const clearBtn = document.getElementById('custom-prompt-clear');
+  if (clearBtn) clearBtn.style.display = val.trim() ? 'flex' : 'none';
+  // Debounce 600ms to avoid spamming socket
+  clearTimeout(_customPromptTimer);
+  _customPromptTimer = setTimeout(() => {
+    if (G.socket) G.socket.emit('game:set-custom-prompt', { prompt: val.trim() || null });
+  }, 600);
+}
+function clearCustomPrompt() {
+  const inp = document.getElementById('custom-prompt-inp');
+  if (inp) inp.value = '';
+  const clearBtn = document.getElementById('custom-prompt-clear');
+  if (clearBtn) clearBtn.style.display = 'none';
+  if (G.socket) G.socket.emit('game:set-custom-prompt', { prompt: null });
+}
+
 updateWelcomeMsg();
 initSocket();
 </script>

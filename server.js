@@ -253,6 +253,11 @@ const PROMPT_PACKS = {
 const PROMPTS = PROMPT_PACKS.free; // free always available
 
 function getPromptForRoom(room) {
+  if (room.customPrompt) {
+    const real = room.customPrompt.trim();
+    // Impostor gets a related but clearly different hint
+    return { real, impostor: `Algo parecido a: ${real}` };
+  }
   const pack = room.packId && PROMPT_PACKS[room.packId] ? PROMPT_PACKS[room.packId] : PROMPTS;
   return pack[Math.floor(Math.random() * pack.length)];
 }
@@ -301,7 +306,7 @@ io.on('connection', socket => {
       players: new Map([[playerId, player]]),
       promptPair: null, impostorId: null,
       drawingOrder: [], timer: null, timerValue: 0, round: 0,
-      packId: null,
+      packId: null, customPrompt: null,
       maxRounds: 0,         // 0 = libre (sin límite)
       sessionScores: {},    // acumulado entre rondas
       nextImpostorId: null, // elegido por ganador de ronda anterior
@@ -349,6 +354,18 @@ io.on('connection', socket => {
     if (!player?.isHost) return;
     room.maxRounds = Math.max(0, parseInt(maxRounds) || 0);
     io.to(code).emit('room:config', { maxRounds: room.maxRounds });
+  });
+
+  socket.on('game:set-custom-prompt', ({ prompt }) => {
+    const code = socketToRoom.get(socket.id);
+    const playerId = socketToPlayer.get(socket.id);
+    if (!code) return;
+    const room = rooms.get(code);
+    if (!room || room.state !== 'waiting') return;
+    const player = room.players.get(playerId);
+    if (!player?.isHost) return;
+    room.customPrompt = prompt ? prompt.trim().slice(0, 80) : null;
+    io.to(code).emit('room:custom-prompt', { prompt: room.customPrompt });
   });
 
   socket.on('game:pick-impostor', ({ targetId }) => {
