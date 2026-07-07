@@ -318,17 +318,12 @@ body{background:
 
 .welcome-msg{
   width:100%;
-  background:linear-gradient(135deg,rgba(14,165,233,.07),rgba(16,185,129,.05));
-  border:1px solid rgba(14,165,233,.18);
-  border-radius:16px;
-  padding:13px 18px;
+  padding:10px 18px;
   font:500 14px var(--f);
   color:rgba(186,230,253,.85);
   text-align:center;
   line-height:1.55;
-  margin-bottom:6px;
-  backdrop-filter:blur(6px);
-  box-shadow:0 0 0 1px rgba(255,255,255,.04) inset,0 4px 20px rgba(0,0,0,.2)}
+  margin-bottom:6px}
 .welcome-msg .wm-hi{
   display:block;
   font:700 15px var(--f);
@@ -991,7 +986,7 @@ body{background:
   backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
   padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;
   box-shadow:0 8px 32px rgba(14,165,233,.1),inset 0 1px 0 rgba(255,255,255,.06)}
-.sp-card-icon{font-size:22px;line-height:1.2}
+.sp-card-icon{font-size:22px;line-height:1.2;display:flex;align-items:center;justify-content:center;height:26px}
 .sp-card-lbl{font:600 8px var(--f);color:rgba(125,211,252,.5);letter-spacing:.09em;text-transform:uppercase}
 .sp-card-val{font:800 14px var(--f);background:var(--grad);-webkit-background-clip:text;
   -webkit-text-fill-color:transparent;background-clip:text}
@@ -1205,22 +1200,30 @@ body{background:
     <div class="sp-deco" id="sp-deco">
       <!-- Floating game cards (corners) -->
       <div class="sp-card c1">
-        <div class="sp-card-icon">✍️</div>
+        <div class="sp-card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="url(#ic1)"/><defs><linearGradient id="ic1" x1="3" y1="3" x2="21" y2="21"><stop stop-color="#38bdf8"/><stop offset="1" stop-color="#10b981"/></linearGradient></defs></svg>
+        </div>
         <div class="sp-card-lbl">Dibuja</div>
         <div class="sp-card-val">70s</div>
       </div>
       <div class="sp-card c2">
-        <div class="sp-card-icon">🎯</div>
+        <div class="sp-card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="url(#ic2)" stroke-width="2"/><circle cx="12" cy="12" r="5" stroke="url(#ic2)" stroke-width="2"/><circle cx="12" cy="12" r="1.5" fill="url(#ic2)"/><defs><linearGradient id="ic2" x1="3" y1="3" x2="21" y2="21"><stop stop-color="#f87171"/><stop offset="1" stop-color="#fbbf24"/></linearGradient></defs></svg>
+        </div>
         <div class="sp-card-lbl">Descubrí</div>
         <div class="sp-card-val">35s</div>
       </div>
       <div class="sp-card c3">
-        <div class="sp-card-icon">⚡</div>
+        <div class="sp-card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M13 2L4.09 12.37A1 1 0 005 14h6l-2 8 8.91-10.37A1 1 0 0017 10h-6l2-8z" fill="url(#ic3)"/><defs><linearGradient id="ic3" x1="4" y1="2" x2="18" y2="22"><stop stop-color="#fbbf24"/><stop offset="1" stop-color="#f59e0b"/></linearGradient></defs></svg>
+        </div>
         <div class="sp-card-lbl">Puntos</div>
         <div class="sp-card-val">+150</div>
       </div>
       <div class="sp-card c4">
-        <div class="sp-card-icon">🎭</div>
+        <div class="sp-card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" fill="url(#ic4)"/><defs><linearGradient id="ic4" x1="2" y1="2" x2="22" y2="22"><stop stop-color="#a78bfa"/><stop offset="1" stop-color="#7c3aed"/></linearGradient></defs></svg>
+        </div>
         <div class="sp-card-lbl">Impostor</div>
         <div class="sp-card-val">×1</div>
       </div>
@@ -1304,7 +1307,7 @@ body{background:
             <div class="title-line-fill"></div>
           </div>
         </div>
-        <p class="tag">🎨 Dibuja &nbsp;·&nbsp; 🤪 Improvisa &nbsp;·&nbsp; 🕵️ Descubre</p>
+        <p class="tag">🎨 Dibuja &nbsp;·&nbsp; 🤪 Improvisa &nbsp;·&nbsp; 🔍 Descubre</p>
         <div id="welcome-msg" class="welcome-msg"></div>
         <button class="howto-btn" onclick="openHowTo()" style="margin-bottom:10px">
           <svg width="13" height="13" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z" fill="currentColor"/></svg>
@@ -3537,11 +3540,11 @@ function updateAuthChip() {
 }
 
 const _WM_PHRASES = [
-  '¡Reúne a tus amigos y que empiece el juego! 🎮',
-  '¡El juego perfecto para reírse con quien más quieres! 😂',
-  '¡Dibuja, improvisa y descubre quién miente mejor! 🕵️',
-  '¡Diversión garantizada en cada ronda! 🚀',
-  '¡El impostor está entre ustedes... ¿lo adivinas? 🎭',
+  '¡Reúne a tus amigos y que empiece el juego!',
+  '¡El juego perfecto para reírse con quien más quieres!',
+  '¡Dibuja, improvisa y descubre quién la hace mejor!',
+  '¡Diversión garantizada en cada ronda!',
+  '¡El impostor está entre ustedes... ¿lo adivinas?',
 ];
 function updateWelcomeMsg() {
   const el = document.getElementById('welcome-msg');
@@ -3550,7 +3553,7 @@ function updateWelcomeMsg() {
   const greet = h < 12 ? '¡Buenos días' : h < 19 ? '¡Buenas tardes' : '¡Buenas noches';
   if (AUTH.username) {
     const first = AUTH.username.split(' ')[0];
-    el.innerHTML = `<span class="wm-hi">${greet}, ${first}!</span><br>¿Listo para tu próxima partida épica? 🎯`;
+    el.innerHTML = `<span class="wm-hi">${greet}, ${first}!</span><br>¿Listo para tu próxima partida?`;
   } else {
     const phrase = _WM_PHRASES[Math.floor(Math.random() * _WM_PHRASES.length)];
     el.innerHTML = phrase;
