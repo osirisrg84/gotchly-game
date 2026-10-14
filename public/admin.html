@@ -25,6 +25,11 @@ a{color:var(--purple)}
   border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;
   margin-bottom:12px;outline:none}
 .login-box input:focus{border-color:var(--purple)}
+.pwd-wrap{position:relative}
+.pwd-wrap input{padding-right:42px!important}
+.pwd-toggle{position:absolute;right:10px;top:12px;background:none;border:none;cursor:pointer;
+  color:var(--dim);padding:4px;line-height:0}
+.pwd-toggle svg{width:16px;height:16px}
 .btn{padding:12px 24px;border-radius:12px;border:none;cursor:pointer;
   font:700 14px var(--f);transition:opacity .15s;width:100%}
 .btn-primary{background:linear-gradient(135deg,#0EA5E9,#10B981);color:#fff}
@@ -135,7 +140,18 @@ tr:hover td{background:rgba(14,165,233,.03)}
     <div class="login-logo">👁️</div>
     <div class="login-title">Gotchly Admin</div>
     <div class="login-sub">Ingresa la contraseña de administrador</div>
-    <input type="password" id="admin-pwd" placeholder="Contraseña admin" onkeydown="if(event.key==='Enter')doLogin()">
+    <div class="pwd-wrap">
+      <input type="password" id="admin-pwd" placeholder="Contraseña admin" onkeydown="if(event.key==='Enter')doLogin()">
+      <button type="button" class="pwd-toggle" onclick="togglePwd()" aria-label="Mostrar/ocultar contraseña">
+        <svg id="pwd-eye-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/>
+        </svg>
+        <svg id="pwd-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+          <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/>
+          <path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/>
+        </svg>
+      </button>
+    </div>
     <button class="btn btn-primary" onclick="doLogin()">Entrar al panel →</button>
     <div class="login-err" id="login-err"></div>
   </div>
@@ -216,6 +232,10 @@ tr:hover td{background:rgba(14,165,233,.03)}
       <button class="pack-tog" id="ptog-parejas" onclick="toggleModalPack('parejas')">👫 Parejas</button>
       <button class="pack-tog" id="ptog-halloween" onclick="toggleModalPack('halloween')">🎃 Halloween</button>
       <button class="pack-tog" id="ptog-fiestas" onclick="toggleModalPack('fiestas')">🎉 Fiestas</button>
+      <button class="pack-tog" id="ptog-nostalgia" onclick="toggleModalPack('nostalgia')">🕹️ Nostalgia</button>
+      <button class="pack-tog" id="ptog-trabajo" onclick="toggleModalPack('trabajo')">💼 Trabajo</button>
+      <button class="pack-tog" id="ptog-comida" onclick="toggleModalPack('comida')">🍕 Comida</button>
+      <button class="pack-tog" id="ptog-deportes" onclick="toggleModalPack('deportes')">⚽ Deportes</button>
     </div>
     <div class="modal-actions">
       <button style="background:rgba(14,165,233,.1);color:var(--purple)" onclick="savePremModal()">Guardar cambios</button>
@@ -226,6 +246,16 @@ tr:hover td{background:rgba(14,165,233,.03)}
 
 <script>
 let ADMIN_TOKEN = sessionStorage.getItem('gotchly_admin_token') || '';
+
+function togglePwd() {
+  const input = document.getElementById('admin-pwd');
+  const on = document.getElementById('pwd-eye-on');
+  const off = document.getElementById('pwd-eye-off');
+  const show = input.type === 'password';
+  input.type = show ? 'text' : 'password';
+  on.style.display = show ? 'none' : '';
+  off.style.display = show ? '' : 'none';
+}
 
 async function doLogin() {
   const pwd = document.getElementById('admin-pwd').value;
